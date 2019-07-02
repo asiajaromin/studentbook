@@ -47,14 +47,14 @@ public class GradeServiceTests {
 
     @Test
     public void canGetGradesList(){
-        gradeRepository.findAll();
+        gradeService.findAll();
         verify(gradeRepository).findAll();
     }
 
     @Test
     public void canGetSingleGrade(){
-        gradeRepository.findById(grade.getId());
-        verify(gradeRepository).findById(grade.getId());
+        gradeService.findById(GRADE_ID);
+        verify(gradeRepository).findById(GRADE_ID);
     }
 
     @Test
@@ -73,5 +73,11 @@ public class GradeServiceTests {
         assertEquals(gradeList.get(1).getStudent().getId(),gradeDtoList.get(1).getStudentId());
         assertEquals(gradeList.get(1).getSubject().getId(),gradeDtoList.get(1).getSubjectId());
         assertEquals(gradeList.get(1).getGrade(),gradeDtoList.get(1).getGrade());
+    }
+
+    @Test
+    public void canSaveGrade(){
+        gradeService.save(gradeDto);
+        verify(gradeRepository.save(grade));
     }
 }
