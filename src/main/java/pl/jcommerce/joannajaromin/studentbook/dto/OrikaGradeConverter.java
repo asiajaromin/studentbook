@@ -37,4 +37,9 @@ public class OrikaGradeConverter {
                 .collect(Collectors.toList());
         return gradeDtoList;
     }
+
+    public Grade mapGradeDtoToGrade(final GradeDto gradeDto){
+        Grade grade = mapper.map(gradeDto,Grade.class);
+        return grade;
+    }
 }

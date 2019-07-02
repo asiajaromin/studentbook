@@ -1,9 +1,7 @@
 package pl.jcommerce.joannajaromin.studentbook.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
 
@@ -32,4 +30,28 @@ public class GradeController {
         }
         return grade;
     }
+
+    @PostMapping("/grades")
+    public GradeDto saveGrade(@RequestBody GradeDto grade){
+        grade.setId(0);
+        gradeService.save(grade);
+        return grade;
+    }
+
+    @PutMapping("/grades")
+    public GradeDto updateGrade(@RequestBody GradeDto grade){
+        gradeService.save(grade);
+        return grade;
+    }
+
+    @DeleteMapping("/grades/{gradeId}")
+    public String deleteGrade (@PathVariable int gradeId){
+        GradeDto gradeDto = gradeService.findById(gradeId);
+        if (gradeDto == null){
+            throw new RuntimeException("Brak oceny o id: " + gradeId);
+        }
+        gradeService.deleteById(gradeId);
+        return "Ocena usunięta";
+    }
+
 }

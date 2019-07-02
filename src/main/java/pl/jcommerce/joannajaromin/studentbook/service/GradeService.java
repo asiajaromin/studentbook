@@ -8,4 +8,8 @@ public interface GradeService {
     List<GradeDto> findAll();
 
     GradeDto findById(int gradeId);
+
+    void save(GradeDto grade);
+
+    void deleteById(int gradeId);
 }

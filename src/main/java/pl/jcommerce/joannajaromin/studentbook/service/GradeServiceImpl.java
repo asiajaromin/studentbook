@@ -35,5 +35,14 @@ public class GradeServiceImpl implements GradeService{
         return gradeDto;
     }
 
+    @Override
+    public void save(GradeDto gradeDto) {
+        Grade grade = converter.mapGradeDtoToGrade(gradeDto);
+        gradeRepository.save(grade);
+    }
 
+    @Override
+    public void deleteById(int gradeId) {
+        gradeRepository.deleteById(gradeId);
+    }
 }
