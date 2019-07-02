@@ -5,6 +5,9 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class OrikaGradeConverter {
 
     private final static MapperFacade mapper;
@@ -26,5 +29,12 @@ public class OrikaGradeConverter {
     public GradeDto mapGradeToGradeDto(final Grade grade) {
         GradeDto gradeDto = mapper.map(grade, GradeDto.class);
         return gradeDto;
+    }
+
+    public List<GradeDto> mapGradeListToGradeDtoList(final List<Grade> grades){
+        List<GradeDto> gradeDtoList = grades.stream()
+                .map(grade -> mapGradeToGradeDto(grade))
+                .collect(Collectors.toList());
+        return gradeDtoList;
     }
 }
