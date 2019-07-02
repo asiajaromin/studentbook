@@ -83,4 +83,10 @@ public class GradeServiceTests {
         Grade gradeDtoTranslatedToGrade = converter.mapGradeDtoToGrade(gradeDto);
         verify(gradeRepository).save(gradeDtoTranslatedToGrade);
     }
+
+    @Test
+    public void canDeleteGrade(){
+        gradeService.deleteById(GRADE_ID);
+        verify(gradeRepository).deleteById(GRADE_ID);
+    }
 }
