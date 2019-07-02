@@ -3,6 +3,7 @@ package pl.jcommerce.joannajaromin.studentbook.ServiceTests;
 import org.junit.Before;
 import org.junit.Test;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
+import pl.jcommerce.joannajaromin.studentbook.dto.OrikaGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.entity.Student;
 import pl.jcommerce.joannajaromin.studentbook.entity.Subject;
@@ -78,6 +79,8 @@ public class GradeServiceTests {
     @Test
     public void canSaveGrade(){
         gradeService.save(gradeDto);
-        verify(gradeRepository.save(grade));
+        OrikaGradeConverter converter = new OrikaGradeConverter();
+        Grade gradeDtoTranslatedToGrade = converter.mapGradeDtoToGrade(gradeDto);
+        verify(gradeRepository).save(gradeDtoTranslatedToGrade);
     }
 }
