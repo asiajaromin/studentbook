@@ -2,7 +2,8 @@ package pl.jcommerce.joannajaromin.studentbook.dto;
 
 import lombok.Data;
 
-public @Data class StudentDto {
+@Data
+public class StudentDto {
 
     private Integer id;
 

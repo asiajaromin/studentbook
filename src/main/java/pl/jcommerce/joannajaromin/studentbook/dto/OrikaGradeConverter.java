@@ -33,7 +33,7 @@ public class OrikaGradeConverter {
 
     public List<GradeDto> mapGradeListToGradeDtoList(final List<Grade> grades){
         List<GradeDto> gradeDtoList = grades.stream()
-                .map(grade -> mapGradeToGradeDto(grade))
+                .map(this::mapGradeToGradeDto)
                 .collect(Collectors.toList());
         return gradeDtoList;
     }
