@@ -1,7 +1,7 @@
 package pl.jcommerce.joannajaromin.studentbook.service;
 
-import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
@@ -10,11 +10,21 @@ import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class GradeServiceImpl implements GradeService{
 
     private GradeRepository gradeRepository;
     private MapperFacade converter;
+
+    @Autowired
+    public GradeServiceImpl(GradeRepository gradeRepository) {
+        this.gradeRepository = gradeRepository;
+    }
+
+    public GradeServiceImpl(GradeRepository gradeRepository, MapperFacade converter) {
+        this.gradeRepository = gradeRepository;
+        this.converter = converter;
+    }
 
     @Override
     public List<GradeDto> findAll() {
