@@ -1,9 +1,9 @@
 package pl.jcommerce.joannajaromin.studentbook.ServiceTests;
 
-import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
+import pl.jcommerce.joannajaromin.studentbook.dto.OrikaGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
@@ -22,7 +22,7 @@ public class GradeServiceTest {
     private GradeRepository gradeRepository;
     private Grade grade;
     private GradeService gradeService;
-    private MapperFacade mapperFacade;
+    private OrikaGradeConverter gradeConverter;
 
     private List<Grade> getGradeList(){
         Grade grade = new Grade();
@@ -37,8 +37,8 @@ public class GradeServiceTest {
         gradeDto = mock(GradeDto.class);
         gradeRepository = mock(GradeRepository.class);
         grade = mock(Grade.class);
-        mapperFacade = mock(MapperFacade.class);
-        gradeService = new GradeServiceImpl(gradeRepository,mapperFacade);
+        gradeConverter = mock(OrikaGradeConverter.class);
+        gradeService = new GradeServiceImpl(gradeRepository,gradeConverter);
         when(gradeRepository.findById(GRADE_ID)).thenReturn(grade);
         when(gradeRepository.findAll()).thenReturn(gradeList);
     }
@@ -58,7 +58,7 @@ public class GradeServiceTest {
     @Test
     public void canSaveGrade(){
         gradeService.save(gradeDto);
-        Grade gradeDtoTranslatedToGrade = mapperFacade.map(gradeDto, Grade.class);
+        Grade gradeDtoTranslatedToGrade = gradeConverter.map(gradeDto, Grade.class);
         verify(gradeRepository).save(gradeDtoTranslatedToGrade);
     }
 

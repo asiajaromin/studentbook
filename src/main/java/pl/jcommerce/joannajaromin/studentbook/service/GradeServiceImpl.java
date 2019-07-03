@@ -1,9 +1,9 @@
 package pl.jcommerce.joannajaromin.studentbook.service;
 
 import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
 import org.springframework.stereotype.Service;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
+import pl.jcommerce.joannajaromin.studentbook.dto.OrikaGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class GradeServiceImpl implements GradeService{
 
     private final GradeRepository gradeRepository;
-    private final MapperFacade converter;
+    private final OrikaGradeConverter converter;
 
     @Override
     public List<GradeDto> findAll() {
