@@ -12,16 +12,16 @@ public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "grade_id")
-    private Integer id;
+    private final Integer id;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    private Student student;
+    private final Student student;
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
-    private Subject subject;
+    private final Subject subject;
 
     @Column(name = "grade")
-    private Integer grade;
+    private final Integer grade;
 }

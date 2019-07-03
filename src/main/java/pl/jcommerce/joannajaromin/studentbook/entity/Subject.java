@@ -18,7 +18,7 @@ public class Subject {
     @Column(name = "subject_name")
     private String name;
 
-    @OneToMany(mappedBy = "grades")
+    @OneToMany(mappedBy = "grade")
     private List<Grade> grades;
 
 }

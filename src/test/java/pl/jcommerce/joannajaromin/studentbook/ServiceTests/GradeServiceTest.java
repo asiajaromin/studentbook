@@ -17,20 +17,11 @@ import static org.mockito.Mockito.*;
 public class GradeServiceTest {
 
     private final int GRADE_ID = 1;
-    private List<Grade> gradeList = getGradeList();
     private GradeDto gradeDto;
     private GradeRepository gradeRepository;
     private Grade grade;
     private GradeService gradeService;
     private OrikaGradeConverter gradeConverter;
-
-    private List<Grade> getGradeList(){
-        Grade grade = new Grade();
-        List<Grade> gradeList = new ArrayList<>();
-        gradeList.add(grade);
-        gradeList.add(grade);
-        return gradeList;
-    }
 
     @Before
     public void before(){
@@ -40,6 +31,9 @@ public class GradeServiceTest {
         gradeConverter = mock(OrikaGradeConverter.class);
         gradeService = new GradeServiceImpl(gradeRepository,gradeConverter);
         when(gradeRepository.findById(GRADE_ID)).thenReturn(grade);
+        List<Grade> gradeList = new ArrayList<>();
+        gradeList.add(grade);
+        gradeList.add(grade);
         when(gradeRepository.findAll()).thenReturn(gradeList);
     }
 

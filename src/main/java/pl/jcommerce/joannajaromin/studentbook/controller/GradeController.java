@@ -11,7 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GradeController {
 
-    private GradeService gradeService;
+    private final GradeService gradeService;
 
     @GetMapping("/grades")
     public List<GradeDto> findAll(){
