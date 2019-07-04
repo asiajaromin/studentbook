@@ -5,11 +5,11 @@ import lombok.Data;
 @Data
 public class GradeDto {
 
-    private Integer id;
+    private final Integer id;
 
-    private Integer studentId;
+    private final Integer studentId;
 
-    private Integer subjectId;
+    private final Integer subjectId;
 
-    private Integer grade;
+    private final Integer grade;
 }
