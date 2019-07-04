@@ -37,8 +37,10 @@ public class GradeServiceTest {
         gradeDtoList = createGradeDtoList(gradeDto);
         when(gradeRepository.findById(GRADE_ID)).thenReturn(grade);
         when(gradeRepository.findAll()).thenReturn(gradeList);
+        when(gradeRepository.save(grade)).thenReturn(grade);
         when(gradeConverter.mapAsList(gradeList,GradeDto.class)).thenReturn(gradeDtoList);
         when(gradeConverter.map(grade,GradeDto.class)).thenReturn(gradeDto);
+        when(gradeConverter.map(gradeDto,Grade.class)).thenReturn(grade);
     }
 
     private List<Grade> createGradeList(Grade grade) {
@@ -69,9 +71,8 @@ public class GradeServiceTest {
 
     @Test
     public void canSaveGrade(){
-        gradeService.save(gradeDto);
-        Grade gradeDtoTranslatedToGrade = gradeConverter.map(gradeDto, Grade.class);
-        verify(gradeRepository).save(gradeDtoTranslatedToGrade);
+        GradeDto savedGradeDto = gradeService.save(gradeDto);
+        assertEquals(gradeDto,savedGradeDto);
     }
 
     @Test
