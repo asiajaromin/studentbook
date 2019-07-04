@@ -1,15 +1,21 @@
 package pl.jcommerce.joannajaromin.studentbook.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class GradeDto {
 
-    private final Integer id;
+    private Integer id;
 
-    private final Integer studentId;
+    private Integer studentId;
 
-    private final Integer subjectId;
+    private Integer subjectId;
 
-    private final Integer grade;
+    private Integer grade;
 }

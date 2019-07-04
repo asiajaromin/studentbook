@@ -12,6 +12,7 @@ import pl.jcommerce.joannajaromin.studentbook.service.GradeServiceImpl;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class GradeServiceTest {
@@ -22,25 +23,41 @@ public class GradeServiceTest {
     private Grade grade;
     private GradeService gradeService;
     private OrikaGradeConverter gradeConverter;
+    List<Grade> gradeList;
+    List<GradeDto> gradeDtoList;
 
     @Before
     public void before(){
-        gradeDto = mock(GradeDto.class);
+        gradeDto = new GradeDto();
+        grade = new Grade();
         gradeRepository = mock(GradeRepository.class);
-        grade = mock(Grade.class);
         gradeConverter = mock(OrikaGradeConverter.class);
         gradeService = new GradeServiceImpl(gradeRepository,gradeConverter);
+        gradeList = createGradeList(grade);
+        gradeDtoList = createGradeDtoList(gradeDto);
         when(gradeRepository.findById(GRADE_ID)).thenReturn(grade);
-        List<Grade> gradeList = new ArrayList<>();
-        gradeList.add(grade);
-        gradeList.add(grade);
         when(gradeRepository.findAll()).thenReturn(gradeList);
+        when(gradeConverter.mapAsList(gradeList,GradeDto.class)).thenReturn(gradeDtoList);
+    }
+
+    private List<Grade> createGradeList(Grade grade) {
+        gradeList = new ArrayList<>();
+        gradeList.add(grade);
+        gradeList.add(grade);
+        return gradeList;
+    }
+
+    private List<GradeDto> createGradeDtoList(GradeDto grade) {
+        gradeDtoList = new ArrayList<>();
+        gradeDtoList.add(grade);
+        gradeDtoList.add(grade);
+        return gradeDtoList;
     }
 
     @Test
     public void canGetGradesList(){
-        gradeService.findAll();
-        verify(gradeRepository).findAll();
+        List<GradeDto> obtainedDtoList = gradeService.findAll();
+        assertEquals(gradeDtoList,obtainedDtoList);
     }
 
     @Test
