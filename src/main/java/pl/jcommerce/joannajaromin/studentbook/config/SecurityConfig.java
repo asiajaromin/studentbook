@@ -9,17 +9,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
-
-import javax.sql.DataSource;
 
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final DataSource dataSource;
     private final CustomAuthenticationProvider authenticationProvider;
 
     @Override
@@ -45,13 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .deleteCookies("JSESSIONID")
                 .invalidateHttpSession(true) ;;
-    }
-
-    @Bean
-    public UserDetailsManager userDetailsManager() {
-        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager();
-        jdbcUserDetailsManager.setDataSource(dataSource);
-        return jdbcUserDetailsManager;
     }
 
     @Bean
