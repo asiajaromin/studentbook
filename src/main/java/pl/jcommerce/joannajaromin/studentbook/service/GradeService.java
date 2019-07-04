@@ -9,7 +9,7 @@ public interface GradeService {
 
     GradeDto findById(int gradeId);
 
-    void save(GradeDto grade);
+    GradeDto save(GradeDto grade);
 
     void deleteById(int gradeId);
 }

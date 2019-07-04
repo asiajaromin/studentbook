@@ -24,6 +24,6 @@ public class Student {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "grade")
+    @OneToMany(mappedBy = "student")
     private List<Grade> grades;
 }

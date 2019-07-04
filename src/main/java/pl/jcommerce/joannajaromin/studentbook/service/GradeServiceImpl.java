@@ -31,9 +31,10 @@ public class GradeServiceImpl implements GradeService{
     }
 
     @Override
-    public void save(GradeDto gradeDto) {
+    public GradeDto save(GradeDto gradeDto) {
         Grade grade = converter.map(gradeDto,Grade.class);
-        gradeRepository.save(grade);
+        Grade saved = gradeRepository.save(grade);
+        return converter.map(saved, GradeDto.class);
     }
 
     @Override

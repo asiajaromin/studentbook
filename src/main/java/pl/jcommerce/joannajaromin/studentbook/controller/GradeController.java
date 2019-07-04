@@ -25,14 +25,12 @@ public class GradeController {
 
     @PostMapping("/grades")
     public GradeDto saveGrade(@RequestBody GradeDto grade){
-        gradeService.save(grade);
-        return grade;
+        return gradeService.save(grade);
     }
 
     @PutMapping("/grades")
     public GradeDto updateGrade(@RequestBody GradeDto grade){
-        gradeService.save(grade);
-        return grade;
+        return gradeService.save(grade);
     }
 
     @DeleteMapping("/grades/{gradeId}")
