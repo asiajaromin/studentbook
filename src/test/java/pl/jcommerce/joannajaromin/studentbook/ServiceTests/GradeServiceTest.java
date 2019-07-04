@@ -38,6 +38,7 @@ public class GradeServiceTest {
         when(gradeRepository.findById(GRADE_ID)).thenReturn(grade);
         when(gradeRepository.findAll()).thenReturn(gradeList);
         when(gradeConverter.mapAsList(gradeList,GradeDto.class)).thenReturn(gradeDtoList);
+        when(gradeConverter.map(grade,GradeDto.class)).thenReturn(gradeDto);
     }
 
     private List<Grade> createGradeList(Grade grade) {
@@ -62,8 +63,8 @@ public class GradeServiceTest {
 
     @Test
     public void canGetSingleGrade(){
-        gradeService.findById(GRADE_ID);
-        verify(gradeRepository).findById(GRADE_ID);
+        GradeDto obtainedDto = gradeService.findById(GRADE_ID);
+        assertEquals(gradeDto,obtainedDto);
     }
 
     @Test
