@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class OrikaGradeConverterTest {
 
@@ -31,22 +29,13 @@ public class OrikaGradeConverterTest {
 
     @Before
     public void before(){
-        grade = mock(Grade.class);
-        //grade = new Grade(GRADE_ID,STUDENT_ID,SUBJECT_ID,GRADE);
-        student = mock(Student.class);
-        subject = mock(Subject.class);
-        gradeDto = mock(GradeDto.class);
+        student = new Student();
+        student.setId(STUDENT_ID);
+        subject = new Subject();
+        subject.setId(SUBJECT_ID);
+        grade = new Grade(GRADE_ID,student,subject,GRADE);
+        gradeDto = new GradeDto(GRADE_ID,STUDENT_ID,SUBJECT_ID,GRADE);
         gradeConverter = new OrikaGradeConverter();
-        when(grade.getId()).thenReturn(GRADE_ID);
-        when(grade.getStudent()).thenReturn(student);
-        when(grade.getSubject()).thenReturn(subject);
-        when(grade.getGrade()).thenReturn(GRADE);
-        when(gradeDto.getId()).thenReturn(GRADE_ID);
-        when(gradeDto.getStudentId()).thenReturn(STUDENT_ID);
-        when(gradeDto.getSubjectId()).thenReturn(SUBJECT_ID);
-        when(gradeDto.getGrade()).thenReturn(GRADE);
-        when(student.getId()).thenReturn(STUDENT_ID);
-        when(subject.getId()).thenReturn(SUBJECT_ID);
     }
 
     @Test
@@ -62,8 +51,8 @@ public class OrikaGradeConverterTest {
     public void canConvertSingleEntityToDto(){
         GradeDto mappedGradeDto = gradeConverter.map(grade,GradeDto.class);
         assertEquals(grade.getId(),mappedGradeDto.getId());
-        assertEquals(grade.getStudent().getId(),mappedGradeDto.getStudentId());
-        assertEquals(grade.getSubject().getId(),mappedGradeDto.getSubjectId());
+        assertEquals(grade.getStudent().getId(),gradeDto.getStudentId());
+        assertEquals(grade.getSubject().getId(),gradeDto.getSubjectId());
         assertEquals(grade.getGrade(),mappedGradeDto.getGrade());
     }
 

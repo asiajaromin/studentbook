@@ -1,8 +1,14 @@
 package pl.jcommerce.joannajaromin.studentbook.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class StudentDto {
 
     private Integer id;
