@@ -1,11 +1,12 @@
-TRUNCATE student_book.students RESTART IDENTITY CASCADE;
-INSERT INTO student_book.students (student_id, first_name, last_name, email)
+TRUNCATE student_book.students CASCADE;
+INSERT INTO student_book.students (id, first_name, last_name, email)
 VALUES 
 (1,'Jan', 'Kowalski', 'jan.kowalski@twojmail.com'),
 (2,'Patryk', 'Nowak', 'patryk.nowak@skrzyneczka.pl'),
 (3,'Barbara', 'Kwiatek', 'kwiatuszek@twojmail.com');
-TRUNCATE student_book.subjects RESTART IDENTITY CASCADE;
-INSERT INTO student_book.subjects (subject_id,subject_name)
+
+TRUNCATE student_book.subjects CASCADE;
+INSERT INTO student_book.subjects (id,subject_name)
 VALUES 
 (1,'Matematyka'),
 (2,'Język Polski'),
@@ -13,8 +14,8 @@ VALUES
 (4,'Historia'),
 (5,'Biologia');
 
-TRUNCATE student_book.grades RESTART IDENTITY CASCADE;
-INSERT INTO student_book.grades (grade_id, student_id, subject_id, grade)
+TRUNCATE student_book.grades CASCADE;
+INSERT INTO student_book.grades (id, student_id, subject_id, grade)
 VALUES
 (1,1,1,5),
 (2,1,2,3),
@@ -25,4 +26,3 @@ VALUES
 (7,3,1,1),
 (8,3,2,5),
 (9,2,4,3);
-

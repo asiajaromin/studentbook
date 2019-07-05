@@ -18,7 +18,7 @@ public class Subject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "subject_id")
+    @Column(name = "id")
     private Integer id;
 
     @Column(name = "subject_name")
