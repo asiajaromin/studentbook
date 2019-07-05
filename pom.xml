@@ -75,13 +75,6 @@
             <artifactId>flyway-core</artifactId>
             <version>5.2.4</version>
         </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-maven-plugin</artifactId>
-            <version>5.2.4</version>
-            <type>maven-plugin</type>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -89,24 +82,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <version>5.2.4</version>
-                <configuration>
-                    <url>jdbc:postgresql://localhost:5432/student_book</url>
-                    <schemas>student_book</schemas>
-                    <user>postgres</user>
-                    <password>joanna</password>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>9.1-901-1.jdbc4</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
