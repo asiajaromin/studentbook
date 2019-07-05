@@ -3,6 +3,7 @@ package pl.jcommerce.joannajaromin.studentbook.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
+import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
 
 import java.util.List;
@@ -24,13 +25,13 @@ public class GradeController {
     }
 
     @PostMapping("/grades")
-    public GradeDto saveGrade(@RequestBody GradeDto grade){
+    public GradeDto saveGrade(@RequestBody SaveGradeDto grade){
         return gradeService.save(grade);
     }
 
     @PutMapping("/grades")
     public GradeDto updateGrade(@RequestBody GradeDto grade){
-        return gradeService.save(grade);
+        return gradeService.update(grade);
     }
 
     @DeleteMapping("/grades/{gradeId}")

@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaGradeConverter;
+import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveGradeConverter;
+import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
@@ -21,16 +23,20 @@ public class GradeServiceTest {
     private GradeDto gradeDto;
     private GradeRepository gradeRepository;
     private Grade grade;
+    private SaveGradeDto saveGradeDto;
     private GradeService gradeService;
     private OrikaGradeConverter gradeConverter;
+    private OrikaSaveGradeConverter saveGradeConverter;
 
     @Before
     public void before(){
         gradeDto = new GradeDto();
         grade = new Grade();
+        saveGradeDto = new SaveGradeDto();
         gradeRepository = mock(GradeRepository.class);
         gradeConverter = mock(OrikaGradeConverter.class);
-        gradeService = new GradeServiceImpl(gradeRepository,gradeConverter);
+        saveGradeConverter = mock(OrikaSaveGradeConverter.class);
+        gradeService = new GradeServiceImpl(gradeRepository,gradeConverter,saveGradeConverter);
         when(gradeConverter.map(grade,GradeDto.class)).thenReturn(gradeDto);
     }
 
@@ -53,9 +59,9 @@ public class GradeServiceTest {
 
     @Test
     public void canSaveGrade(){
-        when(gradeConverter.map(gradeDto,Grade.class)).thenReturn(grade);
+        when(saveGradeConverter.map(saveGradeDto,Grade.class)).thenReturn(grade);
         when(gradeRepository.save(grade)).thenReturn(grade);
-        GradeDto savedGradeDto = gradeService.save(gradeDto);
+        GradeDto savedGradeDto = gradeService.save(saveGradeDto);
         assertEquals(gradeDto,savedGradeDto);
     }
 
