@@ -8,6 +8,7 @@ import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.entity.Student;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -21,31 +22,14 @@ public class OrikaStudentConverterTest {
 
     private Student student;
     private StudentDto studentDto;
-    private List<Grade> grades;
+    private List<Grade> grades = new ArrayList<>();
     private OrikaStudentConverter converter;
 
     @Before
     public void before(){
-        grades = new ArrayList<>();
         student = new Student(STUDENT_ID,FIRST_NAME,LAST_NAME,EMAIL,grades);
         studentDto = new StudentDto(STUDENT_ID,FIRST_NAME,LAST_NAME,EMAIL);
         converter = new OrikaStudentConverter();
-    }
-
-    private List<Student> createStudentList(Student student) {
-        List<Student> students = new ArrayList<>();
-        students.add(student);
-        students.add(student);
-        return students;
-    }
-
-    private List<StudentDto> createDtoStudentsList(StudentDto studentDto) {
-        List<StudentDto> dtoStudents = new ArrayList<>();
-        dtoStudents.add(studentDto);
-        dtoStudents.add(studentDto);
-        dtoStudents.add(studentDto);
-        dtoStudents.add(studentDto);
-        return dtoStudents;
     }
 
     @Test
@@ -68,7 +52,7 @@ public class OrikaStudentConverterTest {
 
     @Test
     public void canConvertStudentsListToDtoList(){
-        List<Student> students = createStudentList(student);
+        List<Student> students = Arrays.asList(student,student,student,student);
         List<StudentDto> convertedDtoList = converter.mapAsList(students,StudentDto.class);
         Student firstStudent = students.get(0);
         StudentDto firstDtoStudent = convertedDtoList.get(0);
@@ -80,7 +64,7 @@ public class OrikaStudentConverterTest {
 
     @Test
     public void canConvertDtoListToStudentsList(){
-        List<StudentDto> dtoStudents = createDtoStudentsList(studentDto);
+        List<StudentDto> dtoStudents = Arrays.asList(studentDto,studentDto,studentDto,studentDto,studentDto);
         List<Student> convertedStudentList = converter.mapAsList(dtoStudents,Student.class);
         StudentDto fourthDtoStudent = dtoStudents.get(3);
         Student fourthStudent = convertedStudentList.get(3);

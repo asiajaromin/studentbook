@@ -13,6 +13,6 @@ public class SubjectDto {
 
     private Integer id;
 
-    private Integer grade;
+    private String name;
 
 }
