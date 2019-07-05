@@ -71,6 +71,10 @@
             <version>2.23.4</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
