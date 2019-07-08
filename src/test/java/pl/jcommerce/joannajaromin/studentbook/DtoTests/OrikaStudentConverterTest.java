@@ -7,7 +7,6 @@ import pl.jcommerce.joannajaromin.studentbook.dto.StudentDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.ClassGroup;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.entity.Student;
-import pl.jcommerce.joannajaromin.studentbook.entity.Teacher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,10 +23,8 @@ public class OrikaStudentConverterTest {
     private final String LAST_NAME = "Kwiatkowski";
     private final String EMAIL = "irek.kwiatkowski@twojmail.pl";
     private final int CLASS_GROUP_ID = 2;
-    private final String CLASS_GROUP_NAME = "2C";
 
     private Student student;
-    private Teacher teacher;
     private StudentDto studentDto;
     private List<Grade> grades = new ArrayList<>();
     private OrikaStudentConverter converter;

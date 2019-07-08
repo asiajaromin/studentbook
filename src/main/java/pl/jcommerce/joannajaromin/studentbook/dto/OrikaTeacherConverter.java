@@ -16,7 +16,6 @@ public class OrikaTeacherConverter extends ConfigurableMapper {
                 .field("firstName","firstName")
                 .field("lastName","lastName")
                 .field("email","email")
-                .field("groups{id}","groupsIds")
                 .byDefault().register();
     }
 

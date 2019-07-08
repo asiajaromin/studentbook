@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -24,6 +22,4 @@ public class TeacherDto {
     private String lastName;
 
     private String email;
-
-    private List<Integer> groupsIds;
 }
