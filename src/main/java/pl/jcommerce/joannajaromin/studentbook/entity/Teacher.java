@@ -9,17 +9,23 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "students")
+@Table(name="teachers")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Student {
+public class Teacher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private Integer id;
+    @Column(name = "id")
+    private int id;
+
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "first_name")
     private String firstName;
@@ -30,10 +36,6 @@ public class Student {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "student")
-    private List<Grade> grades;
-
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    private ClassGroup classGroup;
+    @ManyToMany(mappedBy = "teachers")
+    private List<ClassGroup> groups;
 }
