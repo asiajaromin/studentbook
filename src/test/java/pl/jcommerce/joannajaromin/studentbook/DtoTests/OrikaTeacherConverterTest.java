@@ -21,7 +21,6 @@ public class OrikaTeacherConverterTest {
     private final String FIRST_NAME = "Jan";
     private final String LAST_NAME = "Kowalski";
     private final String EMAIL = "jan.kowalski@gmail.com";
-    private final int GROUP_ID = 17;
 
     private OrikaTeacherConverter converter;
     private Teacher teacher;

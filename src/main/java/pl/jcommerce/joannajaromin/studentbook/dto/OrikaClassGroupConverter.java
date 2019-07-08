@@ -12,7 +12,6 @@ public class OrikaClassGroupConverter extends ConfigurableMapper {
         factory.classMap(ClassGroup.class,ClassGroupDto.class)
                 .field("id","id")
                 .field("name","name")
-                .field("teachers{id}","teachersIds")
                 .byDefault().register();
     }
 }
