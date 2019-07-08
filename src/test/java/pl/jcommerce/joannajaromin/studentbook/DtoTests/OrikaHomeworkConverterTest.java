@@ -9,7 +9,10 @@ import pl.jcommerce.joannajaromin.studentbook.entity.Homework;
 import pl.jcommerce.joannajaromin.studentbook.entity.Subject;
 import pl.jcommerce.joannajaromin.studentbook.entity.Teacher;
 
-import static org.junit.Assert.assertEquals;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -54,22 +57,52 @@ public class OrikaHomeworkConverterTest {
         assertEquals(homework.getSubject().getId(),convertedDto.getSubjectId());
         assertEquals(homework.getFileName(),convertedDto.getFileName());
         assertEquals(homework.getFileDescription(),convertedDto.getFileDescription());
-        assertEquals(homework.getFileData(),convertedDto.getFileData());
+        assertArrayEquals(homework.getFileData(),convertedDto.getFileData());
+        String homeworkText = new String(homework.getFileData());
+        String dtoText = new String(convertedDto.getFileData());
+        assertEquals(homeworkText,dtoText);
     }
 
     @Test
     public void canConvertSingleDtoToHomework(){
-
+        Homework convertedHomework = converter.map(homeworkDto,Homework.class);
+        assertEquals(homeworkDto.getId(),convertedHomework.getId());
+        assertEquals(homeworkDto.getGroupId(),convertedHomework.getGroup().getId());
+        assertEquals(homeworkDto.getTeacherId(),convertedHomework.getTeacher().getId());
+        assertEquals(homeworkDto.getSubjectId(),convertedHomework.getSubject().getId());
+        assertEquals(homeworkDto.getFileName(),convertedHomework.getFileName());
+        assertEquals(homeworkDto.getFileDescription(),convertedHomework.getFileDescription());
+        assertArrayEquals(homeworkDto.getFileData(),convertedHomework.getFileData());
     }
 
     @Test
     public void canConvertHomeworksListToDtoList(){
-
+        List<Homework> homeworksList = Arrays.asList(homework,homework,homework);
+        List<HomeworkDto> convertedDtoList = converter.mapAsList(homeworksList,HomeworkDto.class);
+        Homework secondHomework = homeworksList.get(1);
+        HomeworkDto secondDto = convertedDtoList.get(1);
+        assertEquals(secondHomework.getId(),secondDto.getId());
+        assertEquals(secondHomework.getGroup().getId(),secondDto.getGroupId());
+        assertEquals(secondHomework.getTeacher().getId(),secondDto.getTeacherId());
+        assertEquals(secondHomework.getSubject().getId(),secondDto.getSubjectId());
+        assertEquals(secondHomework.getFileName(),secondDto.getFileName());
+        assertEquals(secondHomework.getFileDescription(),secondDto.getFileDescription());
+        assertArrayEquals(secondHomework.getFileData(),secondDto.getFileData());
     }
 
     @Test
     public void canConvertDtoListToHomeworkList(){
-
+        List<HomeworkDto> dtoList = Arrays.asList(homeworkDto,homeworkDto,homeworkDto,homeworkDto,homeworkDto);
+        List<Homework> convertedHomeworkList = converter.mapAsList(dtoList,Homework.class);
+        HomeworkDto fifthDto = dtoList.get(4);
+        Homework fifthHomework = convertedHomeworkList.get(4);
+        assertEquals(fifthDto.getId(),fifthHomework.getId());
+        assertEquals(fifthDto.getGroupId(),fifthHomework.getGroup().getId());
+        assertEquals(fifthDto.getTeacherId(),fifthHomework.getTeacher().getId());
+        assertEquals(fifthDto.getSubjectId(),fifthHomework.getSubject().getId());
+        assertEquals(fifthDto.getFileName(),fifthHomework.getFileName());
+        assertEquals(fifthDto.getFileDescription(),fifthHomework.getFileDescription());
+        assertArrayEquals(fifthDto.getFileData(),fifthHomework.getFileData());
     }
 
 }
