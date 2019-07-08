@@ -4,14 +4,18 @@ import org.junit.Before;
 import org.junit.Test;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaStudentConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.StudentDto;
+import pl.jcommerce.joannajaromin.studentbook.entity.ClassGroup;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.entity.Student;
+import pl.jcommerce.joannajaromin.studentbook.entity.Teacher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class OrikaStudentConverterTest {
 
@@ -19,17 +23,23 @@ public class OrikaStudentConverterTest {
     private final String FIRST_NAME = "Ireneusz";
     private final String LAST_NAME = "Kwiatkowski";
     private final String EMAIL = "irek.kwiatkowski@twojmail.pl";
+    private final int CLASS_GROUP_ID = 2;
+    private final String CLASS_GROUP_NAME = "2C";
 
     private Student student;
+    private Teacher teacher;
     private StudentDto studentDto;
     private List<Grade> grades = new ArrayList<>();
     private OrikaStudentConverter converter;
+    private ClassGroup classGroup;
 
     @Before
     public void before(){
-        student = new Student(STUDENT_ID,FIRST_NAME,LAST_NAME,EMAIL,grades);
-        studentDto = new StudentDto(STUDENT_ID,FIRST_NAME,LAST_NAME,EMAIL);
+        classGroup = mock(ClassGroup.class);
+        student = new Student(STUDENT_ID,FIRST_NAME,LAST_NAME,EMAIL,grades,classGroup);
+        studentDto = new StudentDto(STUDENT_ID,FIRST_NAME,LAST_NAME,EMAIL,CLASS_GROUP_ID);
         converter = new OrikaStudentConverter();
+        when(classGroup.getId()).thenReturn(CLASS_GROUP_ID);
     }
 
     @Test
@@ -39,6 +49,7 @@ public class OrikaStudentConverterTest {
         assertEquals(student.getFirstName(),convertedDtoStudent.getFirstName());
         assertEquals(student.getLastName(),convertedDtoStudent.getLastName());
         assertEquals(student.getEmail(),convertedDtoStudent.getEmail());
+        assertEquals(student.getClassGroup().getId(),convertedDtoStudent.getClassGroupId());
     }
 
     @Test
@@ -48,6 +59,7 @@ public class OrikaStudentConverterTest {
         assertEquals(studentDto.getFirstName(),convertedStudent.getFirstName());
         assertEquals(studentDto.getLastName(),convertedStudent.getLastName());
         assertEquals(studentDto.getEmail(),convertedStudent.getEmail());
+        assertEquals(studentDto.getClassGroupId(),convertedStudent.getClassGroup().getId());
     }
 
     @Test
@@ -60,6 +72,7 @@ public class OrikaStudentConverterTest {
         assertEquals(firstStudent.getFirstName(),firstDtoStudent.getFirstName());
         assertEquals(firstStudent.getLastName(),firstDtoStudent.getLastName());
         assertEquals(firstStudent.getEmail(),firstDtoStudent.getEmail());
+        assertEquals(firstStudent.getClassGroup().getId(),firstDtoStudent.getClassGroupId());
     }
 
     @Test
@@ -72,5 +85,6 @@ public class OrikaStudentConverterTest {
         assertEquals(fourthDtoStudent.getFirstName(),fourthStudent.getFirstName());
         assertEquals(fourthDtoStudent.getLastName(),fourthStudent.getLastName());
         assertEquals(fourthDtoStudent.getEmail(),fourthStudent.getEmail());
+        assertEquals(fourthDtoStudent.getClassGroupId(),fourthStudent.getClassGroup().getId());
     }
 }
