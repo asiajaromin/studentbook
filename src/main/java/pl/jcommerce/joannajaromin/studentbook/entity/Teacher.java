@@ -36,6 +36,9 @@ public class Teacher {
     @Column(name = "email")
     private String email;
 
+    @OneToMany (mappedBy = "teacher")
+    private List<Homework> homeworks;
+
     @ManyToMany(mappedBy = "teachers")
     private List<ClassGroup> groups;
 }

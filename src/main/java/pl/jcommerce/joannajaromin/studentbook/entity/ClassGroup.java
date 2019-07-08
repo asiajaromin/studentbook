@@ -27,6 +27,9 @@ public class ClassGroup {
     @OneToMany(mappedBy = "classGroup")
     private List<Student> student;
 
+    @OneToMany(mappedBy = "group")
+    private List<Homework> homeworks;
+
     @ManyToMany
     @JoinTable(
             name = "teacher_group",
