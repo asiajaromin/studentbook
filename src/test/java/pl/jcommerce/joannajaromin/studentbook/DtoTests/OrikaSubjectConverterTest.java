@@ -5,6 +5,7 @@ import org.junit.Test;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSubjectConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.SubjectDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
+import pl.jcommerce.joannajaromin.studentbook.entity.Homework;
 import pl.jcommerce.joannajaromin.studentbook.entity.Subject;
 
 import java.util.ArrayList;
@@ -17,15 +18,16 @@ public class OrikaSubjectConverterTest {
 
     private final int SUBJECT_ID = 12;
     private final String NAME = "Hiszpański";
+    private final List<Grade> GRADES = new ArrayList<>();
+    private final List<Homework> HOMEWORKS = new ArrayList<>();
 
     private Subject subject;
     private SubjectDto subjectDto;
     private OrikaSubjectConverter converter;
-    private List<Grade> grades = new ArrayList<>();
 
     @Before
     public void before(){
-        subject = new Subject(SUBJECT_ID,NAME,grades);
+        subject = new Subject(SUBJECT_ID,NAME,GRADES,HOMEWORKS);
         subjectDto = new SubjectDto(SUBJECT_ID,NAME);
         converter = new OrikaSubjectConverter();
     }

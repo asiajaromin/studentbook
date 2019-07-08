@@ -5,13 +5,14 @@ import org.junit.Test;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaTeacherConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.TeacherDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.ClassGroup;
+import pl.jcommerce.joannajaromin.studentbook.entity.Homework;
 import pl.jcommerce.joannajaromin.studentbook.entity.Teacher;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 
 public class OrikaTeacherConverterTest {
 
@@ -21,19 +22,18 @@ public class OrikaTeacherConverterTest {
     private final String FIRST_NAME = "Jan";
     private final String LAST_NAME = "Kowalski";
     private final String EMAIL = "jan.kowalski@gmail.com";
+    private final List<Homework> HOMEWORKS = new ArrayList<>();
+    private final List<ClassGroup> GROUPS = new ArrayList<>();
 
     private OrikaTeacherConverter converter;
     private Teacher teacher;
     private TeacherDto teacherDto;
-    private ClassGroup group;
-    private List<ClassGroup> groups;
+
 
     @Before
     public void before(){
         converter = new OrikaTeacherConverter();
-        group = mock(ClassGroup.class);
-        groups = Arrays.asList(group,group,group,group);
-        teacher = new Teacher(TEACHER_ID,USERNAME,PASSWORD,FIRST_NAME,LAST_NAME,EMAIL,groups);
+        teacher = new Teacher(TEACHER_ID,USERNAME,PASSWORD,FIRST_NAME,LAST_NAME,EMAIL,HOMEWORKS,GROUPS);
         teacherDto = new TeacherDto(TEACHER_ID,USERNAME,PASSWORD,FIRST_NAME,LAST_NAME,EMAIL);
     }
 

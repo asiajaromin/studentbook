@@ -5,6 +5,7 @@ import org.junit.Test;
 import pl.jcommerce.joannajaromin.studentbook.dto.ClassGroupDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaClassGroupConverter;
 import pl.jcommerce.joannajaromin.studentbook.entity.ClassGroup;
+import pl.jcommerce.joannajaromin.studentbook.entity.Homework;
 import pl.jcommerce.joannajaromin.studentbook.entity.Student;
 import pl.jcommerce.joannajaromin.studentbook.entity.Teacher;
 
@@ -20,6 +21,7 @@ public class OrikaClassGroupConverterTest {
     private final String GROUP_NAME = "5G";
     private final List<Teacher> TEACHERS = new ArrayList<>();
     private final List<Student> STUDENTS = new ArrayList<>();
+    private final List<Homework> HOMEWORKS = new ArrayList<>();
 
     private ClassGroup group;
     private ClassGroupDto groupDto;
@@ -27,7 +29,7 @@ public class OrikaClassGroupConverterTest {
 
     @Before
     public void before(){
-        group = new ClassGroup(GROUP_ID,GROUP_NAME,STUDENTS,TEACHERS);
+        group = new ClassGroup(GROUP_ID,GROUP_NAME,STUDENTS,HOMEWORKS,TEACHERS);
         groupDto = new ClassGroupDto(GROUP_ID,GROUP_NAME);
         converter = new OrikaClassGroupConverter();
     }
