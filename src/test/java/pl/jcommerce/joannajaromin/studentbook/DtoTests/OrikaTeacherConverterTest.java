@@ -18,28 +18,26 @@ public class OrikaTeacherConverterTest {
 
     private final int TEACHER_ID = 2;
     private final String USERNAME = "kowalski";
-    private final String PASSWORD = "kowalski123";
+    private final String PASSWORD1 = "kowalski123";
+    private final String PASSWORD2 = "janek11212";
     private final String FIRST_NAME = "Jan";
-    private final String LAST_NAME = "Kowalski";
+    private final String LAST_NAME1 = "Kowalski";
+    private final String LAST_NAME2 = "Nowak";
     private final String EMAIL = "jan.kowalski@gmail.com";
     private final List<Homework> HOMEWORKS = new ArrayList<>();
     private final List<ClassGroup> GROUPS = new ArrayList<>();
 
     private OrikaTeacherConverter converter;
-    private Teacher teacher;
-    private TeacherDto teacherDto;
-
 
     @Before
     public void before(){
         converter = new OrikaTeacherConverter();
-        teacher = new Teacher(TEACHER_ID,USERNAME,PASSWORD,FIRST_NAME,LAST_NAME,EMAIL,HOMEWORKS,GROUPS);
-        teacherDto = new TeacherDto(TEACHER_ID,USERNAME,PASSWORD,FIRST_NAME,LAST_NAME,EMAIL);
     }
 
     @Test
     public void canConvertSingleTeacherToDto(){
-        TeacherDto convertedDtoTeacher = converter.map(teacher,TeacherDto.class);
+        var teacher = new Teacher(TEACHER_ID,USERNAME,PASSWORD1,FIRST_NAME,LAST_NAME1,EMAIL,HOMEWORKS,GROUPS);
+        var convertedDtoTeacher = converter.map(teacher,TeacherDto.class);
         assertEquals(teacher.getId(),convertedDtoTeacher.getId());
         assertEquals(teacher.getUsername(),convertedDtoTeacher.getUsername());
         assertEquals(teacher.getPassword(),convertedDtoTeacher.getPassword());
@@ -50,7 +48,8 @@ public class OrikaTeacherConverterTest {
 
     @Test
     public void canConvertSingleDtoToTeacher(){
-        Teacher convertedTeacher = converter.map(teacherDto,Teacher.class);
+        var teacherDto = new TeacherDto(TEACHER_ID,USERNAME,PASSWORD2,FIRST_NAME,LAST_NAME2,EMAIL);
+        var convertedTeacher = converter.map(teacherDto,Teacher.class);
         assertEquals(teacherDto.getId(),convertedTeacher.getId());
         assertEquals(teacherDto.getUsername(),convertedTeacher.getUsername());
         assertEquals(teacherDto.getPassword(),convertedTeacher.getPassword());
@@ -61,30 +60,42 @@ public class OrikaTeacherConverterTest {
 
     @Test
     public void canConvertTeachersListToDtoList(){
-        List<Teacher> teachersList = Arrays.asList(teacher,teacher);
-        List<TeacherDto> convertedDtoList = converter.mapAsList(teachersList,TeacherDto.class);
-        Teacher firstTeacher = teachersList.get(0);
-        TeacherDto firstDtoTeacher = convertedDtoList.get(0);
-        assertEquals(firstTeacher.getId(),firstDtoTeacher.getId());
-        assertEquals(firstTeacher.getUsername(),firstDtoTeacher.getUsername());
-        assertEquals(firstTeacher.getPassword(),firstDtoTeacher.getPassword());
-        assertEquals(firstTeacher.getFirstName(),firstDtoTeacher.getFirstName());
-        assertEquals(firstTeacher.getLastName(),firstDtoTeacher.getLastName());
-        assertEquals(firstTeacher.getEmail(),firstDtoTeacher.getEmail());
+        var teacher1 = new Teacher(TEACHER_ID,USERNAME,PASSWORD1,FIRST_NAME,LAST_NAME2,EMAIL,HOMEWORKS,GROUPS);
+        var teacher2 = new Teacher(TEACHER_ID,USERNAME,PASSWORD2,FIRST_NAME,LAST_NAME1,EMAIL,HOMEWORKS,GROUPS);
+        var teacher3 = new Teacher(TEACHER_ID,USERNAME,PASSWORD1,FIRST_NAME,LAST_NAME1,EMAIL,HOMEWORKS,GROUPS);
+        var teachersList = Arrays.asList(teacher1,teacher2,teacher3);
+        var convertedDtoList = converter.mapAsList(teachersList,TeacherDto.class);
+        assertEquals(teachersList.size(),convertedDtoList.size());
+        for(var i = 0; i < teachersList.size(); i++) {
+            Teacher teacher = teachersList.get(i);
+            TeacherDto teacherDto = convertedDtoList.get(i);
+            assertEquals(teacher.getId(), teacherDto.getId());
+            assertEquals(teacher.getUsername(), teacherDto.getUsername());
+            assertEquals(teacher.getPassword(), teacherDto.getPassword());
+            assertEquals(teacher.getFirstName(), teacherDto.getFirstName());
+            assertEquals(teacher.getLastName(), teacherDto.getLastName());
+            assertEquals(teacher.getEmail(), teacherDto.getEmail());
+        }
     }
 
     @Test
     public void canConvertDtoListToTeachersList(){
-        List<TeacherDto> dtoList = Arrays.asList(teacherDto,teacherDto,teacherDto);
-        List<Teacher> convertedTeachersList = converter.mapAsList(dtoList,Teacher.class);
-        TeacherDto secondDtoTeacher = dtoList.get(1);
-        Teacher secondTeacher = convertedTeachersList.get(1);
-        assertEquals(secondDtoTeacher.getId(),secondTeacher.getId());
-        assertEquals(secondDtoTeacher.getUsername(),secondTeacher.getUsername());
-        assertEquals(secondDtoTeacher.getPassword(),secondTeacher.getPassword());
-        assertEquals(secondDtoTeacher.getFirstName(),secondTeacher.getFirstName());
-        assertEquals(secondDtoTeacher.getLastName(),secondTeacher.getLastName());
-        assertEquals(secondDtoTeacher.getEmail(),secondTeacher.getEmail());
+        var teacherDto1 = new TeacherDto(TEACHER_ID,USERNAME,PASSWORD1,FIRST_NAME,LAST_NAME1,EMAIL);
+        var teacherDto2 = new TeacherDto(TEACHER_ID,USERNAME,PASSWORD2,FIRST_NAME,LAST_NAME2,EMAIL);
+        var teacherDto3 = new TeacherDto(TEACHER_ID,USERNAME,PASSWORD1,FIRST_NAME,LAST_NAME2,EMAIL);
+        var teacherDto4 = new TeacherDto(TEACHER_ID,USERNAME,PASSWORD2,FIRST_NAME,LAST_NAME1,EMAIL);
+        var dtoList = Arrays.asList(teacherDto1,teacherDto2,teacherDto3,teacherDto4);
+        var convertedTeachersList = converter.mapAsList(dtoList,Teacher.class);
+        assertEquals(dtoList.size(),convertedTeachersList.size());
+        for (var i = 0; i < dtoList.size(); i++) {
+            var teacherDto = dtoList.get(1);
+            var teacher = convertedTeachersList.get(1);
+            assertEquals(teacherDto.getId(), teacher.getId());
+            assertEquals(teacherDto.getUsername(), teacher.getUsername());
+            assertEquals(teacherDto.getPassword(), teacher.getPassword());
+            assertEquals(teacherDto.getFirstName(), teacher.getFirstName());
+            assertEquals(teacherDto.getLastName(), teacher.getLastName());
+            assertEquals(teacherDto.getEmail(), teacher.getEmail());
+        }
     }
-
 }

@@ -13,35 +13,32 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class OrikaStudentConverterTest {
 
-    private final int STUDENT_ID = 15;
-    private final String FIRST_NAME = "Ireneusz";
+    private final int STUDENT_ID1 = 15;
+    private final int STUDENT_ID2 = 6;
+    private final String FIRST_NAME1 = "Ireneusz";
+    private final String FIRST_NAME2 = "Arkadiusz";
     private final String LAST_NAME = "Kwiatkowski";
     private final String EMAIL = "irek.kwiatkowski@twojmail.pl";
     private final int CLASS_GROUP_ID = 2;
 
-    private Student student;
-    private StudentDto studentDto;
     private List<Grade> grades = new ArrayList<>();
     private OrikaStudentConverter converter;
     private ClassGroup classGroup;
 
     @Before
     public void before(){
-        classGroup = mock(ClassGroup.class);
-        student = new Student(STUDENT_ID,FIRST_NAME,LAST_NAME,EMAIL,grades,classGroup);
-        studentDto = new StudentDto(STUDENT_ID,FIRST_NAME,LAST_NAME,EMAIL,CLASS_GROUP_ID);
+        classGroup = new ClassGroup();
+        classGroup.setId(CLASS_GROUP_ID);
         converter = new OrikaStudentConverter();
-        when(classGroup.getId()).thenReturn(CLASS_GROUP_ID);
     }
 
     @Test
     public void canConvertSingleStudentToDto(){
-        StudentDto convertedDtoStudent = converter.map(student,StudentDto.class);
+        var student = new Student(STUDENT_ID1,FIRST_NAME1,LAST_NAME,EMAIL,grades,classGroup);
+        var convertedDtoStudent = converter.map(student,StudentDto.class);
         assertEquals(student.getId(),convertedDtoStudent.getId());
         assertEquals(student.getFirstName(),convertedDtoStudent.getFirstName());
         assertEquals(student.getLastName(),convertedDtoStudent.getLastName());
@@ -51,7 +48,8 @@ public class OrikaStudentConverterTest {
 
     @Test
     public void canConvertSingeDtoToStudent(){
-        Student convertedStudent = converter.map(studentDto,Student.class);
+        var studentDto = new StudentDto(STUDENT_ID2,FIRST_NAME2,LAST_NAME,EMAIL,CLASS_GROUP_ID);
+        var convertedStudent = converter.map(studentDto,Student.class);
         assertEquals(studentDto.getId(),convertedStudent.getId());
         assertEquals(studentDto.getFirstName(),convertedStudent.getFirstName());
         assertEquals(studentDto.getLastName(),convertedStudent.getLastName());
@@ -61,27 +59,38 @@ public class OrikaStudentConverterTest {
 
     @Test
     public void canConvertStudentsListToDtoList(){
-        List<Student> students = Arrays.asList(student,student,student,student);
-        List<StudentDto> convertedDtoList = converter.mapAsList(students,StudentDto.class);
-        Student firstStudent = students.get(0);
-        StudentDto firstDtoStudent = convertedDtoList.get(0);
-        assertEquals(firstStudent.getId(),firstDtoStudent.getId());
-        assertEquals(firstStudent.getFirstName(),firstDtoStudent.getFirstName());
-        assertEquals(firstStudent.getLastName(),firstDtoStudent.getLastName());
-        assertEquals(firstStudent.getEmail(),firstDtoStudent.getEmail());
-        assertEquals(firstStudent.getClassGroup().getId(),firstDtoStudent.getClassGroupId());
+        var student1 = new Student(STUDENT_ID1,FIRST_NAME2,LAST_NAME,EMAIL,grades,classGroup);
+        var student2 = new Student(STUDENT_ID2,FIRST_NAME1,LAST_NAME,EMAIL,grades,classGroup);
+        var student3 = new Student(STUDENT_ID1,FIRST_NAME2,LAST_NAME,EMAIL,grades,classGroup);
+        var students = Arrays.asList(student1,student2,student3);
+        var convertedDtoList = converter.mapAsList(students,StudentDto.class);
+        assertEquals(students.size(),convertedDtoList.size());
+        for(var i = 0; i < students.size(); i++) {
+            var student = students.get(i);
+            var studentDto = convertedDtoList.get(i);
+            assertEquals(student.getId(), studentDto.getId());
+            assertEquals(student.getFirstName(), studentDto.getFirstName());
+            assertEquals(student.getLastName(), studentDto.getLastName());
+            assertEquals(student.getEmail(), studentDto.getEmail());
+            assertEquals(student.getClassGroup().getId(), studentDto.getClassGroupId());
+        }
     }
 
     @Test
     public void canConvertDtoListToStudentsList(){
-        List<StudentDto> dtoStudents = Arrays.asList(studentDto,studentDto,studentDto,studentDto,studentDto);
+        var studentDto1 = new StudentDto(STUDENT_ID2,FIRST_NAME1,LAST_NAME,EMAIL,CLASS_GROUP_ID);
+        var studentDto2 = new StudentDto(STUDENT_ID1,FIRST_NAME2,LAST_NAME,EMAIL,CLASS_GROUP_ID);
+        var dtoStudents = Arrays.asList(studentDto1,studentDto2);
         List<Student> convertedStudentList = converter.mapAsList(dtoStudents,Student.class);
-        StudentDto fourthDtoStudent = dtoStudents.get(3);
-        Student fourthStudent = convertedStudentList.get(3);
-        assertEquals(fourthDtoStudent.getId(),fourthStudent.getId());
-        assertEquals(fourthDtoStudent.getFirstName(),fourthStudent.getFirstName());
-        assertEquals(fourthDtoStudent.getLastName(),fourthStudent.getLastName());
-        assertEquals(fourthDtoStudent.getEmail(),fourthStudent.getEmail());
-        assertEquals(fourthDtoStudent.getClassGroupId(),fourthStudent.getClassGroup().getId());
+        assertEquals(dtoStudents.size(),convertedStudentList.size());
+        for (var i = 0; i < dtoStudents.size(); i++) {
+            StudentDto studentDto = dtoStudents.get(i);
+            Student student = convertedStudentList.get(i);
+            assertEquals(studentDto.getId(), student.getId());
+            assertEquals(studentDto.getFirstName(), student.getFirstName());
+            assertEquals(studentDto.getLastName(), student.getLastName());
+            assertEquals(studentDto.getEmail(), student.getEmail());
+            assertEquals(studentDto.getClassGroupId(), student.getClassGroup().getId());
+        }
     }
 }
