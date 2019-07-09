@@ -9,22 +9,42 @@ import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
 
+import java.io.File;
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 public class HomeworkController {
 
     private HomeworkService homeworkService;
 
+    public static final String uploadingDir = System.getProperty("user.dir") + "/uploadingDir/";
+
     @PostMapping("/homeworks")
-    public HomeworkDto uploadHomework (@RequestParam("file") MultipartFile file,
-                                       @RequestParam("groupId") Integer groupId,
-                                       @RequestParam("teacherId") Integer teacherId,
-                                       @RequestParam("subjectId") Integer subjectId,
-                                       @RequestParam("fileName") String fileName,
-                                       @RequestParam("fileDescription") String fileDescription){
+    public HomeworkDto homeworkDto (@RequestParam("uploadingFiles") MultipartFile uploadedFile,
+                                    @RequestParam("groupId") Integer groupId,
+                                    @RequestParam("teacherId") Integer teacherId,
+                                    @RequestParam("subjectId") Integer subjectId,
+                                    @RequestParam("fileName") String fileName,
+                                    @RequestParam("fileDescription") String fileDescription)
+            throws IOException {
+        File file = new File(uploadingDir + uploadedFile.getOriginalFilename());
+            uploadedFile.transferTo(file);
         var saveHomeworkDto = new SaveHomeworkDto(groupId,teacherId,subjectId,fileName,fileDescription);
-        var homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
+        HomeworkDto homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
         return homeworkDto;
     }
+
+//    @PostMapping("/homeworks")
+//    public HomeworkDto uploadHomework (@RequestParam("file") MultipartFile file,
+//                                       @RequestParam("groupId") Integer groupId,
+//                                       @RequestParam("teacherId") Integer teacherId,
+//                                       @RequestParam("subjectId") Integer subjectId,
+//                                       @RequestParam("fileName") String fileName,
+//                                       @RequestParam("fileDescription") String fileDescription){
+//        var saveHomeworkDto = new SaveHomeworkDto(groupId,teacherId,subjectId,fileName,fileDescription);
+//        var homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
+//        return homeworkDto;
+//    }
 
 }
