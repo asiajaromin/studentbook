@@ -1,6 +1,8 @@
 package pl.jcommerce.joannajaromin.studentbook.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,30 +16,20 @@ import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
 @RequiredArgsConstructor
 public class HomeworkController {
 
-    private HomeworkService homeworkService;
-
-//    public static final String uploadingDir = System.getProperty("user.dir") + "/uploadingDir/";
-//
-//    @PostMapping("/homeworks")
-//    public HomeworkDto homeworkDto (@RequestParam("uploadingFiles") MultipartFile uploadedFile,
-//                                    @RequestParam("groupId") Integer groupId,
-//                                    @RequestParam("teacherId") Integer teacherId,
-//                                    @RequestParam("subjectId") Integer subjectId,
-//                                    @RequestParam("fileName") String fileName,
-//                                    @RequestParam("fileDescription") String fileDescription)
-//            throws IOException {
-//        File file = new File(uploadingDir + uploadedFile.getOriginalFilename());
-//            uploadedFile.transferTo(file);
-//        var saveHomeworkDto = new SaveHomeworkDto(groupId,teacherId,subjectId,fileName,fileDescription);
-//        HomeworkDto homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
-//        return homeworkDto;
-//    }
+    private final HomeworkService homeworkService;
 
     @PostMapping(value = "/homeworks", consumes = "multipart/form-data")
     @ResponseBody
     public HomeworkDto uploadHomework(@RequestPart("uploadFile") MultipartFile file,
                                       @RequestPart("saveHomeworkDto") SaveHomeworkDto saveHomeworkDto){
+        System.out.println(homeworkService);
         HomeworkDto homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
+        return homeworkDto;
+    }
+
+    @GetMapping("/homeworks/{homeworkId}")
+    public HomeworkDto getHomework (@PathVariable int homeworkId){
+        HomeworkDto homeworkDto = homeworkService.findById(homeworkId);
         return homeworkDto;
     }
 

@@ -7,4 +7,6 @@ import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 public interface HomeworkService {
 
     HomeworkDto saveHomework(MultipartFile file, SaveHomeworkDto saveHomeworkDto);
+
+    HomeworkDto findById(int homeworkId);
 }

@@ -14,11 +14,11 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class HomeworkServiceImpl implements HomeworkService {
+public class HomeworkServiceImpl<todo> implements HomeworkService {
 
-    HomeworkRepository homeworkRepository;
-    OrikaSaveHomeworkConverter saveHomeworkConverter;
-    OrikaHomeworkConverter homeworkConverter;
+    private final HomeworkRepository homeworkRepository;
+    private final OrikaSaveHomeworkConverter saveHomeworkConverter;
+    private final OrikaHomeworkConverter homeworkConverter;
 
     @Override
     public HomeworkDto saveHomework(MultipartFile file, SaveHomeworkDto saveHomeworkDto) {
@@ -31,5 +31,12 @@ public class HomeworkServiceImpl implements HomeworkService {
         }
         Homework savedHomework = homeworkRepository.save(homework);
         return homeworkConverter.map(savedHomework,HomeworkDto.class);
+    }
+
+    // not working yet - download's HomeworkDto JSON instead of file + JSON
+    @Override
+    public HomeworkDto findById(int homeworkId) {
+        Homework homework = homeworkRepository.findById(homeworkId);
+        return homeworkConverter.map(homework,HomeworkDto.class);
     }
 }

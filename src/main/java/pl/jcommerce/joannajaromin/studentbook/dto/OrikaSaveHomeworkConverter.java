@@ -9,7 +9,7 @@ import pl.jcommerce.joannajaromin.studentbook.entity.Homework;
 public class OrikaSaveHomeworkConverter extends ConfigurableMapper {
 
     protected void configure(MapperFactory factory){
-        factory.classMap(Homework.class,HomeworkDto.class)
+        factory.classMap(Homework.class,SaveHomeworkDto.class)
                 .field("group.id","groupId")
                 .field("teacher.id","teacherId")
                 .field("subject.id","subjectId")
