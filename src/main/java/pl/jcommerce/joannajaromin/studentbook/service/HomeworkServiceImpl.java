@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
-public class HomeworkServiceImpl<todo> implements HomeworkService {
+public class HomeworkServiceImpl implements HomeworkService {
 
     private final HomeworkRepository homeworkRepository;
     private final OrikaSaveHomeworkConverter saveHomeworkConverter;
