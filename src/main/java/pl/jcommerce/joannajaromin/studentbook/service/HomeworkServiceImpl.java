@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
-import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkMultpartFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkWithoutFileConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveHomeworkConverter;
@@ -42,14 +41,6 @@ public class HomeworkServiceImpl implements HomeworkService {
     public HomeworkDtoWithoutFile findById(int homeworkId) {
         Homework homework = homeworkRepository.findById(homeworkId);
         return withoutFileConverter.map(homework, HomeworkDtoWithoutFile.class);
-    }
-
-    // do usunięcia
-    @Override
-    public MultipartFile getFile(int fileId) {
-        Homework homework = homeworkRepository.findById(fileId);
-        MultipartFile homeworkFile = new HomeworkMultpartFile(homework);
-        return homeworkFile;
     }
 
     @Override

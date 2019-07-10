@@ -37,13 +37,6 @@ public class HomeworkController {
         return homeworkDtoWithoutFile;
     }
 
-    // do usunięcia - chwilowo zostawiłam, bo teoretycznie przez multipart też powinno działać
-    @GetMapping(value = "/homeworkFile/{fileId}", consumes = "multipart/form-data")
-    public MultipartFile getHomeworkFile (@PathVariable int fileId){
-        MultipartFile homeworkFile = homeworkService.getFile(fileId);
-        return homeworkFile;
-    }
-
     @GetMapping("/downloadHomework/{fileId}")
     public ResponseEntity<ByteArrayResource> downloadFile (@PathVariable int fileId){
         ByteArrayResource resource = homeworkService.downloadFile(fileId);
