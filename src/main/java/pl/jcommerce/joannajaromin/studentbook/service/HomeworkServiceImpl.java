@@ -1,10 +1,12 @@
 package pl.jcommerce.joannajaromin.studentbook.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
+import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkMultpartFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkWithoutFileConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveHomeworkConverter;
@@ -36,10 +38,24 @@ public class HomeworkServiceImpl implements HomeworkService {
         return homeworkConverter.map(savedHomework,HomeworkDto.class);
     }
 
-    // not working yet - download's HomeworkDto JSON instead of file + JSON
     @Override
     public HomeworkDtoWithoutFile findById(int homeworkId) {
         Homework homework = homeworkRepository.findById(homeworkId);
         return withoutFileConverter.map(homework, HomeworkDtoWithoutFile.class);
+    }
+
+    // do usunięcia
+    @Override
+    public MultipartFile getFile(int fileId) {
+        Homework homework = homeworkRepository.findById(fileId);
+        MultipartFile homeworkFile = new HomeworkMultpartFile(homework);
+        return homeworkFile;
+    }
+
+    @Override
+    public ByteArrayResource downloadFile(int fileId) {
+        Homework homework = homeworkRepository.findById(fileId);
+        ByteArrayResource resource = new ByteArrayResource(homework.getFileData());
+        return resource;
     }
 }

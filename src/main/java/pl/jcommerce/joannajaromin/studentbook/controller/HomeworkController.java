@@ -1,6 +1,10 @@
 package pl.jcommerce.joannajaromin.studentbook.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +27,6 @@ public class HomeworkController {
     @ResponseBody
     public HomeworkDto uploadHomework(@RequestPart("uploadFile") MultipartFile file,
                                       @RequestPart("saveHomeworkDto") SaveHomeworkDto saveHomeworkDto){
-        System.out.println(homeworkService);
         HomeworkDto homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
         return homeworkDto;
     }
@@ -32,6 +35,27 @@ public class HomeworkController {
     public HomeworkDtoWithoutFile getHomework (@PathVariable int homeworkId){
         HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
         return homeworkDtoWithoutFile;
+    }
+
+    // do usunięcia - chwilowo zostawiłam, bo teoretycznie przez multipart też powinno działać
+    @GetMapping(value = "/homeworkFile/{fileId}", consumes = "multipart/form-data")
+    public MultipartFile getHomeworkFile (@PathVariable int fileId){
+        MultipartFile homeworkFile = homeworkService.getFile(fileId);
+        return homeworkFile;
+    }
+
+    @GetMapping("/downloadHomework/{fileId}")
+    public ResponseEntity<ByteArrayResource> downloadFile (@PathVariable int fileId){
+        ByteArrayResource resource = homeworkService.downloadFile(fileId);
+        HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(fileId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+homeworkDtoWithoutFile.getFileName());
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(resource);
+
     }
 
 }
