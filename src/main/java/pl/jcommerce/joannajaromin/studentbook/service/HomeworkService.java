@@ -12,7 +12,6 @@ public interface HomeworkService {
 
     HomeworkDtoWithoutFile findById(int homeworkId);
 
-    MultipartFile getFile(int homeworkId);
-
     ByteArrayResource downloadFile(int fileId);
+
 }
