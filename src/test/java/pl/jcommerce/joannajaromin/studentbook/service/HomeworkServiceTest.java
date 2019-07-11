@@ -1,4 +1,4 @@
-package pl.jcommerce.joannajaromin.studentbook.ServiceTests;
+package pl.jcommerce.joannajaromin.studentbook.service;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,8 +16,6 @@ import pl.jcommerce.joannajaromin.studentbook.entity.Homework;
 import pl.jcommerce.joannajaromin.studentbook.entity.Subject;
 import pl.jcommerce.joannajaromin.studentbook.entity.Teacher;
 import pl.jcommerce.joannajaromin.studentbook.repository.HomeworkRepository;
-import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
-import pl.jcommerce.joannajaromin.studentbook.service.HomeworkServiceImpl;
 
 import java.util.Arrays;
 import java.util.List;

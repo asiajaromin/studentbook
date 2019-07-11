@@ -1,4 +1,4 @@
-package pl.jcommerce.joannajaromin.studentbook.ServiceTests;
+package pl.jcommerce.joannajaromin.studentbook.service;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,8 +8,6 @@ import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
-import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
-import pl.jcommerce.joannajaromin.studentbook.service.GradeServiceImpl;
 
 import java.util.Arrays;
 

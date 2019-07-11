@@ -1,4 +1,4 @@
-package pl.jcommerce.joannajaromin.studentbook.AllLayerTests;
+package pl.jcommerce.joannajaromin.studentbook.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
