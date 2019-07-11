@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
@@ -28,9 +27,9 @@ public class HomeworkController {
 
     @PostMapping(value = "/homeworks", consumes = "multipart/form-data")
     @ResponseBody
-    public HomeworkDto uploadHomework(@RequestPart("uploadFile") MultipartFile file,
+    public HomeworkDtoWithoutFile uploadHomework(@RequestPart("uploadFile") MultipartFile file,
                                       @RequestPart("saveHomeworkDto") SaveHomeworkDto saveHomeworkDto){
-        HomeworkDto homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
+        HomeworkDtoWithoutFile homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
         return homeworkDto;
     }
 

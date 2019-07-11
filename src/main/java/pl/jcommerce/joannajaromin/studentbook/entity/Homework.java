@@ -1,6 +1,7 @@
 package pl.jcommerce.joannajaromin.studentbook.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Homework {
 
     @Id

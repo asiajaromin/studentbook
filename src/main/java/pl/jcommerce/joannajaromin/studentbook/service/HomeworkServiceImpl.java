@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkWithoutFileConverter;
@@ -26,7 +25,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     private final OrikaHomeworkWithoutFileConverter withoutFileConverter;
 
     @Override
-    public HomeworkDto saveHomework(MultipartFile file, SaveHomeworkDto saveHomeworkDto) {
+    public HomeworkDtoWithoutFile saveHomework(MultipartFile file, SaveHomeworkDto saveHomeworkDto) {
         var homework = saveHomeworkConverter.map(saveHomeworkDto,Homework.class);
         try {
             byte[] fileData = file.getBytes();
@@ -34,13 +33,13 @@ public class HomeworkServiceImpl implements HomeworkService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Homework savedHomework = homeworkRepository.save(homework);
-        return homeworkConverter.map(savedHomework,HomeworkDto.class);
+        var savedHomework = homeworkRepository.save(homework);
+        return withoutFileConverter.map(savedHomework,HomeworkDtoWithoutFile.class);
     }
 
     @Override
     public HomeworkDtoWithoutFile findById(int homeworkId) {
-        Homework homework = homeworkRepository.findById(homeworkId);
+        var homework = homeworkRepository.findById(homeworkId);
         return withoutFileConverter.map(homework, HomeworkDtoWithoutFile.class);
     }
 
