@@ -6,6 +6,8 @@ import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 
+import java.util.List;
+
 public interface HomeworkService {
 
     HomeworkDto saveHomework(MultipartFile file, SaveHomeworkDto saveHomeworkDto);
@@ -14,4 +16,7 @@ public interface HomeworkService {
 
     ByteArrayResource downloadFile(int fileId);
 
+    List<HomeworkDtoWithoutFile> findAll();
+
+    void deleteById(int homeworkId);
 }

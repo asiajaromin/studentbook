@@ -14,6 +14,7 @@ import pl.jcommerce.joannajaromin.studentbook.entity.Homework;
 import pl.jcommerce.joannajaromin.studentbook.repository.HomeworkRepository;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,9 +45,20 @@ public class HomeworkServiceImpl implements HomeworkService {
     }
 
     @Override
+    public List<HomeworkDtoWithoutFile> findAll() {
+        List<Homework> homeworks = homeworkRepository.findAll();
+        return withoutFileConverter.mapAsList(homeworks,HomeworkDtoWithoutFile.class);
+    }
+
+    @Override
     public ByteArrayResource downloadFile(int fileId) {
         Homework homework = homeworkRepository.findById(fileId);
         ByteArrayResource resource = new ByteArrayResource(homework.getFileData());
         return resource;
+    }
+
+    @Override
+    public void deleteById(int homeworkId) {
+        homeworkRepository.deleteById(homeworkId);
     }
 }

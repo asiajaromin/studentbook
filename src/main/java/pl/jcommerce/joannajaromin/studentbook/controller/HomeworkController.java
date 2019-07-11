@@ -5,6 +5,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,8 @@ import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +40,11 @@ public class HomeworkController {
         return homeworkDtoWithoutFile;
     }
 
+    @GetMapping("/homeworks")
+    public List<HomeworkDtoWithoutFile> getAllHomeworks(){
+        return homeworkService.findAll();
+    }
+
     @GetMapping("/downloadHomework/{fileId}")
     public ResponseEntity<ByteArrayResource> downloadFile (@PathVariable int fileId){
         ByteArrayResource resource = homeworkService.downloadFile(fileId);
@@ -48,7 +56,11 @@ public class HomeworkController {
                 .contentLength(resource.contentLength())
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(resource);
+    }
 
+    @DeleteMapping("/homeworks/{homeworkId}")
+    public void deleteHomework (@PathVariable int homeworkId){
+        homeworkService.deleteById(homeworkId);
     }
 
 }

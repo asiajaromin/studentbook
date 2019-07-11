@@ -1,4 +1,4 @@
-package pl.jcommerce.joannajaromin.studentbook.DtoTests;
+package pl.jcommerce.joannajaromin.studentbook.DtoConvertersTests;
 
 import org.junit.Before;
 import org.junit.Test;

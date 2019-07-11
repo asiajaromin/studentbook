@@ -1,4 +1,4 @@
-package pl.jcommerce.joannajaromin.studentbook.ControllerTests;
+package pl.jcommerce.joannajaromin.studentbook.AllLayerTests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
@@ -34,14 +34,14 @@ public class GradeAllLayerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void canPostAndGetGrade() throws Exception{
-        SaveGradeDto saveGradeDto = new SaveGradeDto(STUDENT_ID,SUBJECT_ID,GRADE1);
-        String response = mockMvc.perform(post("/grades")
+    public void canPostGetAndDeleteGrade() throws Exception{
+        var saveGradeDto = new SaveGradeDto(STUDENT_ID,SUBJECT_ID,GRADE1);
+        var response = mockMvc.perform(post("/grades")
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(saveGradeDto)))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        JSONObject jsonObject = new JSONObject(response);
+        var jsonObject = new JSONObject(response);
         int gradeId = jsonObject.getInt("id");
 
         this.mockMvc.perform(get("/grades/" + gradeId))
@@ -55,6 +55,7 @@ public class GradeAllLayerTest {
                 .andExpect(status().isOk());
 
         this.mockMvc.perform(get("/grades/" + gradeId))
+                // status should not be 200 - test needs to be changed after implementing exception handling
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").doesNotExist());
     }
