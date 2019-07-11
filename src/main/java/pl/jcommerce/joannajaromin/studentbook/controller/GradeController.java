@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
+import pl.jcommerce.joannajaromin.studentbook.exception.GradeNotFoundException;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
 
 import javax.validation.Valid;
@@ -32,7 +33,11 @@ public class GradeController {
     @GetMapping("/grades/{gradeId}")
     public GradeDto getGrade(@PathVariable int gradeId){
         log.info("Szukam oceny o id {}", gradeId);
-        return gradeService.findById(gradeId);
+        GradeDto gradeDto = gradeService.findById(gradeId);
+        if (gradeDto==null){
+            throw new GradeNotFoundException("Nie znaleziono oceny o id = " + gradeId);
+        }
+        else return gradeDto;
     }
 
     @PostMapping("/grades")
