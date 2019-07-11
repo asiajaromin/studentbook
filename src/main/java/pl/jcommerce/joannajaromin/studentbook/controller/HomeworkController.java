@@ -17,6 +17,7 @@ import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class HomeworkController {
     @PostMapping(value = "/homeworks", consumes = "multipart/form-data")
     @ResponseBody
     public HomeworkDtoWithoutFile uploadHomework(@RequestPart("uploadFile") MultipartFile file,
-                                      @RequestPart("saveHomeworkDto") SaveHomeworkDto saveHomeworkDto){
+                                      @RequestPart("saveHomeworkDto") @Valid SaveHomeworkDto saveHomeworkDto){
         HomeworkDtoWithoutFile homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
         return homeworkDto;
     }

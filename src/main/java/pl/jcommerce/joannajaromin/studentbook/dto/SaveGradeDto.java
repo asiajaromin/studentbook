@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -17,5 +20,7 @@ public class SaveGradeDto {
 
     private Integer subjectId;
 
+    @Min(1)
+    @Max(6)
     private Integer grade;
 }
