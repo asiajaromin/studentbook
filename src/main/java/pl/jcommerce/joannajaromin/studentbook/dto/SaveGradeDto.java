@@ -5,9 +5,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +20,7 @@ public class SaveGradeDto {
 
     private Integer subjectId;
 
-    @Min(1)
-    @Max(6)
+    @NotNull(message = "Podaj ocenę.")
+    @Range(min=1,max=6,message = "Ocena powinna być liczbą całkowitą z przedziału od 1 do 6.")
     private Integer grade;
 }
