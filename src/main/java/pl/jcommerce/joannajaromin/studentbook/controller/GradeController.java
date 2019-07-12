@@ -2,6 +2,7 @@ package pl.jcommerce.joannajaromin.studentbook.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.exception.GradeNotFoundException;
@@ -69,13 +71,26 @@ public class GradeController {
         else return gradeService.update(grade);
     }
 
+//    @DeleteMapping("/grades/{gradeId}")
+//    public void deleteGrade (@PathVariable int gradeId){
+//        GradeDto originalGrade = gradeService.findById(gradeId);
+//        if (originalGrade==null){
+//            throw new GradeNotFoundException("Nie znaleziono oceny o id = " + gradeId);
+//        }
+//        else gradeService.deleteById(gradeId);
+//    }
+
     @DeleteMapping("/grades/{gradeId}")
     public void deleteGrade (@PathVariable int gradeId){
-        GradeDto originalGrade = gradeService.findById(gradeId);
-        if (originalGrade==null){
-            throw new GradeNotFoundException("Nie znaleziono oceny o id = " + gradeId);
+        try {
+            if (gradeService.findById(gradeId) != null){
+                gradeService.deleteById(gradeId);
+            }
+            else throw new GradeNotFoundException();
         }
-        else gradeService.deleteById(gradeId);
+        catch (GradeNotFoundException exc) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Nie znaleziono oceny o id = " + gradeId, exc);
+        }
     }
-
 }

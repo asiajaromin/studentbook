@@ -3,6 +3,7 @@ package pl.jcommerce.joannajaromin.studentbook.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.exception.HomeworkNotFoundException;
@@ -84,19 +86,23 @@ public class HomeworkController {
         }
     }
 
+    // used String instead of int to catch exception w przypadku nieprawidłowego formatu id
     @DeleteMapping("/homeworks/{homeworkId}")
     public void deleteHomework(@PathVariable String homeworkId) {
         Integer homeworkIdInt;
         try {
             homeworkIdInt = Integer.parseInt(homeworkId);
-        } catch (Exception exc) {
+            HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkIdInt);
+            if (homeworkDtoWithoutFile == null) {
+                throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
+            } else {
+                homeworkService.deleteById(homeworkIdInt);
+            }
+        } catch (HomeworkNotFoundException exc) {
             throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
-        }
-        HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkIdInt);
-        if (homeworkDtoWithoutFile == null) {
-            throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
-        } else {
-            homeworkService.deleteById(homeworkIdInt);
+        } catch (Exception exc){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Id powinno być dodatnią liczbą całkowitą", exc);
         }
     }
 }
