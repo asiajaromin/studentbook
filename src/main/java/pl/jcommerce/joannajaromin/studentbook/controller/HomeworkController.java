@@ -37,17 +37,17 @@ public class HomeworkController {
 //            return homeworkDto;
 //        }
 //        else throw new HomeworkFileNotAttached("Brak załączonego pliku");
-        return homeworkService.saveHomework(file,saveHomeworkDto);
+        return homeworkService.saveHomework(file, saveHomeworkDto);
     }
 
     @GetMapping("/homeworks/{homeworkId}")
-    public HomeworkDtoWithoutFile getHomework (@PathVariable int homeworkId){
-            HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
-            if (homeworkDtoWithoutFile != null) {
-                return homeworkDtoWithoutFile;
-            } else {
-                throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
-            }
+    public HomeworkDtoWithoutFile getHomework(@PathVariable int homeworkId) {
+        HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
+        if (homeworkDtoWithoutFile != null) {
+            return homeworkDtoWithoutFile;
+        } else {
+            throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
+        }
 //        I tried surrounding it with try/catch, but it doesn't work. When id is not integer there is
 //        MethodArgumentTypeMismatchException thrown (status 400) without custom message
 //        there seems to be the problem with PathVariable annotations:
@@ -58,23 +58,21 @@ public class HomeworkController {
     }
 
     @GetMapping("/homeworks")
-    public List<HomeworkDtoWithoutFile> getAllHomeworks(){
+    public List<HomeworkDtoWithoutFile> getAllHomeworks() {
         List<HomeworkDtoWithoutFile> homeworkDtoWithoutFiles = homeworkService.findAll();
-        if (homeworkDtoWithoutFiles == null){
+        if (homeworkDtoWithoutFiles == null) {
             throw new HomeworkNotFoundException("Brak zadań do wyświetlenia.");
-        }
-        else {
+        } else {
             return homeworkService.findAll();
         }
     }
 
     @GetMapping("/downloadHomework/{fileId}")
-    public ResponseEntity<ByteArrayResource> downloadFile (@PathVariable int fileId){
+    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable int fileId) {
         HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(fileId);
-        if (homeworkDtoWithoutFile == null){
+        if (homeworkDtoWithoutFile == null) {
             throw new HomeworkNotFoundException("Nie odnaleziono pliku o id = " + fileId);
-        }
-        else {
+        } else {
             ByteArrayResource resource = homeworkService.downloadFile(fileId);
             HttpHeaders headers = new HttpHeaders();
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + homeworkDtoWithoutFile.getFileName());
@@ -87,12 +85,18 @@ public class HomeworkController {
     }
 
     @DeleteMapping("/homeworks/{homeworkId}")
-    public void deleteHomework (@PathVariable int homeworkId){
-        HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
-        if (homeworkDtoWithoutFile == null){
-            throw new HomeworkNotFoundException("Nie odnaleziono zadania domowego o id = " + homeworkId);
+    public void deleteHomework(@PathVariable String homeworkId) {
+        Integer homeworkIdInt;
+        try {
+            homeworkIdInt = Integer.parseInt(homeworkId);
+        } catch (Exception exc) {
+            throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
         }
-        homeworkService.deleteById(homeworkId);
+        HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkIdInt);
+        if (homeworkDtoWithoutFile == null) {
+            throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
+        } else {
+            homeworkService.deleteById(homeworkIdInt);
+        }
     }
-
 }
