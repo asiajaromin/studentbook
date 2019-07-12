@@ -56,7 +56,7 @@ public class GradeAllLayerTest {
 
         this.mockMvc.perform(get("/grades/" + gradeId))
                 // status should not be 200 - test needs to be changed after implementing exception handling
-                .andExpect(status().isOk())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.id").doesNotExist());
     }
 

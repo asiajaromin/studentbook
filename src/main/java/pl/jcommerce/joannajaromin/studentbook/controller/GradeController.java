@@ -27,7 +27,11 @@ public class GradeController {
     @GetMapping("/grades")
     public List<GradeDto> findAll() {
         log.info("Szukam ocen");
-        return gradeService.findAll();
+        List<GradeDto> gradeDtoList = gradeService.findAll();
+        if (gradeDtoList==null){
+            throw new GradeNotFoundException("Brak ocen do wyświetlenia.");
+        }
+        else return gradeDtoList;
     }
 
     @GetMapping("/grades/{gradeId}")
@@ -47,12 +51,31 @@ public class GradeController {
 
     @PutMapping("/grades")
     public GradeDto updateGrade(@Valid @RequestBody GradeDto grade){
-        return gradeService.update(grade);
+        GradeDto originalGrade = gradeService.findById(grade.getId());
+        if (originalGrade==null){
+            throw new GradeNotFoundException("Nie znaleziono oceny o id = " + grade.getId());
+        }
+        // to be deleted - only left for you to see this solution
+        // This exception is unnecessary - teacher will not have access to nonexisting students/subjects
+        // incorrect grade automatically throws MethodArgumentNotValidException with status 400 due to validation
+//        else {
+//            try {
+//                GradeDto gradeDto = gradeService.update(grade);
+//                return gradeDto;
+//            } catch (JpaObjectRetrievalFailureException exc) {
+//                throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED,"Nieprawidłowe wartości pól", exc);
+//            }
+//        }
+        else return gradeService.update(grade);
     }
 
     @DeleteMapping("/grades/{gradeId}")
     public void deleteGrade (@PathVariable int gradeId){
-        gradeService.deleteById(gradeId);
+        GradeDto originalGrade = gradeService.findById(gradeId);
+        if (originalGrade==null){
+            throw new GradeNotFoundException("Nie znaleziono oceny o id = " + gradeId);
+        }
+        else gradeService.deleteById(gradeId);
     }
 
 }
