@@ -12,4 +12,9 @@ public class GradeNotFoundException extends RuntimeException {
     public GradeNotFoundException(String exception) {
         super(exception);
     }
+
+    @Override
+    public String getMessage() {
+        return "Nie znaleziono oceny";
+    }
 }

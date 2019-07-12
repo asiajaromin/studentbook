@@ -3,6 +3,7 @@ package pl.jcommerce.joannajaromin.studentbook.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Validated
 public class GradeController {
 
     private final GradeService gradeService;
@@ -37,7 +39,7 @@ public class GradeController {
     }
 
     @GetMapping("/grades/{gradeId}")
-    public GradeDto getGrade(@PathVariable int gradeId){
+    public GradeDto getGrade(@IdConstraint @Valid @PathVariable Integer gradeId){
         log.info("Szukam oceny o id {}", gradeId);
         GradeDto gradeDto = gradeService.findById(gradeId);
         if (gradeDto==null){
