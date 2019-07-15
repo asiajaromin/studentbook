@@ -3,7 +3,6 @@ package pl.jcommerce.joannajaromin.studentbook.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.exception.HomeworkNotFoundException;
@@ -52,13 +50,6 @@ public class HomeworkController {
         } else {
             throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
         }
-//        I tried surrounding it with try/catch, but it doesn't work. When id is not integer there is
-//        MethodArgumentTypeMismatchException thrown (status 400) without custom message
-//        there seems to be the problem with PathVariable annotations:
-//        https://github.com/spring-projects/spring-framework/issues/11041
-//        catch (MethodArgumentTypeMismatchException exc){
-//            throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
-//        }
     }
 
     @GetMapping("/homeworks")
@@ -89,22 +80,36 @@ public class HomeworkController {
     }
 
     // used String instead of int to catch exception w przypadku nieprawidłowego formatu id
+//    @DeleteMapping("/homeworks/{homeworkId}")
+//        public void deleteHomework(@PathVariable String homeworkId) {
+//            Integer homeworkIdInt;
+//            try {
+//                homeworkIdInt = Integer.parseInt(homeworkId);
+//                HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkIdInt);
+//                if (homeworkDtoWithoutFile == null) {
+//                    throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
+//                } else {
+//                    homeworkService.deleteById(homeworkIdInt);
+//                }
+//            } catch (HomeworkNotFoundException exc) {
+//                throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
+//            } catch (Exception exc){
+//                throw new ResponseStatusException(
+//                        HttpStatus.BAD_REQUEST, "Id powinno być dodatnią liczbą całkowitą", exc);
+//            }
+//    }
+
     @DeleteMapping("/homeworks/{homeworkId}")
-    public void deleteHomework(@PathVariable String homeworkId) {
-        Integer homeworkIdInt;
+    public void deleteHomework(@PathVariable int homeworkId) {
         try {
-            homeworkIdInt = Integer.parseInt(homeworkId);
-            HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkIdInt);
+            HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
             if (homeworkDtoWithoutFile == null) {
                 throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
             } else {
-                homeworkService.deleteById(homeworkIdInt);
+                homeworkService.deleteById(homeworkId);
             }
         } catch (HomeworkNotFoundException exc) {
             throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
-        } catch (Exception exc){
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Id powinno być dodatnią liczbą całkowitą", exc);
         }
     }
 }
