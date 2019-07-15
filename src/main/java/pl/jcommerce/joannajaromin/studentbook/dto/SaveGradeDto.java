@@ -14,8 +14,6 @@ import lombok.Setter;
 public class SaveGradeDto {
 
     private Integer studentId;
-
     private Integer subjectId;
-
     private Integer grade;
 }

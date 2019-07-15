@@ -12,6 +12,5 @@ import lombok.Setter;
 public class ClassGroupDto {
 
     private Integer id;
-
     private String name;
 }

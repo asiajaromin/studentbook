@@ -29,13 +29,13 @@ public class HomeworkController {
     @ResponseBody
     public HomeworkDtoWithoutFile uploadHomework(@RequestPart("uploadFile") MultipartFile file,
                                       @RequestPart("saveHomeworkDto") SaveHomeworkDto saveHomeworkDto){
-        HomeworkDtoWithoutFile homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
+        var homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
         return homeworkDto;
     }
 
     @GetMapping("/homeworks/{homeworkId}")
     public HomeworkDtoWithoutFile getHomework (@PathVariable int homeworkId){
-        HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
+        var homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
         return homeworkDtoWithoutFile;
     }
 
@@ -46,9 +46,9 @@ public class HomeworkController {
 
     @GetMapping("/downloadHomework/{fileId}")
     public ResponseEntity<ByteArrayResource> downloadFile (@PathVariable int fileId){
-        ByteArrayResource resource = homeworkService.downloadFile(fileId);
-        HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(fileId);
-        HttpHeaders headers = new HttpHeaders();
+        var resource = homeworkService.downloadFile(fileId);
+        var homeworkDtoWithoutFile = homeworkService.findById(fileId);
+        var headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+homeworkDtoWithoutFile.getFileName());
         return ResponseEntity.ok()
                 .headers(headers)

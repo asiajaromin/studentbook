@@ -5,7 +5,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
-import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkWithoutFileConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveHomeworkConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
@@ -21,7 +20,6 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     private final HomeworkRepository homeworkRepository;
     private final OrikaSaveHomeworkConverter saveHomeworkConverter;
-    private final OrikaHomeworkConverter homeworkConverter;
     private final OrikaHomeworkWithoutFileConverter withoutFileConverter;
 
     @Override
@@ -45,14 +43,14 @@ public class HomeworkServiceImpl implements HomeworkService {
 
     @Override
     public List<HomeworkDtoWithoutFile> findAll() {
-        List<Homework> homeworks = homeworkRepository.findAll();
+        var homeworks = homeworkRepository.findAll();
         return withoutFileConverter.mapAsList(homeworks,HomeworkDtoWithoutFile.class);
     }
 
     @Override
     public ByteArrayResource downloadFile(int fileId) {
-        Homework homework = homeworkRepository.findById(fileId);
-        ByteArrayResource resource = new ByteArrayResource(homework.getFileData());
+        var homework = homeworkRepository.findById(fileId);
+        var resource = new ByteArrayResource(homework.getFileData());
         return resource;
     }
 

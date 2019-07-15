@@ -12,16 +12,10 @@ import lombok.Setter;
 public class HomeworkDto {
 
     private Integer id;
-
     private Integer groupId;
-
     private Integer teacherId;
-
     private Integer subjectId;
-
     private String fileName;
-
     private String fileDescription;
-
     private byte[] fileData;
 }

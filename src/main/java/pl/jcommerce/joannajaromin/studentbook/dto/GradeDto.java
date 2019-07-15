@@ -12,10 +12,7 @@ import lombok.Setter;
 public class GradeDto {
 
     private Integer id;
-
     private Integer studentId;
-
     private Integer subjectId;
-
     private Integer grade;
 }

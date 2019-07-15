@@ -75,8 +75,7 @@ public class HomeworkServiceTest {
         saveHomeworkConverter = mock(OrikaSaveHomeworkConverter.class);
         homeworkConverter = mock(OrikaHomeworkConverter.class);
         homeworkWithoutFileConverter = mock(OrikaHomeworkWithoutFileConverter.class);
-        homeworkService = new HomeworkServiceImpl(homeworkRepository, saveHomeworkConverter,
-                homeworkConverter, homeworkWithoutFileConverter);
+        homeworkService = new HomeworkServiceImpl(homeworkRepository,saveHomeworkConverter,homeworkWithoutFileConverter);
     }
 
     @Test

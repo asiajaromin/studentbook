@@ -21,29 +21,29 @@ public class GradeServiceImpl implements GradeService{
 
     @Override
     public List<GradeDto> findAll() {
-        List<Grade> grades = gradeRepository.findAll();
-        List<GradeDto> gradeDto = converter.mapAsList(grades,GradeDto.class);
+        var grades = gradeRepository.findAll();
+        var gradeDto = converter.mapAsList(grades,GradeDto.class);
         return gradeDto;
     }
 
     @Override
     public GradeDto findById(int gradeId) {
-        Grade grade = gradeRepository.findById(gradeId);
-        GradeDto gradeDto = converter.map(grade, GradeDto.class);
+        var grade = gradeRepository.findById(gradeId);
+        var gradeDto = converter.map(grade, GradeDto.class);
         return gradeDto;
     }
 
     @Override
     public GradeDto save(SaveGradeDto saveGradeDto) {
-        Grade grade = saveConverter.map(saveGradeDto,Grade.class);
-        Grade saved = gradeRepository.save(grade);
+        var grade = saveConverter.map(saveGradeDto,Grade.class);
+        var saved = gradeRepository.save(grade);
         return converter.map(saved, GradeDto.class);
     }
 
     @Override
     public GradeDto update(GradeDto gradeDto) {
-        Grade grade = converter.map(gradeDto,Grade.class);
-        Grade saved = gradeRepository.save(grade);
+        var grade = converter.map(gradeDto,Grade.class);
+        var saved = gradeRepository.save(grade);
         return converter.map(saved, GradeDto.class);
     }
 
