@@ -16,6 +16,7 @@ import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.exception.GradeNotFoundException;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
+import pl.jcommerce.joannajaromin.studentbook.validator.IdConstraint;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -59,28 +60,8 @@ public class GradeController {
         if (originalGrade==null){
             throw new GradeNotFoundException("Nie znaleziono oceny o id = " + grade.getId());
         }
-        // to be deleted - only left for you to see this solution
-        // This exception is unnecessary - teacher will not have access to nonexisting students/subjects
-        // incorrect grade automatically throws MethodArgumentNotValidException with status 400 due to validation
-//        else {
-//            try {
-//                GradeDto gradeDto = gradeService.update(grade);
-//                return gradeDto;
-//            } catch (JpaObjectRetrievalFailureException exc) {
-//                throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED,"Nieprawidłowe wartości pól", exc);
-//            }
-//        }
         else return gradeService.update(grade);
     }
-
-//    @DeleteMapping("/grades/{gradeId}")
-//    public void deleteGrade (@PathVariable int gradeId){
-//        GradeDto originalGrade = gradeService.findById(gradeId);
-//        if (originalGrade==null){
-//            throw new GradeNotFoundException("Nie znaleziono oceny o id = " + gradeId);
-//        }
-//        else gradeService.deleteById(gradeId);
-//    }
 
     @DeleteMapping("/grades/{gradeId}")
     public void deleteGrade (@PathVariable int gradeId){

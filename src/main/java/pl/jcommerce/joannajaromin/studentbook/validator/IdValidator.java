@@ -1,4 +1,4 @@
-package pl.jcommerce.joannajaromin.studentbook.controller;
+package pl.jcommerce.joannajaromin.studentbook.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
