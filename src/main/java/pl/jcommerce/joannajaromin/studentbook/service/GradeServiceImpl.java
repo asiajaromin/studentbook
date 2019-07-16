@@ -2,6 +2,7 @@ package pl.jcommerce.joannajaromin.studentbook.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveGradeConverter;
@@ -20,34 +21,39 @@ public class GradeServiceImpl implements GradeService{
     private final OrikaSaveGradeConverter saveConverter;
 
     @Override
+    @Transactional(readOnly = true)
     public List<GradeDto> findAll() {
-        List<Grade> grades = gradeRepository.findAll();
-        List<GradeDto> gradeDto = converter.mapAsList(grades,GradeDto.class);
+        var grades = gradeRepository.findAll();
+        var gradeDto = converter.mapAsList(grades,GradeDto.class);
         return gradeDto;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public GradeDto findById(int gradeId) {
-        Grade grade = gradeRepository.findById(gradeId);
-        GradeDto gradeDto = converter.map(grade, GradeDto.class);
+        var grade = gradeRepository.findById(gradeId);
+        var gradeDto = converter.map(grade, GradeDto.class);
         return gradeDto;
     }
 
     @Override
+    @Transactional
     public GradeDto save(SaveGradeDto saveGradeDto) {
-        Grade grade = saveConverter.map(saveGradeDto,Grade.class);
-        Grade saved = gradeRepository.save(grade);
+        var grade = saveConverter.map(saveGradeDto,Grade.class);
+        var saved = gradeRepository.save(grade);
         return converter.map(saved, GradeDto.class);
     }
 
     @Override
+    @Transactional
     public GradeDto update(GradeDto gradeDto) {
-        Grade grade = converter.map(gradeDto,Grade.class);
-        Grade saved = gradeRepository.save(grade);
+        var grade = converter.map(gradeDto,Grade.class);
+        var saved = gradeRepository.save(grade);
         return converter.map(saved, GradeDto.class);
     }
 
     @Override
+    @Transactional
     public void deleteById(int gradeId) {
         gradeRepository.deleteById(gradeId);
     }

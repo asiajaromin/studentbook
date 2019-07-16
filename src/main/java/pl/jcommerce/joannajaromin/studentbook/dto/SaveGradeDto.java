@@ -8,6 +8,9 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +20,6 @@ import javax.validation.constraints.NotNull;
 public class SaveGradeDto {
 
     private Integer studentId;
-
     private Integer subjectId;
 
     @NotNull(message = "Podaj ocenę.")

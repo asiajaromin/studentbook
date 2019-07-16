@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.exception.HomeworkNotFoundException;
 import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
 
 import javax.validation.Valid;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @RestController
@@ -32,14 +34,10 @@ public class HomeworkController {
     @PostMapping(value = "/homeworks", consumes = "multipart/form-data")
     @ResponseBody
     public HomeworkDtoWithoutFile uploadHomework(@RequestPart("uploadFile") MultipartFile file,
-                                                 @Valid @RequestPart("saveHomeworkDto") SaveHomeworkDto saveHomeworkDto) {
-        // it doesn't work. When file is not attached status is 400, but the message isn't printed
-//        if (!file.isEmpty()){
-//            HomeworkDtoWithoutFile homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
-//            return homeworkDto;
-//        }
-//        else throw new HomeworkFileNotAttached("Brak załączonego pliku");
-        return homeworkService.saveHomework(file, saveHomeworkDto);
+                                                 @Valid @RequestPart("saveHomeworkDto")
+                                                         SaveHomeworkDto saveHomeworkDto)
+            throws FileNotFoundException {
+        return homeworkService.save(file, saveHomeworkDto);
     }
 
     @GetMapping("/homeworks/{homeworkId}")
@@ -58,58 +56,35 @@ public class HomeworkController {
         if (homeworkDtoWithoutFiles == null) {
             throw new HomeworkNotFoundException("Brak zadań do wyświetlenia.");
         } else {
-            return homeworkService.findAll();
+            return homeworkDtoWithoutFiles;
         }
     }
 
-    @GetMapping("/downloadHomework/{fileId}")
-    public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable int fileId) {
-        HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(fileId);
-        if (homeworkDtoWithoutFile == null) {
-            throw new HomeworkNotFoundException("Nie odnaleziono pliku o id = " + fileId);
+    @GetMapping("/homeworks/fileContent/{homeworkId}")
+    public ResponseEntity<ByteArrayResource> getHomeworkFileContent (@PathVariable int homeworkId){
+        HomeworkDto homeworkDto = homeworkService.findByIdWithFileContent(homeworkId);
+        if (homeworkDto == null) {
+            throw new HomeworkNotFoundException("Nie odnaleziono zadania o id = " + homeworkId);
         } else {
-            ByteArrayResource resource = homeworkService.downloadFile(fileId);
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + homeworkDtoWithoutFile.getFileName());
+            HttpHeaders headers = prepareHeaders(homeworkDto);
+            ByteArrayResource resource = new ByteArrayResource(homeworkDto.getFileData());
             return ResponseEntity.ok()
                     .headers(headers)
                     .contentLength(resource.contentLength())
-                    .contentType(MediaType.parseMediaType("application/octet-stream"))
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(resource);
         }
     }
 
-    // used String instead of int to catch exception w przypadku nieprawidłowego formatu id
-//    @DeleteMapping("/homeworks/{homeworkId}")
-//        public void deleteHomework(@PathVariable String homeworkId) {
-//            Integer homeworkIdInt;
-//            try {
-//                homeworkIdInt = Integer.parseInt(homeworkId);
-//                HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkIdInt);
-//                if (homeworkDtoWithoutFile == null) {
-//                    throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
-//                } else {
-//                    homeworkService.deleteById(homeworkIdInt);
-//                }
-//            } catch (HomeworkNotFoundException exc) {
-//                throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
-//            } catch (Exception exc){
-//                throw new ResponseStatusException(
-//                        HttpStatus.BAD_REQUEST, "Id powinno być dodatnią liczbą całkowitą", exc);
-//            }
-//    }
+    private HttpHeaders prepareHeaders(HomeworkDto homeworkDto) {
+        var headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+
+                homeworkDto.getFileName());
+        return headers;
+    }
 
     @DeleteMapping("/homeworks/{homeworkId}")
-    public void deleteHomework(@PathVariable int homeworkId) {
-        try {
-            HomeworkDtoWithoutFile homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
-            if (homeworkDtoWithoutFile == null) {
-                throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
-            } else {
-                homeworkService.deleteById(homeworkId);
-            }
-        } catch (HomeworkNotFoundException exc) {
-            throw new HomeworkNotFoundException("Brak zadania domowego o id = " + homeworkId);
-        }
+    public void deleteHomework (@PathVariable int homeworkId){
+        homeworkService.deleteById(homeworkId);
     }
 }

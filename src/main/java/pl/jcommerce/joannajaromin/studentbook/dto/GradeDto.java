@@ -15,9 +15,7 @@ import javax.validation.constraints.NotNull;
 public class GradeDto {
 
     private Integer id;
-
     private Integer studentId;
-
     private Integer subjectId;
 
     @NotNull(message = "Podaj ocenę.")

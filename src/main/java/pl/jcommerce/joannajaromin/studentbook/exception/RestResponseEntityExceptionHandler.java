@@ -1,5 +1,6 @@
 package pl.jcommerce.joannajaromin.studentbook.exception;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(value = { MethodArgumentTypeMismatchException.class})
     public ResponseEntity<Object> handleIncorrectId(RuntimeException ex, WebRequest request) {
-        String bodyOfResponse = "Id powinno być dodatnią liczbą całkowitą.";
+        String bodyOfResponse = "Nieprawidłowa wartość id.";
+        return handleExceptionInternal(ex, bodyOfResponse,
+                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler(value = {EmptyResultDataAccessException.class})
+    public ResponseEntity<Object> handleIdNotExists(RuntimeException ex, WebRequest request){
+        String bodyOfResponse = "Brak wpisu o takim id.";
         return handleExceptionInternal(ex, bodyOfResponse,
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }

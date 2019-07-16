@@ -1,9 +1,11 @@
 package pl.jcommerce.joannajaromin.studentbook.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkWithoutFileConverter;
@@ -17,46 +19,51 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HomeworkServiceImpl implements HomeworkService {
 
     private final HomeworkRepository homeworkRepository;
     private final OrikaSaveHomeworkConverter saveHomeworkConverter;
-    private final OrikaHomeworkConverter homeworkConverter;
     private final OrikaHomeworkWithoutFileConverter withoutFileConverter;
+    private final OrikaHomeworkConverter homeworkConverter;
 
     @Override
-    public HomeworkDtoWithoutFile saveHomework(MultipartFile file, SaveHomeworkDto saveHomeworkDto) {
+    @Transactional
+    public HomeworkDtoWithoutFile save(MultipartFile file, SaveHomeworkDto saveHomeworkDto) {
         var homework = saveHomeworkConverter.map(saveHomeworkDto,Homework.class);
         try {
             byte[] fileData = file.getBytes();
             homework.setFileData(fileData);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn("Unable to read file.", e);
         }
         var savedHomework = homeworkRepository.save(homework);
         return withoutFileConverter.map(savedHomework,HomeworkDtoWithoutFile.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public HomeworkDtoWithoutFile findById(int homeworkId) {
         var homework = homeworkRepository.findById(homeworkId);
         return withoutFileConverter.map(homework, HomeworkDtoWithoutFile.class);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HomeworkDtoWithoutFile> findAll() {
-        List<Homework> homeworks = homeworkRepository.findAll();
+        var homeworks = homeworkRepository.findAll();
         return withoutFileConverter.mapAsList(homeworks,HomeworkDtoWithoutFile.class);
     }
 
     @Override
-    public ByteArrayResource downloadFile(int fileId) {
-        Homework homework = homeworkRepository.findById(fileId);
-        ByteArrayResource resource = new ByteArrayResource(homework.getFileData());
-        return resource;
+    @Transactional(readOnly = true)
+    public HomeworkDto findByIdWithFileContent(int homeworkId) {
+        var homework = homeworkRepository.findById(homeworkId);
+        return homeworkConverter.map(homework,HomeworkDto.class);
     }
 
     @Override
+    @Transactional
     public void deleteById(int homeworkId) {
         homeworkRepository.deleteById(homeworkId);
     }

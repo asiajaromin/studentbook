@@ -57,7 +57,7 @@ public class GradeServiceTest {
     }
 
     @Test
-    public void canSaveGrade(){
+    public void canSaveGrade() {
         when(saveGradeConverter.map(saveGradeDto,Grade.class)).thenReturn(grade);
         when(gradeRepository.save(grade)).thenReturn(grade);
         var savedGradeDto = gradeService.save(saveGradeDto);

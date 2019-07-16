@@ -32,7 +32,7 @@ public class GradeAllLayerTest {
     private final int NOT_FOUND_STATUS_CODE = 404;
     private final int BAD_REQUEST_STATUS_CODE = 400;
     private final String GRADE_NOT_FOUND_MESSAGE = "Nie znaleziono oceny";
-    private final String INCORRECT_ID_FORMAT_MESSAGE = "Id powinno być dodatnią liczbą całkowitą.";
+    private final String INCORRECT_ID_FORMAT_MESSAGE = "Nieprawidłowa wartość id.";
 
     @Autowired
     private ObjectMapper objectMapper;

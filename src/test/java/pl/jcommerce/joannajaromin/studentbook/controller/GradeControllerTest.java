@@ -1,7 +1,6 @@
 package pl.jcommerce.joannajaromin.studentbook.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
 
 import java.util.Arrays;
 
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -58,6 +58,7 @@ public class GradeControllerTest {
         given(this.gradeService.findAll()).willReturn(Arrays.asList(grade1,grade2));
         this.mvc.perform(get("/grades").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(2)))
                 .andExpect(jsonPath("$.[0].id").value(GRADE_ID1))
                 .andExpect(jsonPath("$.[0].studentId").value(STUDENT_ID))
                 .andExpect(jsonPath("$.[0].subjectId").value(SUBJECT_ID))
@@ -70,8 +71,8 @@ public class GradeControllerTest {
 
     @Test
     public void canPostGrade() throws Exception{
-        SaveGradeDto saveGradeDto = new SaveGradeDto(STUDENT_ID,SUBJECT_ID,GRADE1);
-        GradeDto gradeDto = new GradeDto(GRADE_ID1,STUDENT_ID,SUBJECT_ID,GRADE1);
+        var saveGradeDto = new SaveGradeDto(STUDENT_ID,SUBJECT_ID,GRADE1);
+        var gradeDto = new GradeDto(GRADE_ID1,STUDENT_ID,SUBJECT_ID,GRADE1);
         given(this.gradeService.save(saveGradeDto)).willReturn(gradeDto);
         this.mvc.perform(post("/grades")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -82,11 +83,4 @@ public class GradeControllerTest {
                 .andExpect(jsonPath("$.grade").value(GRADE1));
     }
 
-    @Test
-    public void test() {
-        SaveGradeDto saveGradeDto1 = new SaveGradeDto(STUDENT_ID,SUBJECT_ID,GRADE1);
-        SaveGradeDto saveGradeDto2 = new SaveGradeDto(STUDENT_ID,SUBJECT_ID,GRADE1);
-        Assert.assertEquals(saveGradeDto1, saveGradeDto2);
-
-    }
 }

@@ -81,7 +81,7 @@ public class OrikaStudentConverterTest {
         var studentDto1 = new StudentDto(STUDENT_ID2,FIRST_NAME1,LAST_NAME,EMAIL,CLASS_GROUP_ID);
         var studentDto2 = new StudentDto(STUDENT_ID1,FIRST_NAME2,LAST_NAME,EMAIL,CLASS_GROUP_ID);
         var dtoStudents = Arrays.asList(studentDto1,studentDto2);
-        List<Student> convertedStudentList = converter.mapAsList(dtoStudents,Student.class);
+        var convertedStudentList = converter.mapAsList(dtoStudents,Student.class);
         assertEquals(dtoStudents.size(),convertedStudentList.size());
         for (var i = 0; i < dtoStudents.size(); i++) {
             StudentDto studentDto = dtoStudents.get(i);

@@ -12,7 +12,6 @@ import lombok.Setter;
 public class SubjectDto {
 
     private Integer id;
-
     private String name;
 
 }
