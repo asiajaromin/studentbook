@@ -12,10 +12,11 @@ import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeServiceImpl;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class GradeServiceTest {
 
@@ -42,18 +43,18 @@ public class GradeServiceTest {
 
     @Test
     public void canGetGradesList(){
-        List<Grade> gradeList = Arrays.asList(grade,grade);
-        List<GradeDto> gradeDtoList = Arrays.asList(gradeDto,gradeDto);
+        var gradeList = Arrays.asList(grade,grade);
+        var gradeDtoList = Arrays.asList(gradeDto,gradeDto);
         when(gradeRepository.findAll()).thenReturn(gradeList);
         when(gradeConverter.mapAsList(gradeList,GradeDto.class)).thenReturn(gradeDtoList);
-        List<GradeDto> obtainedDtoList = gradeService.findAll();
+        var obtainedDtoList = gradeService.findAll();
         assertEquals(gradeDtoList,obtainedDtoList);
     }
 
     @Test
     public void canGetSingleGrade(){
         when(gradeRepository.findById(GRADE_ID)).thenReturn(grade);
-        GradeDto obtainedDto = gradeService.findById(GRADE_ID);
+        var obtainedDto = gradeService.findById(GRADE_ID);
         assertEquals(gradeDto,obtainedDto);
     }
 
@@ -61,7 +62,7 @@ public class GradeServiceTest {
     public void canSaveGrade(){
         when(saveGradeConverter.map(saveGradeDto,Grade.class)).thenReturn(grade);
         when(gradeRepository.save(grade)).thenReturn(grade);
-        GradeDto savedGradeDto = gradeService.save(saveGradeDto);
+        var savedGradeDto = gradeService.save(saveGradeDto);
         assertEquals(gradeDto,savedGradeDto);
     }
 

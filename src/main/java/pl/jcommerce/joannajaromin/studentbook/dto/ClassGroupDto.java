@@ -9,10 +9,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class GradeDto {
+public class ClassGroupDto {
 
     private Integer id;
-    private Integer studentId;
-    private Integer subjectId;
-    private Integer grade;
+    private String name;
 }

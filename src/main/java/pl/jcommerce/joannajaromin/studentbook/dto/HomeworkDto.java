@@ -9,10 +9,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class GradeDto {
+public class HomeworkDto {
 
     private Integer id;
-    private Integer studentId;
+    private Integer groupId;
+    private Integer teacherId;
     private Integer subjectId;
-    private Integer grade;
+    private String fileName;
+    private String fileDescription;
+    private byte[] fileData;
 }

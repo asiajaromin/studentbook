@@ -12,10 +12,8 @@ import lombok.Setter;
 public class StudentDto {
 
     private Integer id;
-
     private String firstName;
-
     private String lastName;
-
     private String email;
+    private Integer classGroupId;
 }

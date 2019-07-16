@@ -6,5 +6,4 @@ import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 public interface GradeRepository extends JpaRepository<Grade,Integer> {
 
     Grade findById(int gradeId);
-
 }

@@ -14,6 +14,7 @@ public class OrikaStudentConverter extends ConfigurableMapper {
                 .field("firstName", "firstName")
                 .field("lastName", "lastName")
                 .field("email", "email")
+                .field("classGroup.id","classGroupId")
                 .byDefault().register();
     }
 }
