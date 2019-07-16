@@ -2,11 +2,12 @@ package pl.jcommerce.joannajaromin.studentbook.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
+import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkWithoutFileConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveHomeworkConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
@@ -24,6 +25,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     private final HomeworkRepository homeworkRepository;
     private final OrikaSaveHomeworkConverter saveHomeworkConverter;
     private final OrikaHomeworkWithoutFileConverter withoutFileConverter;
+    private final OrikaHomeworkConverter homeworkConverter;
 
     @Override
     @Transactional
@@ -54,11 +56,9 @@ public class HomeworkServiceImpl implements HomeworkService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public ByteArrayResource getFileContent(int homeworkId) {
+    public HomeworkDto findByIdWithFileContent(int homeworkId) {
         var homework = homeworkRepository.findById(homeworkId);
-        var resource = new ByteArrayResource(homework.getFileData());
-        return resource;
+        return homeworkConverter.map(homework,HomeworkDto.class);
     }
 
     @Override

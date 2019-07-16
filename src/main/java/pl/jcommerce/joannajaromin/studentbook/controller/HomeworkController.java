@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
@@ -48,9 +49,9 @@ public class HomeworkController {
 
     @GetMapping("/homeworks/fileContent/{homeworkId}")
     public ResponseEntity<ByteArrayResource> getHomeworkFileContent (@PathVariable int homeworkId){
-        var resource = homeworkService.getFileContent(homeworkId);
-        var homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
-        HttpHeaders headers = prepareHeaders(homeworkDtoWithoutFile);
+        HomeworkDto homeworkDto = homeworkService.findByIdWithFileContent(homeworkId);
+        HttpHeaders headers = prepareHeaders(homeworkDto);
+        ByteArrayResource resource = new ByteArrayResource(homeworkDto.getFileData());
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentLength(resource.contentLength())
@@ -58,10 +59,10 @@ public class HomeworkController {
                 .body(resource);
     }
 
-    private HttpHeaders prepareHeaders(HomeworkDtoWithoutFile homeworkDtoWithoutFile) {
+    private HttpHeaders prepareHeaders(HomeworkDto homeworkDto) {
         var headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+
-                homeworkDtoWithoutFile.getFileName());
+                homeworkDto.getFileName());
         return headers;
     }
 
