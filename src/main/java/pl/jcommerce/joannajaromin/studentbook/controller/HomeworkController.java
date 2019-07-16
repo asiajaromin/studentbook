@@ -17,6 +17,7 @@ import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,8 @@ public class HomeworkController {
     @PostMapping(value = "/homeworks", consumes = "multipart/form-data")
     @ResponseBody
     public HomeworkDtoWithoutFile uploadHomework(@RequestPart("uploadFile") MultipartFile file,
-                                      @RequestPart("saveHomeworkDto") SaveHomeworkDto saveHomeworkDto){
+                                      @RequestPart("saveHomeworkDto") SaveHomeworkDto saveHomeworkDto)
+            throws FileNotFoundException {
         var homeworkDto = homeworkService.save(file, saveHomeworkDto);
         return homeworkDto;
     }
@@ -44,11 +46,11 @@ public class HomeworkController {
         return homeworkService.findAll();
     }
 
-    @GetMapping("/downloadHomework/{homeworkId}")
+    @GetMapping("/homeworks/fileContent/{homeworkId}")
     public ResponseEntity<ByteArrayResource> getHomeworkFileContent (@PathVariable int homeworkId){
         var resource = homeworkService.getFileContent(homeworkId);
         var homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
-        HttpHeaders headers = getHttpHeaders(homeworkDtoWithoutFile);
+        HttpHeaders headers = prepareHeaders(homeworkDtoWithoutFile);
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentLength(resource.contentLength())
@@ -56,7 +58,7 @@ public class HomeworkController {
                 .body(resource);
     }
 
-    private HttpHeaders getHttpHeaders(HomeworkDtoWithoutFile homeworkDtoWithoutFile) {
+    private HttpHeaders prepareHeaders(HomeworkDtoWithoutFile homeworkDtoWithoutFile) {
         var headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+
                 homeworkDtoWithoutFile.getFileName());
