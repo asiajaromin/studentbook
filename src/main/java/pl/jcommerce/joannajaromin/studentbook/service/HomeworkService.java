@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface HomeworkService {
@@ -17,5 +18,5 @@ public interface HomeworkService {
 
     void deleteById(int homeworkId);
 
-    HomeworkDtoWithoutFile save(MultipartFile file, SaveHomeworkDto saveHomeworkDto);
+    HomeworkDtoWithoutFile save(MultipartFile file, SaveHomeworkDto saveHomeworkDto) throws FileNotFoundException;
 }

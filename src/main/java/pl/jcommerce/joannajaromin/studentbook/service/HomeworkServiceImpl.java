@@ -1,6 +1,7 @@
 package pl.jcommerce.joannajaromin.studentbook.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HomeworkServiceImpl implements HomeworkService {
 
     private final HomeworkRepository homeworkRepository;
@@ -31,7 +33,7 @@ public class HomeworkServiceImpl implements HomeworkService {
             byte[] fileData = file.getBytes();
             homework.setFileData(fileData);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.info("Unable to read file.", e);
         }
         var savedHomework = homeworkRepository.save(homework);
         return withoutFileConverter.map(savedHomework,HomeworkDtoWithoutFile.class);
