@@ -24,13 +24,11 @@ public class GradeController {
 
     @GetMapping("/grades")
     public List<GradeDto> findAll() {
-        log.info("Szukam ocen");
         return gradeService.findAll();
     }
 
     @GetMapping("/grades/{gradeId}")
     public GradeDto getGrade(@PathVariable int gradeId){
-        log.info("Szukam oceny o id {}", gradeId);
         return gradeService.findById(gradeId);
     }
 

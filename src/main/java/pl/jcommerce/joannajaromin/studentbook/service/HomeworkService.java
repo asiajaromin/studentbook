@@ -11,11 +11,11 @@ public interface HomeworkService {
 
     HomeworkDtoWithoutFile findById(int homeworkId);
 
-    ByteArrayResource downloadFile(int fileId);
+    ByteArrayResource getFileContent(int homeworkId);
 
     List<HomeworkDtoWithoutFile> findAll();
 
     void deleteById(int homeworkId);
 
-    HomeworkDtoWithoutFile saveHomework(MultipartFile file, SaveHomeworkDto saveHomeworkDto);
+    HomeworkDtoWithoutFile save(MultipartFile file, SaveHomeworkDto saveHomeworkDto);
 }

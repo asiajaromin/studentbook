@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -85,7 +84,7 @@ public class HomeworkServiceTest {
         when(saveHomeworkConverter.map(saveHomeworkDto,Homework.class)).thenReturn(homeworkWithoutFile);
         when(homeworkRepository.save(homework)).thenReturn(homework);
         when(homeworkWithoutFileConverter.map(homework, HomeworkDtoWithoutFile.class)).thenReturn(homeworkDtoInfo);
-        var savedHomeworkDto = homeworkService.saveHomework(multipartFile, saveHomeworkDto);
+        var savedHomeworkDto = homeworkService.save(multipartFile, saveHomeworkDto);
         assertEquals(homeworkDtoInfo, savedHomeworkDto);
     }
 
@@ -115,10 +114,8 @@ public class HomeworkServiceTest {
     public void canGetHomeworkFile() {
         when(homeworkRepository.findById(HOMEWORK_ID1)).thenReturn(homework);
         ByteArrayResource resource = new ByteArrayResource(FILE_DATA1);
-        ByteArrayResource invalidResource = new ByteArrayResource(FILE_DATA2);
-        ByteArrayResource downloadedResource = homeworkService.downloadFile(HOMEWORK_ID1);
+        ByteArrayResource downloadedResource = homeworkService.getFileContent(HOMEWORK_ID1);
         assertEquals(resource,downloadedResource);
-        assertNotEquals(invalidResource,downloadedResource);
     }
 
     @Test

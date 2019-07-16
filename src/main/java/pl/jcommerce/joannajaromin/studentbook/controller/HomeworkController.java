@@ -29,7 +29,7 @@ public class HomeworkController {
     @ResponseBody
     public HomeworkDtoWithoutFile uploadHomework(@RequestPart("uploadFile") MultipartFile file,
                                       @RequestPart("saveHomeworkDto") SaveHomeworkDto saveHomeworkDto){
-        var homeworkDto = homeworkService.saveHomework(file, saveHomeworkDto);
+        var homeworkDto = homeworkService.save(file, saveHomeworkDto);
         return homeworkDto;
     }
 
@@ -44,17 +44,23 @@ public class HomeworkController {
         return homeworkService.findAll();
     }
 
-    @GetMapping("/downloadHomework/{fileId}")
-    public ResponseEntity<ByteArrayResource> downloadFile (@PathVariable int fileId){
-        var resource = homeworkService.downloadFile(fileId);
-        var homeworkDtoWithoutFile = homeworkService.findById(fileId);
-        var headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+homeworkDtoWithoutFile.getFileName());
+    @GetMapping("/downloadHomework/{homeworkId}")
+    public ResponseEntity<ByteArrayResource> getHomeworkFileContent (@PathVariable int homeworkId){
+        var resource = homeworkService.getFileContent(homeworkId);
+        var homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
+        HttpHeaders headers = getHttpHeaders(homeworkDtoWithoutFile);
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentLength(resource.contentLength())
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
+    }
+
+    private HttpHeaders getHttpHeaders(HomeworkDtoWithoutFile homeworkDtoWithoutFile) {
+        var headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+
+                homeworkDtoWithoutFile.getFileName());
+        return headers;
     }
 
     @DeleteMapping("/homeworks/{homeworkId}")
