@@ -2,7 +2,6 @@ package pl.jcommerce.joannajaromin.studentbook.ServiceTests;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
@@ -19,6 +18,7 @@ import pl.jcommerce.joannajaromin.studentbook.repository.HomeworkRepository;
 import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
 import pl.jcommerce.joannajaromin.studentbook.service.HomeworkServiceImpl;
 
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -74,11 +74,11 @@ public class HomeworkServiceTest {
         saveHomeworkConverter = mock(OrikaSaveHomeworkConverter.class);
         homeworkConverter = mock(OrikaHomeworkConverter.class);
         homeworkWithoutFileConverter = mock(OrikaHomeworkWithoutFileConverter.class);
-        homeworkService = new HomeworkServiceImpl(homeworkRepository,saveHomeworkConverter,homeworkWithoutFileConverter);
+        homeworkService = new HomeworkServiceImpl(homeworkRepository,saveHomeworkConverter,homeworkWithoutFileConverter,homeworkConverter);
     }
 
     @Test
-    public void canSaveHomework() {
+    public void canSaveHomework() throws FileNotFoundException {
         var homeworkWithoutFile = new Homework(HOMEWORK_ID1,classGroup,teacher,subject,FILE_NAME,
                 FILE_DESCRIPTION,null);
         when(saveHomeworkConverter.map(saveHomeworkDto,Homework.class)).thenReturn(homeworkWithoutFile);
@@ -111,11 +111,11 @@ public class HomeworkServiceTest {
     }
 
     @Test
-    public void canGetHomeworkFile() {
+    public void canGetHomeworkWithFileContent() {
         when(homeworkRepository.findById(HOMEWORK_ID1)).thenReturn(homework);
-        ByteArrayResource resource = new ByteArrayResource(FILE_DATA1);
-        ByteArrayResource downloadedResource = homeworkService.getFileContent(HOMEWORK_ID1);
-        assertEquals(resource,downloadedResource);
+        when(homeworkConverter.map(homework,HomeworkDto.class)).thenReturn(homeworkDto);
+        HomeworkDto foundHomeworkDto = homeworkService.findByIdWithFileContent(HOMEWORK_ID1);
+        assertEquals(homeworkDto,foundHomeworkDto);
     }
 
     @Test
