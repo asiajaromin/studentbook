@@ -35,7 +35,7 @@ public class HomeworkServiceImpl implements HomeworkService {
             byte[] fileData = file.getBytes();
             homework.setFileData(fileData);
         } catch (IOException e) {
-            log.info("Unable to read file.", e);
+            log.warn("Unable to read file.", e);
         }
         var savedHomework = homeworkRepository.save(homework);
         return withoutFileConverter.map(savedHomework,HomeworkDtoWithoutFile.class);
