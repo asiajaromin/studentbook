@@ -56,6 +56,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public HomeworkDto findByIdWithFileContent(int homeworkId) {
         var homework = homeworkRepository.findById(homeworkId);
         return homeworkConverter.map(homework,HomeworkDto.class);
