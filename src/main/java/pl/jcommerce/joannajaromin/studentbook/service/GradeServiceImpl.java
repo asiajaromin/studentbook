@@ -8,6 +8,7 @@ import pl.jcommerce.joannajaromin.studentbook.dto.OrikaGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
+import pl.jcommerce.joannajaromin.studentbook.exception.GradeNotFoundException;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
 
 import java.util.List;
@@ -24,16 +25,26 @@ public class GradeServiceImpl implements GradeService{
     @Transactional(readOnly = true)
     public List<GradeDto> findAll() {
         var grades = gradeRepository.findAll();
-        var gradeDto = converter.mapAsList(grades,GradeDto.class);
-        return gradeDto;
+        if (grades == null) {
+            throw new GradeNotFoundException("Brak ocen do wyświetlenia");
+        }
+        else {
+            var gradeDto = converter.mapAsList(grades, GradeDto.class);
+            return gradeDto;
+        }
     }
 
     @Override
     @Transactional(readOnly = true)
     public GradeDto findById(int gradeId) {
         var grade = gradeRepository.findById(gradeId);
-        var gradeDto = converter.map(grade, GradeDto.class);
-        return gradeDto;
+        if (grade == null){
+            throw new GradeNotFoundException("Brak oceny o id = " + gradeId);
+        }
+        else {
+            var gradeDto = converter.map(grade, GradeDto.class);
+            return gradeDto;
+        }
     }
 
     @Override

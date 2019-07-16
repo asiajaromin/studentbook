@@ -31,7 +31,7 @@ public class GradeAllLayerTest {
     private final int OK_STATUS_CODE = 200;
     private final int NOT_FOUND_STATUS_CODE = 404;
     private final int BAD_REQUEST_STATUS_CODE = 400;
-    private final String GRADE_NOT_FOUND_MESSAGE = "Nie znaleziono oceny";
+    private final String GRADE_NOT_FOUND_MESSAGE = "Brak oceny o id = ";
     private final String INCORRECT_ID_FORMAT_MESSAGE = "Nieprawidłowa wartość id.";
 
     @Autowired
@@ -84,7 +84,7 @@ public class GradeAllLayerTest {
                 HttpMethod.GET, getAndDeleteEntity, String.class);
         int getAfterDeleteStatusCode = responseGetAfterDeleteEntity.getStatusCodeValue();
         assertEquals(NOT_FOUND_STATUS_CODE,getAfterDeleteStatusCode);
-        assertTrue(responseGetAfterDeleteEntity.getBody().contains(GRADE_NOT_FOUND_MESSAGE));
+        assertTrue(responseGetAfterDeleteEntity.getBody().contains(GRADE_NOT_FOUND_MESSAGE + gradeId));
     }
 
     @Test
