@@ -5,9 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Range;
-
-import javax.validation.constraints.NotNull;
+import pl.jcommerce.joannajaromin.studentbook.validator.GradeConstraint;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +17,6 @@ public class SaveGradeDto {
     private Integer studentId;
     private Integer subjectId;
 
-    @NotNull(message = "Podaj ocenę.")
-    @Range(min=1,max=6,message = "Ocena powinna być liczbą całkowitą z przedziału od 1 do 6.")
+    @GradeConstraint
     private Integer grade;
 }
