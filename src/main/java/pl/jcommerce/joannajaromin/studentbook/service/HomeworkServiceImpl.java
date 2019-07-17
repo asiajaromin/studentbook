@@ -17,6 +17,7 @@ import pl.jcommerce.joannajaromin.studentbook.repository.HomeworkRepository;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -70,12 +71,17 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Transactional(readOnly = true)
     public HomeworkDto findByIdWithFileContent(int homeworkId) {
         var homework = homeworkRepository.findById(homeworkId);
+        return Optional.ofNullable(homework)
+                .map(homework1 -> homeworkConverter.map(homework1, HomeworkDto.class))
+                .orElseThrow(() -> new HomeworkNotFoundException("Brak zadania o id = " + homeworkId));
+        /*
         if (homework == null){
             throw new HomeworkNotFoundException("Brak zadania o id = " + homeworkId);
         }
         else {
             return homeworkConverter.map(homework, HomeworkDto.class);
         }
+         */
     }
 
     @Override

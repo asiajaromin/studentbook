@@ -7,9 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -37,24 +35,14 @@ public class GradeAllLayerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @LocalServerPort
-    private int port;
-    TestRestTemplate restTemplate = new TestRestTemplate();
-    HttpHeaders headers = new HttpHeaders();
-
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
-    }
+    @Autowired
+    TestRestTemplate restTemplate;
 
     @Test
-    // can all this be in one method?
-    // it can be split into 4 separate tests, but then I would have to put post method into @Before
-    // to obtain gradeId
     public void canPostGetAndDeleteGrade() throws Exception {
         var saveGradeDto = new SaveGradeDto(STUDENT_ID, SUBJECT_ID, GRADE1);
-        HttpEntity<SaveGradeDto> postEntity = new HttpEntity(saveGradeDto, headers);
-        ResponseEntity<String> responsePostEntity = restTemplate.exchange(
-                createURLWithPort("/grades"),
+        HttpEntity<SaveGradeDto> postEntity = new HttpEntity(saveGradeDto);
+        ResponseEntity<String> responsePostEntity = restTemplate.exchange(("/grades"),
                 HttpMethod.POST, postEntity, String.class);
         String postBody = responsePostEntity.getBody();
         int gradeId = new JSONObject(postBody).getInt("id");
@@ -62,26 +50,22 @@ public class GradeAllLayerTest {
         assertEquals(OK_STATUS_CODE, postStatusCode);
 
         var gradeDto = new GradeDto(gradeId, STUDENT_ID, SUBJECT_ID, GRADE1);
-        HttpEntity<GradeDto> getAndDeleteEntity = new HttpEntity(null, headers);
-        ResponseEntity<String> responseGetEntity = restTemplate.exchange(
-                createURLWithPort("/grades/"+gradeId),
-                HttpMethod.GET, getAndDeleteEntity, String.class);
+        ResponseEntity<String> responseGetEntity = restTemplate.getForEntity("/grades/"+gradeId, String.class);
         int getStatusCode = responseGetEntity.getStatusCodeValue();
         String expectedBody = objectMapper.writeValueAsString(gradeDto);
         assertEquals(expectedBody,responseGetEntity.getBody());
         assertEquals(OK_STATUS_CODE,getStatusCode);
 
-        ResponseEntity<String> responseDeleteEntity = restTemplate.exchange(
-                createURLWithPort("/grades/" + gradeId),
-                HttpMethod.DELETE, getAndDeleteEntity, String.class);
+        HttpEntity<GradeDto> deleteEntity = new HttpEntity(null);
+        ResponseEntity<String> responseDeleteEntity = restTemplate.exchange(("/grades/" + gradeId),
+                HttpMethod.DELETE, deleteEntity, String.class);
         int deleteStatusCode = responseDeleteEntity.getStatusCodeValue();
         String expectedDeleteBody = null;
         assertEquals(OK_STATUS_CODE,deleteStatusCode);
         assertEquals(expectedDeleteBody,responseDeleteEntity.getBody());
 
-        ResponseEntity<String> responseGetAfterDeleteEntity = restTemplate.exchange(
-                createURLWithPort("/grades/"+gradeId),
-                HttpMethod.GET, getAndDeleteEntity, String.class);
+        ResponseEntity<String> responseGetAfterDeleteEntity = restTemplate.getForEntity(
+                ("/grades/"+gradeId), String.class);
         int getAfterDeleteStatusCode = responseGetAfterDeleteEntity.getStatusCodeValue();
         assertEquals(NOT_FOUND_STATUS_CODE,getAfterDeleteStatusCode);
         assertTrue(responseGetAfterDeleteEntity.getBody().contains(GRADE_NOT_FOUND_MESSAGE + gradeId));
@@ -90,9 +74,8 @@ public class GradeAllLayerTest {
     @Test
     public void gradeIsValidated(){
         var saveGradeDto = new SaveGradeDto(STUDENT_ID, SUBJECT_ID, INCORRECT_GRADE);
-        HttpEntity<SaveGradeDto> entity = new HttpEntity(saveGradeDto, headers);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                createURLWithPort("/grades"),
+        HttpEntity<SaveGradeDto> entity = new HttpEntity(saveGradeDto);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(("/grades"),
                 HttpMethod.POST, entity, String.class);
         int statusCode = responseEntity.getStatusCodeValue();
         assertEquals(BAD_REQUEST_STATUS_CODE, statusCode);
@@ -100,10 +83,8 @@ public class GradeAllLayerTest {
 
     @Test
     public void incorrectGradeIdFormatReturnsMessage(){
-        HttpEntity<GradeDto> entity = new HttpEntity(null, headers);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(
-                createURLWithPort("/grades/"+INCORRECT_GRADE_ID),
-                HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(
+                ("/grades/"+INCORRECT_GRADE_ID),String.class);
         int statusCode = responseEntity.getStatusCodeValue();
         assertEquals(NOT_FOUND_STATUS_CODE,statusCode);
         assertEquals(INCORRECT_ID_FORMAT_MESSAGE,responseEntity.getBody());
