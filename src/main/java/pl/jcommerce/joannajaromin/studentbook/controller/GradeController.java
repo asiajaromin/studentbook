@@ -31,7 +31,7 @@ public class GradeController {
     }
 
     @GetMapping("/grades/{gradeId}")
-    public GradeDto getGrade(@PathVariable Integer gradeId){
+    public GradeDto getGrade(@PathVariable int gradeId){
             return gradeService.findById(gradeId);
     }
 
