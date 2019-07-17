@@ -47,24 +47,18 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Transactional(readOnly = true)
     public HomeworkDtoWithoutFile findById(int homeworkId) {
         var homework = homeworkRepository.findById(homeworkId);
-        if (homework == null){
-            throw new HomeworkNotFoundException("Brak zadania o id = " + homeworkId);
-        }
-        else {
-            return withoutFileConverter.map(homework, HomeworkDtoWithoutFile.class);
-        }
+        return Optional.ofNullable(homework)
+                .map(homework1->withoutFileConverter.map(homework1,HomeworkDtoWithoutFile.class))
+                .orElseThrow(()-> new HomeworkNotFoundException("Brak zadań do wyświetlenia"));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<HomeworkDtoWithoutFile> findAll() {
         var homeworks = homeworkRepository.findAll();
-        if (homeworks == null){
-            throw new HomeworkNotFoundException("Brak zadań do wyświetlenia");
-        }
-        else {
-            return withoutFileConverter.mapAsList(homeworks, HomeworkDtoWithoutFile.class);
-        }
+        return Optional.ofNullable(homeworks)
+                .map(homework->withoutFileConverter.mapAsList(homework,HomeworkDtoWithoutFile.class))
+                .orElseThrow(()-> new HomeworkNotFoundException("Brak zadań do wyświetlenia"));
     }
 
     @Override
@@ -74,14 +68,6 @@ public class HomeworkServiceImpl implements HomeworkService {
         return Optional.ofNullable(homework)
                 .map(homework1 -> homeworkConverter.map(homework1, HomeworkDto.class))
                 .orElseThrow(() -> new HomeworkNotFoundException("Brak zadania o id = " + homeworkId));
-        /*
-        if (homework == null){
-            throw new HomeworkNotFoundException("Brak zadania o id = " + homeworkId);
-        }
-        else {
-            return homeworkConverter.map(homework, HomeworkDto.class);
-        }
-         */
     }
 
     @Override
