@@ -30,6 +30,7 @@ public class Homework {
     @Column(name = "id")
     private Integer id;
 
+
     @ManyToOne
     @JoinColumn(name = "group_id")
     private ClassGroup group;

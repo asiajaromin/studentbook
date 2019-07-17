@@ -1,4 +1,4 @@
-package pl.jcommerce.joannajaromin.studentbook.ServiceTests;
+package pl.jcommerce.joannajaromin.studentbook.service;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -15,12 +15,9 @@ import pl.jcommerce.joannajaromin.studentbook.entity.Homework;
 import pl.jcommerce.joannajaromin.studentbook.entity.Subject;
 import pl.jcommerce.joannajaromin.studentbook.entity.Teacher;
 import pl.jcommerce.joannajaromin.studentbook.repository.HomeworkRepository;
-import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
-import pl.jcommerce.joannajaromin.studentbook.service.HomeworkServiceImpl;
 
 import java.io.FileNotFoundException;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -98,15 +95,17 @@ public class HomeworkServiceTest {
 
     @Test
     public void canGetAllHomeworksInfo() {
-        Homework homework1 = new Homework(HOMEWORK_ID1,classGroup,teacher,subject,FILE_NAME,FILE_DESCRIPTION,FILE_DATA1);
-        Homework homework2 = new Homework(HOMEWORK_ID2,classGroup,teacher,subject,FILE_NAME,FILE_DESCRIPTION,FILE_DATA2);
-        HomeworkDtoWithoutFile homeworkInfo1 = new HomeworkDtoWithoutFile(HOMEWORK_ID1,GROUP_ID,TEACHER_ID,SUBJECT_ID,FILE_NAME,FILE_DESCRIPTION);
-        HomeworkDtoWithoutFile homeworkInfo2 = new HomeworkDtoWithoutFile(HOMEWORK_ID2,GROUP_ID,TEACHER_ID,SUBJECT_ID,FILE_NAME,FILE_DESCRIPTION);
-        List<Homework> homeworksList = Arrays.asList(homework1,homework2);
-        List<HomeworkDtoWithoutFile> homeworksInfo = Arrays.asList(homeworkInfo1,homeworkInfo2);
+        var homework1 = new Homework(HOMEWORK_ID1,classGroup,teacher,subject,FILE_NAME,FILE_DESCRIPTION,FILE_DATA1);
+        var homework2 = new Homework(HOMEWORK_ID2,classGroup,teacher,subject,FILE_NAME,FILE_DESCRIPTION,FILE_DATA2);
+        var homeworkInfo1 = new HomeworkDtoWithoutFile(HOMEWORK_ID1,GROUP_ID,TEACHER_ID,SUBJECT_ID,FILE_NAME,
+                FILE_DESCRIPTION);
+        var homeworkInfo2 = new HomeworkDtoWithoutFile(HOMEWORK_ID2,GROUP_ID,TEACHER_ID,SUBJECT_ID,FILE_NAME,
+                FILE_DESCRIPTION);
+        var homeworksList = Arrays.asList(homework1,homework2);
+        var homeworksInfo = Arrays.asList(homeworkInfo1,homeworkInfo2);
         when(homeworkRepository.findAll()).thenReturn(homeworksList);
         when(homeworkWithoutFileConverter.mapAsList(homeworksList,HomeworkDtoWithoutFile.class)).thenReturn(homeworksInfo);
-        List<HomeworkDtoWithoutFile> foundHomeworksList = homeworkService.findAll();
+        var foundHomeworksList = homeworkService.findAll();
         assertEquals(homeworksInfo,foundHomeworksList);
     }
 

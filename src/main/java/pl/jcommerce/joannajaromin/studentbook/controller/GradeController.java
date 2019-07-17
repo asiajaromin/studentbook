@@ -13,6 +13,7 @@ import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -29,19 +30,23 @@ public class GradeController {
 
     @GetMapping("/grades/{gradeId}")
     public GradeDto getGrade(@PathVariable int gradeId){
-        return gradeService.findById(gradeId);
+            return gradeService.findById(gradeId);
     }
 
     @PostMapping("/grades")
-    public GradeDto saveGrade(@RequestBody SaveGradeDto grade){
+    public GradeDto saveGrade(@Valid @RequestBody SaveGradeDto grade){
         return gradeService.save(grade);
     }
 
+// When id doesn't exist it creates new item but I don't do anything with it,
+// because user shouldn't have access to editing nonexistent grades
     @PutMapping("/grades")
-    public GradeDto updateGrade(@RequestBody GradeDto grade){
+    public GradeDto updateGrade(@Valid @RequestBody GradeDto grade){
         return gradeService.update(grade);
     }
 
+//    when grade doesn't exist exception isn't thrown
+//    but status is 404 with message: "Brak wpisu o takim id."
     @DeleteMapping("/grades/{gradeId}")
     public void deleteGrade (@PathVariable int gradeId){
         gradeService.deleteById(gradeId);

@@ -18,6 +18,7 @@ import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
 
+import javax.validation.Valid;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -30,25 +31,24 @@ public class HomeworkController {
     @PostMapping(value = "/homeworks", consumes = "multipart/form-data")
     @ResponseBody
     public HomeworkDtoWithoutFile uploadHomework(@RequestPart("uploadFile") MultipartFile file,
-                                      @RequestPart("saveHomeworkDto") SaveHomeworkDto saveHomeworkDto)
+                                                 @Valid @RequestPart("saveHomeworkDto")
+                                                         SaveHomeworkDto saveHomeworkDto)
             throws FileNotFoundException {
-        var homeworkDto = homeworkService.save(file, saveHomeworkDto);
-        return homeworkDto;
+        return homeworkService.save(file, saveHomeworkDto);
     }
 
     @GetMapping("/homeworks/{homeworkId}")
-    public HomeworkDtoWithoutFile getHomework (@PathVariable int homeworkId){
-        var homeworkDtoWithoutFile = homeworkService.findById(homeworkId);
-        return homeworkDtoWithoutFile;
+    public HomeworkDtoWithoutFile getHomework(@PathVariable int homeworkId) {
+        return homeworkService.findById(homeworkId);
     }
 
     @GetMapping("/homeworks")
-    public List<HomeworkDtoWithoutFile> getAllHomeworks(){
+    public List<HomeworkDtoWithoutFile> getAllHomeworks() {
         return homeworkService.findAll();
     }
 
     @GetMapping("/homeworks/fileContent/{homeworkId}")
-    public ResponseEntity<ByteArrayResource> getHomeworkFileContent (@PathVariable int homeworkId){
+    public ResponseEntity<ByteArrayResource> getHomeworkFileContent(@PathVariable int homeworkId) {
         HomeworkDto homeworkDto = homeworkService.findByIdWithFileContent(homeworkId);
         HttpHeaders headers = prepareHeaders(homeworkDto);
         ByteArrayResource resource = new ByteArrayResource(homeworkDto.getFileData());
@@ -61,14 +61,13 @@ public class HomeworkController {
 
     private HttpHeaders prepareHeaders(HomeworkDto homeworkDto) {
         var headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" +
                 homeworkDto.getFileName());
         return headers;
     }
 
     @DeleteMapping("/homeworks/{homeworkId}")
-    public void deleteHomework (@PathVariable int homeworkId){
+    public void deleteHomework(@PathVariable int homeworkId) {
         homeworkService.deleteById(homeworkId);
     }
-
 }

@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.jcommerce.joannajaromin.studentbook.validator.GradeConstraint;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,5 +16,7 @@ public class SaveGradeDto {
 
     private Integer studentId;
     private Integer subjectId;
+
+    @GradeConstraint
     private Integer grade;
 }

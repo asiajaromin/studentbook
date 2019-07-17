@@ -12,10 +12,12 @@ import pl.jcommerce.joannajaromin.studentbook.dto.OrikaHomeworkWithoutFileConver
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveHomeworkConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Homework;
+import pl.jcommerce.joannajaromin.studentbook.exception.HomeworkNotFoundException;
 import pl.jcommerce.joannajaromin.studentbook.repository.HomeworkRepository;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,21 +47,27 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Transactional(readOnly = true)
     public HomeworkDtoWithoutFile findById(int homeworkId) {
         var homework = homeworkRepository.findById(homeworkId);
-        return withoutFileConverter.map(homework, HomeworkDtoWithoutFile.class);
+        return Optional.ofNullable(homework)
+                .map(homework1->withoutFileConverter.map(homework1,HomeworkDtoWithoutFile.class))
+                .orElseThrow(()-> new HomeworkNotFoundException("Brak zadań do wyświetlenia"));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<HomeworkDtoWithoutFile> findAll() {
         var homeworks = homeworkRepository.findAll();
-        return withoutFileConverter.mapAsList(homeworks,HomeworkDtoWithoutFile.class);
+        return Optional.ofNullable(homeworks)
+                .map(homework->withoutFileConverter.mapAsList(homework,HomeworkDtoWithoutFile.class))
+                .orElseThrow(()-> new HomeworkNotFoundException("Brak zadań do wyświetlenia"));
     }
 
     @Override
     @Transactional(readOnly = true)
     public HomeworkDto findByIdWithFileContent(int homeworkId) {
         var homework = homeworkRepository.findById(homeworkId);
-        return homeworkConverter.map(homework,HomeworkDto.class);
+        return Optional.ofNullable(homework)
+                .map(homework1 -> homeworkConverter.map(homework1, HomeworkDto.class))
+                .orElseThrow(() -> new HomeworkNotFoundException("Brak zadania o id = " + homeworkId));
     }
 
     @Override
