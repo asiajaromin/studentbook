@@ -10,12 +10,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
@@ -23,8 +26,10 @@ import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 @FlywayTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
-public class HomeworkEmbeddedDBTest {
+public class HomeworkIT {
 
     private final int GROUP_ID = 2;
     private final int TEACHER_ID = 2;
@@ -48,11 +53,9 @@ public class HomeworkEmbeddedDBTest {
     private final String POST_FILE_DESCRIPTION = "Bardzo szybkie i łatwe zadanie domowe.";
     private final String FILE_NAME = "Zadanie.pdf";
     private final String FILE_DESCRIPTION = "Zadanie dla klasy 2B";
-    private final int OK_STATUS_CODE = 200;
-    private final int NOT_FOUND_STATUS_CODE = 404;
-    private final int BAD_REQUEST_STATUS_CODE = 400;
     private final String HOMEWORK_NOT_FOUND_MESSAGE = "Brak zadania o id = ";
     private final String INCORRECT_ID_FORMAT_MESSAGE = "Nieprawidłowa wartość id.";
+    private final int ARRAY_LENGTH = 2;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -68,20 +71,28 @@ public class HomeworkEmbeddedDBTest {
                 String.class);
         String expectedBody = objectMapper.writeValueAsString(homeworkDto);
         assertEquals(expectedBody,responseEntity.getBody());
-        assertEquals(OK_STATUS_CODE,responseEntity.getStatusCodeValue());
+        assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
     }
 
+    // test stopped passing - list have 3 items but should have 2 - @Transactional doesn't help
     @Test
-    public void canGetHomeworksList() throws JSONException {
+    public void canGetHomeworksList() throws JSONException, JsonProcessingException {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(("/homeworks"),
                 String.class);
+        var dto = new HomeworkDtoWithoutFile(GET_ID,GROUP_ID,TEACHER_ID,SUBJECT_ID,FILE_NAME,FILE_DESCRIPTION);
+        String expectedJson = objectMapper.writeValueAsString(dto);
         JSONArray jsonArray = new JSONArray(responseEntity.getBody());
-        List<String> jsonList = new ArrayList();
-        for (var i = 0; i < jsonArray.length(); i++){
-            jsonList.add(jsonArray.getString(i));
-        }
-        assertEquals(OK_STATUS_CODE,responseEntity.getStatusCodeValue());
-        assertTrue(jsonList.size()>0);
+        List<String> jsonList = IntStream.range(0,jsonArray.length())
+                .mapToObj(i -> {
+                    try {
+                        return jsonArray.getString(i);
+                    } catch (JSONException e) {
+                        return "Empty list";
+                    }
+                }).collect(Collectors.toList());
+        assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
+        JSONAssert.assertEquals(expectedJson,jsonArray.getString(0),true);
+        assertEquals(ARRAY_LENGTH,jsonList.size());
     }
 
     @Test
@@ -90,7 +101,7 @@ public class HomeworkEmbeddedDBTest {
         ResponseEntity<String> responseEntity = restTemplate.exchange(("/homeworks/" + DELETE_ID),
                 HttpMethod.DELETE, entity, String.class);
         String expectedDeleteBody = null;
-        assertEquals(OK_STATUS_CODE, responseEntity.getStatusCodeValue());
+        assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
         assertEquals(expectedDeleteBody, responseEntity.getBody());
     }
 
@@ -105,16 +116,36 @@ public class HomeworkEmbeddedDBTest {
         HttpEntity<LinkedMultiValueMap<String, Object>> entity = new HttpEntity<>(parameters);
         ResponseEntity<String> responseEntity = restTemplate.exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
         JSONObject dtoJSON = new JSONObject(responseEntity.getBody());
-        assertEquals(OK_STATUS_CODE, responseEntity.getStatusCodeValue());
+        assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
         assertEquals(POST_FILE_NAME,dtoJSON.getString("fileName"));
         assertEquals(POST_FILE_DESCRIPTION,dtoJSON.getString("fileDescription"));
+    }
+
+    @Test
+    public void canGetFileContent() throws JSONException, IOException {
+        var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID,TEACHER_ID, SUBJECT_ID, POST_FILE_NAME,
+                POST_FILE_DESCRIPTION);
+        ClassPathResource file = new ClassPathResource("Zadanie123.pdf");
+        LinkedMultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
+        parameters.add("uploadFile", file);
+        parameters.add("saveHomeworkDto", saveHomeworkDto);
+        HttpEntity<LinkedMultiValueMap<String, Object>> entity = new HttpEntity<>(parameters);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
+        JSONObject dtoJSON = new JSONObject(responseEntity.getBody());
+        int homeworkId = dtoJSON.getInt("id");
+        ResponseEntity<ByteArrayResource> fileEntity = restTemplate.getForEntity("/homeworks/fileContent/"
+                + homeworkId,ByteArrayResource.class);
+        ByteArrayResource resource = fileEntity.getBody();
+        ByteArrayResource expectedFile = new ByteArrayResource(file.getInputStream().readAllBytes());
+        assertEquals(HttpStatus.OK,fileEntity.getStatusCode());
+        assertEquals(expectedFile,resource);
     }
 
     @Test
     public void canThrowExceptionForAbsentId() {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(
                 ("/homeworks/" + NON_EXISTENT_HOMEWORK_ID), String.class);
-        assertEquals(NOT_FOUND_STATUS_CODE, responseEntity.getStatusCodeValue());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertTrue(responseEntity.getBody()
                 .contains(HOMEWORK_NOT_FOUND_MESSAGE + NON_EXISTENT_HOMEWORK_ID));
     }
@@ -123,13 +154,12 @@ public class HomeworkEmbeddedDBTest {
     public void canReturnMessageForIncorrectId() {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(
                 ("/homeworks/" + INCORRECT_HOMEWORK_ID), String.class);
-        int statusCode = responseEntity.getStatusCodeValue();
-        assertEquals(NOT_FOUND_STATUS_CODE, statusCode);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertEquals(INCORRECT_ID_FORMAT_MESSAGE, responseEntity.getBody());
     }
 
     @Test
-    public void canValidateFileName() {
+    public void cannotSaveInvalidFileName() {
         var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID,TEACHER_ID, SUBJECT_ID, TOO_LONG_FILE_NAME,
                 POST_FILE_DESCRIPTION);
         ClassPathResource file = new ClassPathResource("Zadanie123.pdf");
@@ -138,7 +168,7 @@ public class HomeworkEmbeddedDBTest {
         parameters.add("saveHomeworkDto", saveHomeworkDto);
         HttpEntity<LinkedMultiValueMap<String, Object>> entity = new HttpEntity<>(parameters);
         ResponseEntity<String> responseEntity = restTemplate.exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
-        assertEquals(BAD_REQUEST_STATUS_CODE, responseEntity.getStatusCodeValue());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
 }
