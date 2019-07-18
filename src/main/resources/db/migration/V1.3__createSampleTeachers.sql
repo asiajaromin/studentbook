@@ -2,3 +2,5 @@ insert into student_book.teachers (id, username, password, first_name, last_name
 values
 (1,'konstancjaP','konstancja1','Konstancja','Przepiórkowska','konstancja@mojmail.pl'),
 (2,'kwiatuszek','kwiatuszeczek','Patrycja','Kwiatkowska','patrycja.kwiatkowska@op.pl');
+
+ALTER SEQUENCE student_book.teachers_id_seq RESTART WITH 3;

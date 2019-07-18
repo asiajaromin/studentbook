@@ -25,11 +25,11 @@ import static org.junit.Assert.assertTrue;
 @AutoConfigureEmbeddedDatabase
 @FlywayTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class GradeEmbeddedDatabaseTest {
+public class GradeEmbeddedDBTest {
 
     private final int GRADE_ID1 = 1;
     private final int GRADE_ID_FOR_DELETE = 2;
-    private final int NON_EXISTANT_GRADE_ID = 21535;
+    private final int NON_EXISTENT_GRADE_ID = 21535;
     private final String INCORRECT_GRADE_ID = "62shd";
     private final int STUDENT_ID = 1;
     private final int SUBJECT_ID = 1;
@@ -86,11 +86,11 @@ public class GradeEmbeddedDatabaseTest {
     @Test
     public void canThrowExceptionForAbsentId() {
         ResponseEntity<String> responseGetAfterDeleteEntity = restTemplate.getForEntity(
-                ("/grades/" + NON_EXISTANT_GRADE_ID), String.class);
+                ("/grades/" + NON_EXISTENT_GRADE_ID), String.class);
         int getAfterDeleteStatusCode = responseGetAfterDeleteEntity.getStatusCodeValue();
         assertEquals(NOT_FOUND_STATUS_CODE, getAfterDeleteStatusCode);
         assertTrue(responseGetAfterDeleteEntity.getBody()
-                .contains(GRADE_NOT_FOUND_MESSAGE + NON_EXISTANT_GRADE_ID));
+                .contains(GRADE_NOT_FOUND_MESSAGE + NON_EXISTENT_GRADE_ID));
     }
 
     @Test
