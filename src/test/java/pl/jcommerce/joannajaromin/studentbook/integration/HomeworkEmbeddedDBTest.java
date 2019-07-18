@@ -46,8 +46,6 @@ public class HomeworkEmbeddedDBTest {
     private final String POST_FILE_NAME = "Zadanie123.pdf";
     private final String TOO_LONG_FILE_NAME = "Nazwa pliku przekraczająca dopuszczalną długość wynoszącą 50 znaków.";
     private final String POST_FILE_DESCRIPTION = "Bardzo szybkie i łatwe zadanie domowe.";
-    private final String POST_FILE_CONTENT_STRING = "Napisz ładne wypracowanie na dowolny temat.";
-    private final byte[] POST_FILE_CONTENT = POST_FILE_CONTENT_STRING.getBytes();
     private final String FILE_NAME = "Zadanie.pdf";
     private final String FILE_DESCRIPTION = "Zadanie dla klasy 2B";
     private final int OK_STATUS_CODE = 200;
@@ -131,7 +129,7 @@ public class HomeworkEmbeddedDBTest {
     }
 
     @Test
-    public void canValidateFileName() throws JSONException {
+    public void canValidateFileName() {
         var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID,TEACHER_ID, SUBJECT_ID, TOO_LONG_FILE_NAME,
                 POST_FILE_DESCRIPTION);
         ClassPathResource file = new ClassPathResource("Zadanie123.pdf");
