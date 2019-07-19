@@ -36,7 +36,6 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureEmbeddedDatabase
-@FlywayTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 public class HomeworkIT {
@@ -64,6 +63,7 @@ public class HomeworkIT {
     private TestRestTemplate restTemplate;
 
     @Test
+    @FlywayTest
     public void canGetHomeworkWithoutFile() throws JsonProcessingException {
         var homeworkDto = new HomeworkDtoWithoutFile(GET_ID,GROUP_ID,TEACHER_ID,SUBJECT_ID,
                 FILE_NAME,FILE_DESCRIPTION);
@@ -74,7 +74,6 @@ public class HomeworkIT {
         assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
     }
 
-    // test stopped passing - list have 3 items but should have 2 - @Transactional doesn't help
     @Test
     @FlywayTest
     public void canGetHomeworksList() throws JSONException, JsonProcessingException {
@@ -98,6 +97,7 @@ public class HomeworkIT {
     }
 
     @Test
+    @FlywayTest
     public void canDeleteHomework(){
         HttpEntity<HomeworkDto> entity = new HttpEntity(null);
         ResponseEntity<String> responseEntity = restTemplate.exchange(("/homeworks/" + DELETE_ID),
@@ -108,6 +108,7 @@ public class HomeworkIT {
     }
 
     @Test
+    @FlywayTest
     public void canPostHomework() throws JSONException {
         var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID,TEACHER_ID, SUBJECT_ID, POST_FILE_NAME,
                 POST_FILE_DESCRIPTION);
@@ -124,6 +125,7 @@ public class HomeworkIT {
     }
 
     @Test
+    @FlywayTest
     public void canGetFileContent() throws JSONException, IOException {
         var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID,TEACHER_ID, SUBJECT_ID, POST_FILE_NAME,
                 POST_FILE_DESCRIPTION);
@@ -144,6 +146,7 @@ public class HomeworkIT {
     }
 
     @Test
+    @FlywayTest
     public void canThrowExceptionForAbsentId() {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(
                 ("/homeworks/" + NON_EXISTENT_HOMEWORK_ID), String.class);
@@ -153,6 +156,7 @@ public class HomeworkIT {
     }
 
     @Test
+    @FlywayTest
     public void canReturnMessageForIncorrectId() {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(
                 ("/homeworks/" + INCORRECT_HOMEWORK_ID), String.class);
@@ -161,6 +165,7 @@ public class HomeworkIT {
     }
 
     @Test
+    @FlywayTest
     public void cannotSaveInvalidFileName() {
         var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID,TEACHER_ID, SUBJECT_ID, TOO_LONG_FILE_NAME,
                 POST_FILE_DESCRIPTION);
