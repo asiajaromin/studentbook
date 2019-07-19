@@ -2,7 +2,6 @@ package pl.jcommerce.joannajaromin.studentbook.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,31 +24,26 @@ public class GradeController {
     private final GradeService gradeService;
 
     @GetMapping("/grades")
-    @PreAuthorize("hasAuthority('USER')")
     public List<GradeDto> findAll() {
         return gradeService.findAll();
     }
 
     @GetMapping("/grades/{gradeId}")
-    @PreAuthorize("hasAuthority('USER')")
     public GradeDto getGrade(@PathVariable int gradeId){
             return gradeService.findById(gradeId);
     }
 
     @PostMapping("/grades")
-    @PreAuthorize("hasAuthority('USER')")
     public GradeDto saveGrade(@Valid @RequestBody SaveGradeDto grade){
         return gradeService.save(grade);
     }
 
     @PutMapping("/grades")
-    @PreAuthorize("hasAuthority('USER')")
     public GradeDto updateGrade(@Valid @RequestBody GradeDto grade){
         return gradeService.update(grade);
     }
 
     @DeleteMapping("/grades/{gradeId}")
-    @PreAuthorize("hasAuthority('USER')")
     public void deleteGrade (@PathVariable int gradeId){
         gradeService.deleteById(gradeId);
     }

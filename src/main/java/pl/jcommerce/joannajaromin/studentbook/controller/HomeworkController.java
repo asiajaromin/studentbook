@@ -30,7 +30,6 @@ public class HomeworkController {
     private final HomeworkService homeworkService;
 
     @PostMapping(value = "/homeworks", consumes = "multipart/form-data")
-    @PreAuthorize("hasAuthority('USER')")
     @ResponseBody
     public HomeworkDtoWithoutFile uploadHomework(@RequestPart("uploadFile") MultipartFile file,
                                                  @Valid @RequestPart("saveHomeworkDto")
@@ -40,19 +39,16 @@ public class HomeworkController {
     }
 
     @GetMapping("/homeworks/{homeworkId}")
-    @PreAuthorize("hasAuthority('USER')")
     public HomeworkDtoWithoutFile getHomework(@PathVariable int homeworkId) {
         return homeworkService.findById(homeworkId);
     }
 
     @GetMapping("/homeworks")
-    @PreAuthorize("hasAuthority('USER')")
     public List<HomeworkDtoWithoutFile> getAllHomeworks() {
         return homeworkService.findAll();
     }
 
     @GetMapping("/homeworks/fileContent/{homeworkId}")
-    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<ByteArrayResource> getHomeworkFileContent(@PathVariable int homeworkId) {
         HomeworkDto homeworkDto = homeworkService.findByIdWithFileContent(homeworkId);
         HttpHeaders headers = prepareHeaders(homeworkDto);
