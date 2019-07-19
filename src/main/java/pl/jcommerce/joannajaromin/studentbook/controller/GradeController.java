@@ -2,6 +2,7 @@ package pl.jcommerce.joannajaromin.studentbook.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,30 +25,31 @@ public class GradeController {
     private final GradeService gradeService;
 
     @GetMapping("/grades")
+    @PreAuthorize("hasAuthority('USER')")
     public List<GradeDto> findAll() {
         return gradeService.findAll();
     }
 
     @GetMapping("/grades/{gradeId}")
+    @PreAuthorize("hasAuthority('USER')")
     public GradeDto getGrade(@PathVariable int gradeId){
             return gradeService.findById(gradeId);
     }
 
     @PostMapping("/grades")
+    @PreAuthorize("hasAuthority('USER')")
     public GradeDto saveGrade(@Valid @RequestBody SaveGradeDto grade){
         return gradeService.save(grade);
     }
 
-// When id doesn't exist it creates new item but I don't do anything with it,
-// because user shouldn't have access to editing nonexistent grades
     @PutMapping("/grades")
+    @PreAuthorize("hasAuthority('USER')")
     public GradeDto updateGrade(@Valid @RequestBody GradeDto grade){
         return gradeService.update(grade);
     }
 
-//    when grade doesn't exist exception isn't thrown
-//    but status is 404 with message: "Brak wpisu o takim id."
     @DeleteMapping("/grades/{gradeId}")
+    @PreAuthorize("hasAuthority('USER')")
     public void deleteGrade (@PathVariable int gradeId){
         gradeService.deleteById(gradeId);
     }
