@@ -43,7 +43,7 @@ public class GradeIT {
     private ObjectMapper objectMapper;
 
     @Autowired
-    TestRestTemplate restTemplate;
+    private TestRestTemplate restTemplate;
 
     @Test
     public void canGetGrade() throws JsonProcessingException {
