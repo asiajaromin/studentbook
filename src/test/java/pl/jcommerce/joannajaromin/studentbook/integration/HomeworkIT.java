@@ -76,6 +76,7 @@ public class HomeworkIT {
 
     // test stopped passing - list have 3 items but should have 2 - @Transactional doesn't help
     @Test
+    @FlywayTest
     public void canGetHomeworksList() throws JSONException, JsonProcessingException {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(("/homeworks"),
                 String.class);
@@ -91,7 +92,8 @@ public class HomeworkIT {
                     }
                 }).collect(Collectors.toList());
         assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
-        JSONAssert.assertEquals(expectedJson,jsonArray.getString(0),true);
+        JSONAssert.assertEquals(expectedJson,jsonArray.getString(1),true);
+        assertEquals(ARRAY_LENGTH, jsonArray.length());
         assertEquals(ARRAY_LENGTH,jsonList.size());
     }
 
