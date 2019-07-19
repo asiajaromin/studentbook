@@ -49,7 +49,7 @@ public class HomeworkServiceImpl implements HomeworkService {
         var homework = homeworkRepository.findById(homeworkId);
         return Optional.ofNullable(homework)
                 .map(homework1->withoutFileConverter.map(homework1,HomeworkDtoWithoutFile.class))
-                .orElseThrow(()-> new HomeworkNotFoundException("Brak zadań do wyświetlenia"));
+                .orElseThrow(()-> new HomeworkNotFoundException("Brak zadania o id = " + homeworkId));
     }
 
     @Override

@@ -10,6 +10,8 @@ values
 (4,'3A'),
 (5,'3B');
 
+ALTER SEQUENCE student_book.class_groups_id_seq RESTART WITH 6;
+
 alter table if exists student_book.students
 add column if not exists group_id integer REFERENCES student_book.class_groups(id);
 
