@@ -77,7 +77,7 @@ public class GradeIT {
         ResponseEntity<String> responseDeleteEntity = restTemplate
                 .withBasicAuth("studentbook", "student")
                 .exchange(("/grades/" + GRADE_ID_FOR_DELETE),
-                HttpMethod.DELETE, deleteEntity, String.class);
+                        HttpMethod.DELETE, deleteEntity, String.class);
         String expectedDeleteBody = null;
         assertEquals(HttpStatus.OK, responseDeleteEntity.getStatusCode());
         assertEquals(expectedDeleteBody, responseDeleteEntity.getBody());
@@ -122,7 +122,7 @@ public class GradeIT {
     }
 
     @Test
-    public void unauthorizedUserCannotPostGrade() throws JSONException {
+    public void unauthorizedUserCannotPostGrade() {
         var saveGradeDto = new SaveGradeDto(STUDENT_ID, SUBJECT_ID, GRADE);
         HttpEntity<SaveGradeDto> postEntity = new HttpEntity(saveGradeDto);
         HttpStatus status = restTemplate
