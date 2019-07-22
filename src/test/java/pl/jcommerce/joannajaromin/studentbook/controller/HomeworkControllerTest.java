@@ -136,31 +136,31 @@ public class HomeworkControllerTest {
     }
 
     @Test
-    public void unautorizedUserCannotGetHomeworkWithoutFile() throws Exception {
+    public void unauthorizedUserCannotGetHomeworkWithoutFile() throws Exception {
         mvc.perform(get("/homeworks/" + HOMEWORK_ID1))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void unautorizedUserCannotGetAllHomeworksWithoutFile() throws Exception {
+    public void unauthorizedUserCannotGetAllHomeworksWithoutFile() throws Exception {
         mvc.perform(get("/homeworks"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void unautorizedUserCannotGetFileContent() throws Exception {
+    public void unauthorizedUserCannotGetFileContent() throws Exception {
         mvc.perform(get("/homeworks/fileContent/" + HOMEWORK_ID2))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void unautorizedUserCannotDeleteHomework() throws Exception {
+    public void unauthorizedUserCannotDeleteHomework() throws Exception {
         mvc.perform(delete("/homeworks/" + HOMEWORK_ID1))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void unautorizedUserCannotPostHomework() throws Exception {
+    public void unauthorizedUserCannotPostHomework() throws Exception {
         var file = new MockMultipartFile("file", FILE_NAME2, MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT_BYTES);
         var saveDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, FILE_NAME2, FILE_DESCRIPTION2);
         var dtoJson = new ObjectMapper().writeValueAsString(saveDto);

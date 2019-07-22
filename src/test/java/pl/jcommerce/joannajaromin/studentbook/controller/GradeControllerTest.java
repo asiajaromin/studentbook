@@ -112,19 +112,19 @@ public class GradeControllerTest {
     }
 
     @Test
-    public void unautorizedUserCannotGetGrade() throws Exception{
+    public void unauthorizedUserCannotGetGrade() throws Exception{
         this.mvc.perform(get("/grades/" + GRADE_ID1))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void unautorizedUserCannotGetGradesList() throws Exception{
+    public void unauthorizedUserCannotGetGradesList() throws Exception{
         this.mvc.perform(get("/grades").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void unautorizedUserCannotPostGrade() throws Exception{
+    public void unauthorizedUserCannotPostGrade() throws Exception{
         var saveGradeDto = new SaveGradeDto(STUDENT_ID,SUBJECT_ID,GRADE1);
         var gradeDto = new GradeDto(GRADE_ID1,STUDENT_ID,SUBJECT_ID,GRADE1);
         given(this.gradeService.save(saveGradeDto)).willReturn(gradeDto);
@@ -135,7 +135,7 @@ public class GradeControllerTest {
     }
 
     @Test
-    public void unautorizedUserCannotPutGrade() throws Exception {
+    public void unauthorizedUserCannotPutGrade() throws Exception {
         var gradeDto = new GradeDto(GRADE_ID2,STUDENT_ID,SUBJECT_ID,GRADE2);
         this.mvc.perform(put("/grades")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -144,7 +144,7 @@ public class GradeControllerTest {
     }
 
     @Test
-    public void unautorizedUserCannotDeleteGrade() throws Exception {
+    public void unauthorizedUserCannotDeleteGrade() throws Exception {
         this.mvc.perform(delete("/grades/" + GRADE_ID1))
                 .andExpect(status().isUnauthorized());
     }
