@@ -16,6 +16,9 @@ import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.service.HomeworkService;
 
+import java.util.Arrays;
+
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -64,6 +67,32 @@ public class HomeworkControllerTest {
 
     @Test
     @WithMockUser
+    public void canGetAllHomeworksWithoutFile() throws Exception {
+        var dto1 = new HomeworkDtoWithoutFile(HOMEWORK_ID1, GROUP_ID, TEACHER_ID, SUBJECT_ID,
+                FILE_NAME1, FILE_DESCRIPTION1);
+        var dto2 = new HomeworkDtoWithoutFile(HOMEWORK_ID2, GROUP_ID, TEACHER_ID, SUBJECT_ID,
+                FILE_NAME2, FILE_DESCRIPTION2);
+        var list = Arrays.asList(dto1,dto2);
+        given(homeworkService.findAll()).willReturn(list);
+        mvc.perform(get("/homeworks"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(2)))
+                .andExpect(jsonPath("$.[0].id").value(HOMEWORK_ID1))
+                .andExpect(jsonPath("$.[0].groupId").value(GROUP_ID))
+                .andExpect(jsonPath("$.[0].teacherId").value(TEACHER_ID))
+                .andExpect(jsonPath("$.[0].subjectId").value(SUBJECT_ID))
+                .andExpect(jsonPath("$.[0].fileName").value(FILE_NAME1))
+                .andExpect(jsonPath("$.[0].fileDescription").value(FILE_DESCRIPTION1))
+                .andExpect(jsonPath("$.[1].id").value(HOMEWORK_ID2))
+                .andExpect(jsonPath("$.[1].groupId").value(GROUP_ID))
+                .andExpect(jsonPath("$.[1].teacherId").value(TEACHER_ID))
+                .andExpect(jsonPath("$.[1].subjectId").value(SUBJECT_ID))
+                .andExpect(jsonPath("$.[1].fileName").value(FILE_NAME2))
+                .andExpect(jsonPath("$.[1].fileDescription").value(FILE_DESCRIPTION2));
+    }
+
+    @Test
+    @WithMockUser
     public void canGetFileContent() throws Exception {
         var dto = new HomeworkDto(HOMEWORK_ID2, GROUP_ID, TEACHER_ID, SUBJECT_ID, FILE_NAME2,
                 FILE_DESCRIPTION2, FILE_CONTENT_BYTES);
@@ -107,6 +136,12 @@ public class HomeworkControllerTest {
     @Test
     public void unautorizedUserCannotGetHomeworkWithoutFile() throws Exception {
         mvc.perform(get("/homeworks/" + HOMEWORK_ID1))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void unautorizedUserCannotGetAllHomeworksWithoutFile() throws Exception {
+        mvc.perform(get("/homeworks"))
                 .andExpect(status().isUnauthorized());
     }
 
