@@ -113,17 +113,12 @@ public class GradeControllerTest {
 
     @Test
     public void unautorizedUserCannotGetGrade() throws Exception{
-        given(this.gradeService.findById(GRADE_ID1))
-                .willReturn(new GradeDto(GRADE_ID1,STUDENT_ID,SUBJECT_ID,GRADE1));
         this.mvc.perform(get("/grades/" + GRADE_ID1))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void unautorizedUserCannotGetGradesList() throws Exception{
-        var grade1 = new GradeDto(GRADE_ID1,STUDENT_ID,SUBJECT_ID,GRADE1);
-        var grade2 = new GradeDto(GRADE_ID2,STUDENT_ID,SUBJECT_ID,GRADE2);
-        given(this.gradeService.findAll()).willReturn(Arrays.asList(grade1,grade2));
         this.mvc.perform(get("/grades").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
@@ -142,7 +137,6 @@ public class GradeControllerTest {
     @Test
     public void unautorizedUserCannotPutGrade() throws Exception {
         var gradeDto = new GradeDto(GRADE_ID2,STUDENT_ID,SUBJECT_ID,GRADE2);
-        given(this.gradeService.update(gradeDto)).willReturn(gradeDto);
         this.mvc.perform(put("/grades")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(gradeDto)))
