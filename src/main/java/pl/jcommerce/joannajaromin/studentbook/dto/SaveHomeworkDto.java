@@ -1,6 +1,7 @@
 package pl.jcommerce.joannajaromin.studentbook.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 public class SaveHomeworkDto {
 
     private Integer groupId;

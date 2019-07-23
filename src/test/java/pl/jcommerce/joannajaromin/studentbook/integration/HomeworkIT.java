@@ -65,24 +65,27 @@ public class HomeworkIT {
     @Test
     @FlywayTest
     public void canGetHomeworkWithoutFile() throws JsonProcessingException {
-        var homeworkDto = new HomeworkDtoWithoutFile(GET_ID,GROUP_ID,TEACHER_ID,SUBJECT_ID,
-                FILE_NAME,FILE_DESCRIPTION);
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(("/homeworks/"+GET_ID),
-                String.class);
+        var homeworkDto = new HomeworkDtoWithoutFile(GET_ID, GROUP_ID, TEACHER_ID, SUBJECT_ID,
+                FILE_NAME, FILE_DESCRIPTION);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .getForEntity(("/homeworks/" + GET_ID), String.class);
         String expectedBody = objectMapper.writeValueAsString(homeworkDto);
-        assertEquals(expectedBody,responseEntity.getBody());
-        assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(expectedBody, responseEntity.getBody());
     }
 
     @Test
     @FlywayTest
     public void canGetHomeworksList() throws JSONException, JsonProcessingException {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(("/homeworks"),
-                String.class);
-        var dto = new HomeworkDtoWithoutFile(GET_ID,GROUP_ID,TEACHER_ID,SUBJECT_ID,FILE_NAME,FILE_DESCRIPTION);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .getForEntity(("/homeworks"), String.class);
+        var dto = new HomeworkDtoWithoutFile(GET_ID, GROUP_ID, TEACHER_ID, SUBJECT_ID, FILE_NAME,
+                FILE_DESCRIPTION);
         String expectedJson = objectMapper.writeValueAsString(dto);
         JSONArray jsonArray = new JSONArray(responseEntity.getBody());
-        List<String> jsonList = IntStream.range(0,jsonArray.length())
+        List<String> jsonList = IntStream.range(0, jsonArray.length())
                 .mapToObj(i -> {
                     try {
                         return jsonArray.getString(i);
@@ -90,66 +93,73 @@ public class HomeworkIT {
                         return "Empty list";
                     }
                 }).collect(Collectors.toList());
-        assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
-        JSONAssert.assertEquals(expectedJson,jsonArray.getString(1),true);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        JSONAssert.assertEquals(expectedJson, jsonArray.getString(1), true);
         assertEquals(ARRAY_LENGTH, jsonArray.length());
-        assertEquals(ARRAY_LENGTH,jsonList.size());
+        assertEquals(ARRAY_LENGTH, jsonList.size());
     }
 
     @Test
     @FlywayTest
-    public void canDeleteHomework(){
+    public void canDeleteHomework() {
         HttpEntity<HomeworkDto> entity = new HttpEntity(null);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(("/homeworks/" + DELETE_ID),
-                HttpMethod.DELETE, entity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .exchange(("/homeworks/" + DELETE_ID), HttpMethod.DELETE, entity, String.class);
         String expectedDeleteBody = null;
-        assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(expectedDeleteBody, responseEntity.getBody());
     }
 
     @Test
     @FlywayTest
     public void canPostHomework() throws JSONException {
-        var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID,TEACHER_ID, SUBJECT_ID, POST_FILE_NAME,
+        var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, POST_FILE_NAME,
                 POST_FILE_DESCRIPTION);
         ClassPathResource file = new ClassPathResource("Zadanie123.pdf");
         LinkedMultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
         parameters.add("uploadFile", file);
         parameters.add("saveHomeworkDto", saveHomeworkDto);
         HttpEntity<LinkedMultiValueMap<String, Object>> entity = new HttpEntity<>(parameters);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
         JSONObject dtoJSON = new JSONObject(responseEntity.getBody());
-        assertEquals(HttpStatus.OK,responseEntity.getStatusCode());
-        assertEquals(POST_FILE_NAME,dtoJSON.getString("fileName"));
-        assertEquals(POST_FILE_DESCRIPTION,dtoJSON.getString("fileDescription"));
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(POST_FILE_NAME, dtoJSON.getString("fileName"));
+        assertEquals(POST_FILE_DESCRIPTION, dtoJSON.getString("fileDescription"));
     }
 
     @Test
     @FlywayTest
     public void canGetFileContent() throws JSONException, IOException {
-        var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID,TEACHER_ID, SUBJECT_ID, POST_FILE_NAME,
+        var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, POST_FILE_NAME,
                 POST_FILE_DESCRIPTION);
         ClassPathResource file = new ClassPathResource("Zadanie123.pdf");
         LinkedMultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
         parameters.add("uploadFile", file);
         parameters.add("saveHomeworkDto", saveHomeworkDto);
         HttpEntity<LinkedMultiValueMap<String, Object>> entity = new HttpEntity<>(parameters);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
         JSONObject dtoJSON = new JSONObject(responseEntity.getBody());
         int homeworkId = dtoJSON.getInt("id");
-        ResponseEntity<ByteArrayResource> fileEntity = restTemplate.getForEntity("/homeworks/fileContent/"
-                + homeworkId,ByteArrayResource.class);
+        ResponseEntity<ByteArrayResource> fileEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .getForEntity("/homeworks/fileContent/" + homeworkId, ByteArrayResource.class);
         ByteArrayResource resource = fileEntity.getBody();
         ByteArrayResource expectedFile = new ByteArrayResource(file.getInputStream().readAllBytes());
-        assertEquals(HttpStatus.OK,fileEntity.getStatusCode());
-        assertEquals(expectedFile,resource);
+        assertEquals(HttpStatus.OK, fileEntity.getStatusCode());
+        assertEquals(expectedFile, resource);
     }
 
     @Test
     @FlywayTest
     public void canThrowExceptionForAbsentId() {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(
-                ("/homeworks/" + NON_EXISTENT_HOMEWORK_ID), String.class);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .getForEntity(("/homeworks/" + NON_EXISTENT_HOMEWORK_ID), String.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertTrue(responseEntity.getBody()
                 .contains(HOMEWORK_NOT_FOUND_MESSAGE + NON_EXISTENT_HOMEWORK_ID));
@@ -158,8 +168,9 @@ public class HomeworkIT {
     @Test
     @FlywayTest
     public void canReturnMessageForIncorrectId() {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(
-                ("/homeworks/" + INCORRECT_HOMEWORK_ID), String.class);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .getForEntity(("/homeworks/" + INCORRECT_HOMEWORK_ID), String.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertEquals(INCORRECT_ID_FORMAT_MESSAGE, responseEntity.getBody());
     }
@@ -167,15 +178,25 @@ public class HomeworkIT {
     @Test
     @FlywayTest
     public void cannotSaveInvalidFileName() {
-        var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID,TEACHER_ID, SUBJECT_ID, TOO_LONG_FILE_NAME,
+        var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, TOO_LONG_FILE_NAME,
                 POST_FILE_DESCRIPTION);
         ClassPathResource file = new ClassPathResource("Zadanie123.pdf");
         LinkedMultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
         parameters.add("uploadFile", file);
         parameters.add("saveHomeworkDto", saveHomeworkDto);
         HttpEntity<LinkedMultiValueMap<String, Object>> entity = new HttpEntity<>(parameters);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
+    @Test
+    @FlywayTest
+    public void unauthorizedUserCannotGetHomework() {
+        HttpStatus status = restTemplate
+                .getForEntity(("/homeworks/" + GET_ID), String.class).getStatusCode();
+        assertEquals(HttpStatus.UNAUTHORIZED, status);
     }
 
 }

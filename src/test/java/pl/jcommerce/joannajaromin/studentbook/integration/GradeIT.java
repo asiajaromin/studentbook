@@ -48,7 +48,9 @@ public class GradeIT {
     @Test
     public void canGetGrade() throws JsonProcessingException {
         var gradeDto = new GradeDto(GRADE_ID1, STUDENT_ID, SUBJECT_ID, GRADE);
-        ResponseEntity<String> responseGetEntity = restTemplate.getForEntity("/grades/" + GRADE_ID1, String.class);
+        ResponseEntity<String> responseGetEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .getForEntity("/grades/" + GRADE_ID1, String.class);
         String expectedBody = objectMapper.writeValueAsString(gradeDto);
         assertEquals(expectedBody, responseGetEntity.getBody());
         assertEquals(HttpStatus.OK, responseGetEntity.getStatusCode());
@@ -58,21 +60,24 @@ public class GradeIT {
     public void canPostGrade() throws JSONException {
         var saveGradeDto = new SaveGradeDto(STUDENT_ID, SUBJECT_ID, GRADE);
         HttpEntity<SaveGradeDto> postEntity = new HttpEntity(saveGradeDto);
-        ResponseEntity<String> responsePostEntity = restTemplate.exchange(("/grades"),
-                HttpMethod.POST, postEntity, String.class);
+        ResponseEntity<String> responsePostEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .exchange(("/grades"), HttpMethod.POST, postEntity, String.class);
         String postBody = responsePostEntity.getBody();
         JSONObject dtoJSON = new JSONObject(postBody);
         assertEquals(HttpStatus.OK, responsePostEntity.getStatusCode());
-        assertEquals(STUDENT_ID,dtoJSON.getInt("studentId"));
-        assertEquals(SUBJECT_ID,dtoJSON.getInt("subjectId"));
-        assertEquals(GRADE,dtoJSON.getInt("grade"));
+        assertEquals(STUDENT_ID, dtoJSON.getInt("studentId"));
+        assertEquals(SUBJECT_ID, dtoJSON.getInt("subjectId"));
+        assertEquals(GRADE, dtoJSON.getInt("grade"));
     }
 
     @Test
     public void canDeleteGrade() {
         HttpEntity<GradeDto> deleteEntity = new HttpEntity(null);
-        ResponseEntity<String> responseDeleteEntity = restTemplate.exchange(("/grades/" + GRADE_ID_FOR_DELETE),
-                HttpMethod.DELETE, deleteEntity, String.class);
+        ResponseEntity<String> responseDeleteEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .exchange(("/grades/" + GRADE_ID_FOR_DELETE),
+                        HttpMethod.DELETE, deleteEntity, String.class);
         String expectedDeleteBody = null;
         assertEquals(HttpStatus.OK, responseDeleteEntity.getStatusCode());
         assertEquals(expectedDeleteBody, responseDeleteEntity.getBody());
@@ -80,8 +85,9 @@ public class GradeIT {
 
     @Test
     public void canThrowExceptionForAbsentId() {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(
-                ("/grades/" + NON_EXISTENT_GRADE_ID), String.class);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .getForEntity(("/grades/" + NON_EXISTENT_GRADE_ID), String.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertTrue(responseEntity.getBody()
                 .contains(GRADE_NOT_FOUND_MESSAGE + NON_EXISTENT_GRADE_ID));
@@ -91,17 +97,47 @@ public class GradeIT {
     public void cannotSaveInvalidGrade() {
         var saveGradeDto = new SaveGradeDto(STUDENT_ID, SUBJECT_ID, INCORRECT_GRADE);
         HttpEntity<SaveGradeDto> entity = new HttpEntity(saveGradeDto);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(("/grades"),
-                HttpMethod.POST, entity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .exchange(("/grades"), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
     public void canReturnMessageForIncorrectId() {
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(
-                ("/grades/" + INCORRECT_GRADE_ID), String.class);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("studentbook", "student")
+                .getForEntity(("/grades/" + INCORRECT_GRADE_ID), String.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertEquals(INCORRECT_ID_FORMAT_MESSAGE, responseEntity.getBody());
+    }
+
+    @Test
+    public void unauthorizedUserCannotGetGrade() {
+        HttpStatus status = restTemplate
+                .getForEntity("/grades/" + GRADE_ID1, String.class)
+                .getStatusCode();
+        assertEquals(HttpStatus.UNAUTHORIZED, status);
+    }
+
+    @Test
+    public void unauthorizedUserCannotPostGrade() {
+        var saveGradeDto = new SaveGradeDto(STUDENT_ID, SUBJECT_ID, GRADE);
+        HttpEntity<SaveGradeDto> postEntity = new HttpEntity(saveGradeDto);
+        HttpStatus status = restTemplate
+                .exchange(("/grades"), HttpMethod.POST, postEntity, String.class)
+                .getStatusCode();
+        assertEquals(HttpStatus.UNAUTHORIZED, status);
+    }
+
+    @Test
+    public void unauthorizedUserCannotDeleteGrade() {
+        HttpEntity<GradeDto> deleteEntity = new HttpEntity(null);
+        HttpStatus status = restTemplate
+                .exchange(("/grades/" + GRADE_ID_FOR_DELETE),
+                        HttpMethod.DELETE, deleteEntity, String.class)
+                .getStatusCode();
+        assertEquals(HttpStatus.UNAUTHORIZED, status);
     }
 
 }
