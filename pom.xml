@@ -98,6 +98,11 @@
             <version>${httpclient.version}</version>
             <scope>test</scope>
         </dependency>
+<!--        for preauthorize to work-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
