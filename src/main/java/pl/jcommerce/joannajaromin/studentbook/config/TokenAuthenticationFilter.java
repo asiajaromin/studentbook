@@ -2,8 +2,6 @@ package pl.jcommerce.joannajaromin.studentbook.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,22 +27,27 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
         final String accessToken = httpRequest.getHeader("mySuperToken");
 
         if (null != accessToken) {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS256))
-                    .parseClaimsJws(accessToken)
-                    .getBody();
-            String username = claims.getSubject();
-            var authorities = (Collection<? extends GrantedAuthority>)claims.get("authorities");
-            final User user = new User(
-                    username,
-                    "student",
-                    true,
-                    true,
-                    true,
-                    true, authorities);
-            final UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            try {
+                Claims claims = Jwts.parser()
+                        //.setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS256))
+                        .setSigningKey(KeyProvider.getKey())
+                        .parseClaimsJws(accessToken)
+                        .getBody();
+                String username = (String) claims.get("username");
+                var authorities = (Collection<? extends GrantedAuthority>) claims.get("authorities");
+                final User user = new User(
+                        username,
+                        "student",
+                        true,
+                        true,
+                        true,
+                        true, authorities);
+                final UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         chain.doFilter(request, response);
