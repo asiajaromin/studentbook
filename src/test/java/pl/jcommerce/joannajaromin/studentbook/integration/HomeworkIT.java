@@ -196,7 +196,7 @@ public class HomeworkIT {
     public void unauthorizedUserCannotGetHomework() {
         HttpStatus status = restTemplate
                 .getForEntity(("/homeworks/" + GET_ID), String.class).getStatusCode();
-        assertEquals(HttpStatus.FOUND, status);
+        assertEquals(HttpStatus.UNAUTHORIZED, status);
     }
 
 }

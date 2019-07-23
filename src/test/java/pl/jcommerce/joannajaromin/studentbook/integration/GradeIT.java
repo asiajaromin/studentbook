@@ -112,13 +112,12 @@ public class GradeIT {
         assertEquals(INCORRECT_ID_FORMAT_MESSAGE, responseEntity.getBody());
     }
 
-    // HttpStatus.FOUND is caused by mvc redirecting to login page
     @Test
     public void unauthorizedUserCannotGetGrade() {
         HttpStatus status = restTemplate
                 .getForEntity("/grades/" + GRADE_ID1, String.class)
                 .getStatusCode();
-        assertEquals(HttpStatus.FOUND, status);
+        assertEquals(HttpStatus.UNAUTHORIZED, status);
     }
 
     @Test
@@ -128,7 +127,7 @@ public class GradeIT {
         HttpStatus status = restTemplate
                 .exchange(("/grades"), HttpMethod.POST, postEntity, String.class)
                 .getStatusCode();
-        assertEquals(HttpStatus.FOUND, status);
+        assertEquals(HttpStatus.UNAUTHORIZED, status);
     }
 
     @Test
@@ -138,7 +137,7 @@ public class GradeIT {
                 .exchange(("/grades/" + GRADE_ID_FOR_DELETE),
                         HttpMethod.DELETE, deleteEntity, String.class)
                 .getStatusCode();
-        assertEquals(HttpStatus.FOUND, status);
+        assertEquals(HttpStatus.UNAUTHORIZED, status);
     }
 
 }
