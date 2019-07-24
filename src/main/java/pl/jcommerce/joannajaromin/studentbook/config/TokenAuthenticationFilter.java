@@ -1,9 +1,10 @@
 package pl.jcommerce.joannajaromin.studentbook.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.filter.GenericFilterBean;
@@ -14,7 +15,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.Arrays;
 
 public class TokenAuthenticationFilter extends GenericFilterBean {
 
@@ -34,14 +35,15 @@ public class TokenAuthenticationFilter extends GenericFilterBean {
                         .parseClaimsJws(accessToken)
                         .getBody();
                 String username = (String) claims.get("username");
-                var authorities = (Collection<? extends GrantedAuthority>) claims.get("authorities");
+                String authorities = new ObjectMapper().writeValueAsString(claims.get("authorities"));
+
                 final User user = new User(
                         username,
                         "student",
                         true,
                         true,
                         true,
-                        true, authorities);
+                        true, Arrays.asList(new SimpleGrantedAuthority("USER")));
                 final UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
