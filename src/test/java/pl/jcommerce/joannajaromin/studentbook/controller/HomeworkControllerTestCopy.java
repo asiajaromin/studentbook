@@ -1,14 +1,11 @@
 package pl.jcommerce.joannajaromin.studentbook.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
-import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -32,11 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@AutoConfigureMockMvc
-@SpringBootTest
-@AutoConfigureEmbeddedDatabase
-@FlywayTest
-public class HomeworkControllerTest {
+@WebMvcTest(HomeworkController.class)
+public class HomeworkControllerTestCopy {
 
     private final int HOMEWORK_ID1 = 4;
     private final int HOMEWORK_ID2 = 16;
@@ -111,39 +105,16 @@ public class HomeworkControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"STUDENT"})
-    public void studentCannotDeleteHomework() throws Exception {
-        mvc.perform(delete("/homeworks/" + HOMEWORK_ID1))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    @WithMockUser(roles = {"TEACHER"})
-    public void teacherCanDeleteHomework() throws Exception {
+    @WithMockUser
+    public void canDeleteHomework() throws Exception {
         mvc.perform(delete("/homeworks/" + HOMEWORK_ID1))
                 .andExpect(status().isOk());
     }
 
     @Ignore
     @Test
-    @WithMockUser(roles = {"STUDENT"})
-    public void studentCannotPostHomework() throws Exception {
-        var file = new MockMultipartFile("file", FILE_NAME2, MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT_BYTES);
-        var saveDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, FILE_NAME2, FILE_DESCRIPTION2);
-        var dtoJson = new ObjectMapper().writeValueAsString(saveDto);
-        var dtoFile = new MockMultipartFile("dto", "dto",
-                MediaType.APPLICATION_JSON_UTF8_VALUE, dtoJson.getBytes());
-        mvc.perform(multipart("/homeworks")
-                .file(file)
-                .file(dtoFile)
-                .accept(MediaType.APPLICATION_OCTET_STREAM))
-                .andExpect(status().isForbidden());
-    }
-
-    @Ignore
-    @Test
-    @WithMockUser(roles = {"TEACHER"})
-    public void teacherCanPostHomework() throws Exception {
+    @WithMockUser
+    public void canPostHomework() throws Exception {
         var file = new MockMultipartFile("file", FILE_NAME2, MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT_BYTES);
         var saveDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, FILE_NAME2, FILE_DESCRIPTION2);
         var dtoWithoutFile = new HomeworkDtoWithoutFile(HOMEWORK_ID2, GROUP_ID, TEACHER_ID, SUBJECT_ID,
