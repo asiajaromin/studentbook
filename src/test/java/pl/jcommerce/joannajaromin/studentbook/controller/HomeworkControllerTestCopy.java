@@ -7,11 +7,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import pl.jcommerce.joannajaromin.studentbook.config.WebSecurityConfig;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.HomeworkDtoWithoutFile;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveHomeworkDto;
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(HomeworkController.class)
+@Import(WebSecurityConfig.class)
 public class HomeworkControllerTestCopy {
 
     private final int HOMEWORK_ID1 = 4;

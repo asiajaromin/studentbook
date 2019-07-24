@@ -22,6 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userService;
     private final DataSource dataSource;
+//    private final UserRepository userRepository;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -49,5 +50,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         authProvider.setPasswordEncoder(new BCryptPasswordEncoder());
         return authProvider;
     }
+
+//    @Bean
+//    public UserDetailsService userDetailsService(){
+//        return new UserService(userRepository);
+//    }
 
 }
