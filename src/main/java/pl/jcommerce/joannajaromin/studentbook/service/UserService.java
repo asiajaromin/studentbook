@@ -23,17 +23,14 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         return Optional.ofNullable(user)
-                .map(user1 -> new MyUserDetails(user1))
+                .map(MyUserDetails::new)
                 .orElseThrow(()-> new UsernameNotFoundException("Brak użytkownika o nazwie: " + username));
     }
 
+    @RequiredArgsConstructor
     private static class MyUserDetails implements UserDetails {
 
         private final User user;
-
-        public MyUserDetails(User user) {
-            this.user = user;
-        }
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {

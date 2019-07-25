@@ -14,12 +14,16 @@ class CustomUserServiceTest extends Specification {
     private String PASSWORD = "MySecretPassword"
     private String STUDENT_ROLE = "ROLE_STUDENT"
     private UserService userService
+    private UserRepository userRepository
+
+    def setup(){
+        userRepository = Mock()
+        userService = new UserService(userRepository)
+    }
 
     def "UserService should return UserDetails based on username"() {
         given:
-        def userRepository = Mock(UserRepository)
         user = new User(USER_ID, USERNAME, PASSWORD, STUDENT_ROLE)
-        userService = new UserService(userRepository)
         userRepository.findByUsername(USERNAME) >> user
 
         when:
@@ -27,23 +31,22 @@ class CustomUserServiceTest extends Specification {
 
         then:
         userFromService.username == user.username
-        userFromService.username == user.username
         userFromService.password == user.password
         userFromService.authorities.size() == 1
         userFromService.authorities[0].authority == user.authority
+        userFromService.accountNonExpired == true
+        userFromService.accountNonLocked == true
+        userFromService.credentialsNonExpired == true
+        userFromService.enabled == true
     }
 
     def "UserService should throw exception when user doesn't exist"() {
         given:
-        def userRepository = Mock(UserRepository)
-        userService = new UserService(userRepository)
-        userRepository.findByUsername(INCORRECT_USERNAME) >> null
 
         when:
-        UserDetails userFromService = userService.loadUserByUsername(INCORRECT_USERNAME)
+        userService.loadUserByUsername(INCORRECT_USERNAME)
 
         then:
-        userFromService == null
         UsernameNotFoundException exception = thrown()
         exception.message == 'Brak użytkownika o nazwie: ' + INCORRECT_USERNAME
     }
