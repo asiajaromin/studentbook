@@ -3,7 +3,6 @@ package pl.jcommerce.joannajaromin.studentbook.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.flywaydb.test.annotation.FlywayTest;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,43 +123,39 @@ public class HomeworkControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Ignore
     @Test
     @WithMockUser(roles = {"STUDENT"})
     public void studentCannotPostHomework() throws Exception {
-        var file = new MockMultipartFile("file", FILE_NAME2, MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT_BYTES);
+        var file = new MockMultipartFile("uploadFile", FILE_NAME2, MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT_BYTES);
         var saveDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, FILE_NAME2, FILE_DESCRIPTION2);
         var dtoJson = new ObjectMapper().writeValueAsString(saveDto);
-        var dtoFile = new MockMultipartFile("dto", "dto",
+        var dtoFile = new MockMultipartFile("saveHomeworkDto", "dto",
                 MediaType.APPLICATION_JSON_UTF8_VALUE, dtoJson.getBytes());
         mvc.perform(multipart("/homeworks")
                 .file(file)
-                .file(dtoFile)
-                .accept(MediaType.APPLICATION_OCTET_STREAM))
+                .file(dtoFile))
                 .andExpect(status().isForbidden());
     }
 
-    @Ignore
     @Test
     @WithMockUser(roles = {"TEACHER"})
     public void teacherCanPostHomework() throws Exception {
-        var file = new MockMultipartFile("file", FILE_NAME2, MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT_BYTES);
+        var file = new MockMultipartFile("uploadFile", FILE_NAME2, MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT_BYTES);
         var saveDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, FILE_NAME2, FILE_DESCRIPTION2);
         var dtoWithoutFile = new HomeworkDtoWithoutFile(HOMEWORK_ID2, GROUP_ID, TEACHER_ID, SUBJECT_ID,
                 FILE_NAME2, FILE_DESCRIPTION2);
         var dtoJson = new ObjectMapper().writeValueAsString(saveDto);
-        var dtoFile = new MockMultipartFile("dto", "dto",
+        var dtoFile = new MockMultipartFile("saveHomeworkDto", "dto",
                 MediaType.APPLICATION_JSON_UTF8_VALUE, dtoJson.getBytes());
         given(homeworkService.save(file,saveDto)).willReturn(dtoWithoutFile);
         mvc.perform(multipart("/homeworks")
                 .file(file)
-                .file(dtoFile)
-                .accept(MediaType.APPLICATION_OCTET_STREAM))
+                .file(dtoFile))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.groupId").value(GROUP_ID))
                 .andExpect(jsonPath("$.teacherId").value(TEACHER_ID))
                 .andExpect(jsonPath("$.subjectId").value(SUBJECT_ID))
-                .andExpect(jsonPath("$.fileName").value(FILE_NAME1))
+                .andExpect(jsonPath("$.fileName").value(FILE_NAME2))
                 .andExpect(jsonPath("$.fileDescription").value(FILE_DESCRIPTION2));
     }
 
