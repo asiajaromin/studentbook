@@ -1,10 +1,13 @@
 package pl.jcommerce.joannajaromin.studentbook.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -26,7 +29,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(GradeController.class)
+@AutoConfigureMockMvc
+@SpringBootTest
+@AutoConfigureEmbeddedDatabase
+@FlywayTest
+// WebMvcTest doesn't create beans
+// https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/autoconfigure/web/servlet/WebMvcTest.html
+// @SpringBootTest combined with @AutoConfigureMockMvc should be used
+//@WebMvcTest(controllers = GradeController.class)
 public class GradeControllerTest {
 
     private final int GRADE_ID1 = 2;
@@ -75,8 +85,18 @@ public class GradeControllerTest {
     }
 
     @Test
-    @WithMockUser
-    public void canPostGrade() throws Exception{
+    @WithMockUser(roles = {"STUDENT"})
+    public void studentCannotPostGrade() throws Exception{
+        var saveGradeDto = new SaveGradeDto(STUDENT_ID,SUBJECT_ID,GRADE1);
+        this.mvc.perform(post("/grades")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(saveGradeDto)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = {"TEACHER"})
+    public void teacherCanPostGrade() throws Exception{
         var saveGradeDto = new SaveGradeDto(STUDENT_ID,SUBJECT_ID,GRADE1);
         var gradeDto = new GradeDto(GRADE_ID1,STUDENT_ID,SUBJECT_ID,GRADE1);
         given(this.gradeService.save(saveGradeDto)).willReturn(gradeDto);
@@ -90,8 +110,18 @@ public class GradeControllerTest {
     }
 
     @Test
-    @WithMockUser
-    public void canPutGrade() throws Exception {
+    @WithMockUser(roles = {"STUDENT"})
+    public void studentCannotPutGrade() throws Exception {
+        var gradeDto = new GradeDto(GRADE_ID2,STUDENT_ID,SUBJECT_ID,GRADE2);
+        this.mvc.perform(put("/grades")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(gradeDto)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = {"TEACHER"})
+    public void teacherCanPutGrade() throws Exception {
         var gradeDto = new GradeDto(GRADE_ID2,STUDENT_ID,SUBJECT_ID,GRADE2);
         given(this.gradeService.update(gradeDto)).willReturn(gradeDto);
         this.mvc.perform(put("/grades")
@@ -105,8 +135,15 @@ public class GradeControllerTest {
     }
 
     @Test
-    @WithMockUser
-    public void canDeleteGrade() throws Exception {
+    @WithMockUser(roles = {"STUDENT"})
+    public void studentCannotDeleteGrade() throws Exception {
+        this.mvc.perform(delete("/grades/" + GRADE_ID1))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = {"TEACHER"})
+    public void teacherCanDeleteGrade() throws Exception {
         this.mvc.perform(delete("/grades/" + GRADE_ID1))
                 .andExpect(status().isOk());
     }

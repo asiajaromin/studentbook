@@ -1,11 +1,13 @@
 package pl.jcommerce.joannajaromin.studentbook.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Ignore;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -29,7 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(HomeworkController.class)
+@AutoConfigureMockMvc
+@SpringBootTest
+@AutoConfigureEmbeddedDatabase
+@FlywayTest
 public class HomeworkControllerTest {
 
     private final int HOMEWORK_ID1 = 4;
@@ -105,33 +110,52 @@ public class HomeworkControllerTest {
     }
 
     @Test
-    @WithMockUser
-    public void canDeleteHomework() throws Exception {
+    @WithMockUser(roles = {"STUDENT"})
+    public void studentCannotDeleteHomework() throws Exception {
+        mvc.perform(delete("/homeworks/" + HOMEWORK_ID1))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = {"TEACHER"})
+    public void teacherCanDeleteHomework() throws Exception {
         mvc.perform(delete("/homeworks/" + HOMEWORK_ID1))
                 .andExpect(status().isOk());
     }
 
-    @Ignore
     @Test
-    @WithMockUser
-    public void canPostHomework() throws Exception {
-        var file = new MockMultipartFile("file", FILE_NAME2, MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT_BYTES);
+    @WithMockUser(roles = {"STUDENT"})
+    public void studentCannotPostHomework() throws Exception {
+        var file = new MockMultipartFile("uploadFile", FILE_NAME2, MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT_BYTES);
+        var saveDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, FILE_NAME2, FILE_DESCRIPTION2);
+        var dtoJson = new ObjectMapper().writeValueAsString(saveDto);
+        var dtoFile = new MockMultipartFile("saveHomeworkDto", "dto",
+                MediaType.APPLICATION_JSON_UTF8_VALUE, dtoJson.getBytes());
+        mvc.perform(multipart("/homeworks")
+                .file(file)
+                .file(dtoFile))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = {"TEACHER"})
+    public void teacherCanPostHomework() throws Exception {
+        var file = new MockMultipartFile("uploadFile", FILE_NAME2, MediaType.MULTIPART_FORM_DATA_VALUE, FILE_CONTENT_BYTES);
         var saveDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, FILE_NAME2, FILE_DESCRIPTION2);
         var dtoWithoutFile = new HomeworkDtoWithoutFile(HOMEWORK_ID2, GROUP_ID, TEACHER_ID, SUBJECT_ID,
                 FILE_NAME2, FILE_DESCRIPTION2);
         var dtoJson = new ObjectMapper().writeValueAsString(saveDto);
-        var dtoFile = new MockMultipartFile("dto", "dto",
+        var dtoFile = new MockMultipartFile("saveHomeworkDto", "dto",
                 MediaType.APPLICATION_JSON_UTF8_VALUE, dtoJson.getBytes());
         given(homeworkService.save(file,saveDto)).willReturn(dtoWithoutFile);
         mvc.perform(multipart("/homeworks")
                 .file(file)
-                .file(dtoFile)
-                .accept(MediaType.APPLICATION_OCTET_STREAM))
+                .file(dtoFile))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.groupId").value(GROUP_ID))
                 .andExpect(jsonPath("$.teacherId").value(TEACHER_ID))
                 .andExpect(jsonPath("$.subjectId").value(SUBJECT_ID))
-                .andExpect(jsonPath("$.fileName").value(FILE_NAME1))
+                .andExpect(jsonPath("$.fileName").value(FILE_NAME2))
                 .andExpect(jsonPath("$.fileDescription").value(FILE_DESCRIPTION2));
     }
 

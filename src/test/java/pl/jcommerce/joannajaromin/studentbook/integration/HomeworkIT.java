@@ -55,6 +55,10 @@ public class HomeworkIT {
     private final String HOMEWORK_NOT_FOUND_MESSAGE = "Brak zadania o id = ";
     private final String INCORRECT_ID_FORMAT_MESSAGE = "Nieprawidłowa wartość id.";
     private final int ARRAY_LENGTH = 2;
+    private final String TEACHER_USERNAME = "nauczyciel";
+    private final String TEACHER_PASSWORD = "nauczyciel321";
+    private final String STUDENT_USERNAME = "jasio";
+    private final String STUDENT_PASSWORD = "jasio123";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -68,7 +72,7 @@ public class HomeworkIT {
         var homeworkDto = new HomeworkDtoWithoutFile(GET_ID, GROUP_ID, TEACHER_ID, SUBJECT_ID,
                 FILE_NAME, FILE_DESCRIPTION);
         ResponseEntity<String> responseEntity = restTemplate
-                .withBasicAuth("studentbook", "student")
+                .withBasicAuth(STUDENT_USERNAME, STUDENT_PASSWORD)
                 .getForEntity(("/homeworks/" + GET_ID), String.class);
         String expectedBody = objectMapper.writeValueAsString(homeworkDto);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -79,7 +83,7 @@ public class HomeworkIT {
     @FlywayTest
     public void canGetHomeworksList() throws JSONException, JsonProcessingException {
         ResponseEntity<String> responseEntity = restTemplate
-                .withBasicAuth("studentbook", "student")
+                .withBasicAuth(STUDENT_USERNAME, STUDENT_PASSWORD)
                 .getForEntity(("/homeworks"), String.class);
         var dto = new HomeworkDtoWithoutFile(GET_ID, GROUP_ID, TEACHER_ID, SUBJECT_ID, FILE_NAME,
                 FILE_DESCRIPTION);
@@ -101,10 +105,20 @@ public class HomeworkIT {
 
     @Test
     @FlywayTest
-    public void canDeleteHomework() {
+    public void studentCannotDeleteHomework() {
+        HttpEntity<HomeworkDto> entity = new HttpEntity(null);
+        HttpStatus status = restTemplate
+                .withBasicAuth(STUDENT_USERNAME, STUDENT_PASSWORD)
+                .exchange(("/homeworks/" + DELETE_ID), HttpMethod.DELETE, entity, String.class).getStatusCode();
+        assertEquals(HttpStatus.FORBIDDEN, status);
+    }
+
+    @Test
+    @FlywayTest
+    public void teacherCanDeleteHomework() {
         HttpEntity<HomeworkDto> entity = new HttpEntity(null);
         ResponseEntity<String> responseEntity = restTemplate
-                .withBasicAuth("studentbook", "student")
+                .withBasicAuth(TEACHER_USERNAME, TEACHER_PASSWORD)
                 .exchange(("/homeworks/" + DELETE_ID), HttpMethod.DELETE, entity, String.class);
         String expectedDeleteBody = null;
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -113,7 +127,23 @@ public class HomeworkIT {
 
     @Test
     @FlywayTest
-    public void canPostHomework() throws JSONException {
+    public void studentCannotPostHomework() {
+        var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, POST_FILE_NAME,
+                POST_FILE_DESCRIPTION);
+        ClassPathResource file = new ClassPathResource("Zadanie123.pdf");
+        LinkedMultiValueMap<String, Object> parameters = new LinkedMultiValueMap<String, Object>();
+        parameters.add("uploadFile", file);
+        parameters.add("saveHomeworkDto", saveHomeworkDto);
+        HttpEntity<LinkedMultiValueMap<String, Object>> entity = new HttpEntity<>(parameters);
+        HttpStatus status = restTemplate
+                .withBasicAuth(STUDENT_USERNAME, STUDENT_PASSWORD)
+                .exchange(("/homeworks"), HttpMethod.POST, entity, String.class).getStatusCode();
+        assertEquals(HttpStatus.FORBIDDEN, status);
+    }
+
+    @Test
+    @FlywayTest
+    public void teacherCanPostHomework() throws JSONException {
         var saveHomeworkDto = new SaveHomeworkDto(GROUP_ID, TEACHER_ID, SUBJECT_ID, POST_FILE_NAME,
                 POST_FILE_DESCRIPTION);
         ClassPathResource file = new ClassPathResource("Zadanie123.pdf");
@@ -122,7 +152,7 @@ public class HomeworkIT {
         parameters.add("saveHomeworkDto", saveHomeworkDto);
         HttpEntity<LinkedMultiValueMap<String, Object>> entity = new HttpEntity<>(parameters);
         ResponseEntity<String> responseEntity = restTemplate
-                .withBasicAuth("studentbook", "student")
+                .withBasicAuth(TEACHER_USERNAME, TEACHER_PASSWORD)
                 .exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
         JSONObject dtoJSON = new JSONObject(responseEntity.getBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -141,12 +171,12 @@ public class HomeworkIT {
         parameters.add("saveHomeworkDto", saveHomeworkDto);
         HttpEntity<LinkedMultiValueMap<String, Object>> entity = new HttpEntity<>(parameters);
         ResponseEntity<String> responseEntity = restTemplate
-                .withBasicAuth("studentbook", "student")
+                .withBasicAuth(TEACHER_USERNAME, TEACHER_PASSWORD)
                 .exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
         JSONObject dtoJSON = new JSONObject(responseEntity.getBody());
         int homeworkId = dtoJSON.getInt("id");
         ResponseEntity<ByteArrayResource> fileEntity = restTemplate
-                .withBasicAuth("studentbook", "student")
+                .withBasicAuth(STUDENT_USERNAME, STUDENT_PASSWORD)
                 .getForEntity("/homeworks/fileContent/" + homeworkId, ByteArrayResource.class);
         ByteArrayResource resource = fileEntity.getBody();
         ByteArrayResource expectedFile = new ByteArrayResource(file.getInputStream().readAllBytes());
@@ -158,7 +188,7 @@ public class HomeworkIT {
     @FlywayTest
     public void canThrowExceptionForAbsentId() {
         ResponseEntity<String> responseEntity = restTemplate
-                .withBasicAuth("studentbook", "student")
+                .withBasicAuth(STUDENT_USERNAME, STUDENT_PASSWORD)
                 .getForEntity(("/homeworks/" + NON_EXISTENT_HOMEWORK_ID), String.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertTrue(responseEntity.getBody()
@@ -169,7 +199,7 @@ public class HomeworkIT {
     @FlywayTest
     public void canReturnMessageForIncorrectId() {
         ResponseEntity<String> responseEntity = restTemplate
-                .withBasicAuth("studentbook", "student")
+                .withBasicAuth(STUDENT_USERNAME, STUDENT_PASSWORD)
                 .getForEntity(("/homeworks/" + INCORRECT_HOMEWORK_ID), String.class);
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertEquals(INCORRECT_ID_FORMAT_MESSAGE, responseEntity.getBody());
@@ -186,7 +216,7 @@ public class HomeworkIT {
         parameters.add("saveHomeworkDto", saveHomeworkDto);
         HttpEntity<LinkedMultiValueMap<String, Object>> entity = new HttpEntity<>(parameters);
         ResponseEntity<String> responseEntity = restTemplate
-                .withBasicAuth("studentbook", "student")
+                .withBasicAuth(STUDENT_USERNAME, STUDENT_PASSWORD)
                 .exchange(("/homeworks"), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
