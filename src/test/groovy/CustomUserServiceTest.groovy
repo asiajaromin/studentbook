@@ -32,12 +32,11 @@ class CustomUserServiceTest extends Specification {
         then:
         userFromService.username == user.username
         userFromService.password == user.password
-        userFromService.authorities.size() == 1
-        userFromService.authorities[0].authority == user.authority
-        userFromService.accountNonExpired == true
-        userFromService.accountNonLocked == true
-        userFromService.credentialsNonExpired == true
-        userFromService.enabled == true
+        userFromService.authorities.collect {it.getAuthority()} == [user.authority]
+        userFromService.accountNonExpired
+        userFromService.accountNonLocked
+        userFromService.credentialsNonExpired
+        userFromService.enabled
     }
 
     def "UserService should throw exception when user doesn't exist"() {
