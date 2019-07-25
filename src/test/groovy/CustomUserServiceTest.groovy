@@ -37,9 +37,9 @@ class CustomUserServiceTest extends Specification {
         given:
         def userRepository = Mock(UserRepository)
         userService = new UserService(userRepository)
+        userRepository.findByUsername(INCORRECT_USERNAME) >> null
 
         when:
-        userRepository.findByUsername(INCORRECT_USERNAME) >> null
         UserDetails userFromService = userService.loadUserByUsername(INCORRECT_USERNAME)
 
         then:
