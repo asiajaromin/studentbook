@@ -1,6 +1,7 @@
 package pl.jcommerce.joannajaromin.studentbook.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.MailException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
@@ -8,8 +9,12 @@ import pl.jcommerce.joannajaromin.studentbook.dto.OrikaGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
+import pl.jcommerce.joannajaromin.studentbook.entity.Student;
+import pl.jcommerce.joannajaromin.studentbook.entity.Subject;
 import pl.jcommerce.joannajaromin.studentbook.exception.GradeNotFoundException;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
+import pl.jcommerce.joannajaromin.studentbook.repository.StudentRepository;
+import pl.jcommerce.joannajaromin.studentbook.repository.SubjectRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +26,9 @@ public class GradeServiceImpl implements GradeService{
     private final GradeRepository gradeRepository;
     private final OrikaGradeConverter converter;
     private final OrikaSaveGradeConverter saveConverter;
+    private final MailService mailService;
+    private final StudentRepository studentRepository;
+    private final SubjectRepository subjectRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -45,7 +53,19 @@ public class GradeServiceImpl implements GradeService{
     public GradeDto save(SaveGradeDto saveGradeDto) {
         var grade = saveConverter.map(saveGradeDto,Grade.class);
         var saved = gradeRepository.save(grade);
-        return converter.map(saved, GradeDto.class);
+        GradeDto gradeDto = converter.map(saved, GradeDto.class);
+        int subjectId = gradeDto.getSubjectId();
+        int studentId = gradeDto.getStudentId();
+        Subject subject = subjectRepository.findById(subjectId);
+        Student student = studentRepository.findById(studentId);
+        try {
+            mailService.sendEmailToStudent(gradeDto,subject,student);
+        }
+        catch (MailException mailException){
+            throw mailException;
+        }
+
+        return gradeDto;
     }
 
     @Override

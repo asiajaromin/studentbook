@@ -8,6 +8,8 @@ import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
+import pl.jcommerce.joannajaromin.studentbook.repository.StudentRepository;
+import pl.jcommerce.joannajaromin.studentbook.repository.SubjectRepository;
 
 import java.util.Arrays;
 
@@ -26,6 +28,9 @@ public class GradeServiceTest {
     private GradeService gradeService;
     private OrikaGradeConverter gradeConverter;
     private OrikaSaveGradeConverter saveGradeConverter;
+    private StudentRepository studentRepository;
+    private SubjectRepository subjectRepository;
+    private MailService mailService;
 
     @Before
     public void before(){
@@ -33,9 +38,12 @@ public class GradeServiceTest {
         grade = new Grade();
         saveGradeDto = new SaveGradeDto();
         gradeRepository = mock(GradeRepository.class);
+        studentRepository = mock(StudentRepository.class);
+        subjectRepository = mock(SubjectRepository.class);
+        mailService = mock(MailService.class);
         gradeConverter = mock(OrikaGradeConverter.class);
         saveGradeConverter = mock(OrikaSaveGradeConverter.class);
-        gradeService = new GradeServiceImpl(gradeRepository,gradeConverter,saveGradeConverter);
+        gradeService = new GradeServiceImpl(gradeRepository,gradeConverter,saveGradeConverter,mailService,studentRepository,subjectRepository);
         when(gradeConverter.map(grade,GradeDto.class)).thenReturn(gradeDto);
     }
 
