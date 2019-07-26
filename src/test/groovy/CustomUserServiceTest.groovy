@@ -9,10 +9,10 @@ class CustomUserServiceTest extends Specification {
 
     private User user
     private int USER_ID = 12
-    private String USERNAME = "Best User"
-    private String INCORRECT_USERNAME = "Bad user"
-    private String PASSWORD = "MySecretPassword"
-    private String STUDENT_ROLE = "ROLE_STUDENT"
+    private final String USERNAME = "Best User"
+    private final String INCORRECT_USERNAME = "Bad user"
+    private final String PASSWORD = "MySecretPassword"
+    private final String STUDENT_ROLE = "ROLE_STUDENT"
     private UserService userService
     private UserRepository userRepository
 

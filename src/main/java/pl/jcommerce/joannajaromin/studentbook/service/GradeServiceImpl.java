@@ -10,7 +10,6 @@ import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.entity.Student;
-import pl.jcommerce.joannajaromin.studentbook.entity.Subject;
 import pl.jcommerce.joannajaromin.studentbook.exception.GradeNotFoundException;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
 import pl.jcommerce.joannajaromin.studentbook.repository.StudentRepository;
@@ -56,10 +55,11 @@ public class GradeServiceImpl implements GradeService{
         GradeDto gradeDto = converter.map(saved, GradeDto.class);
         int subjectId = gradeDto.getSubjectId();
         int studentId = gradeDto.getStudentId();
-        Subject subject = subjectRepository.findById(subjectId);
+        String subjectName = subjectRepository.findNameById(subjectId);
         Student student = studentRepository.findById(studentId);
+        int gradeInt = gradeDto.getGrade();
         try {
-            mailService.sendEmailToStudent(gradeDto,subject,student);
+            mailService.sendEmailToStudent(gradeInt,subjectName,student);
         }
         catch (MailException mailException){
             throw mailException;
