@@ -20,7 +20,10 @@ import static org.mockito.Mockito.when;
 
 public class GradeServiceTest {
 
-    private final int GRADE_ID = 1;
+    private static final int GRADE_ID = 1;
+    private static final int STUDENT_ID = 1;
+    private static final int SUBJECT_ID = 2;
+    private static final int GRADE = 3;
     private GradeDto gradeDto;
     private GradeRepository gradeRepository;
     private Grade grade;
@@ -34,7 +37,7 @@ public class GradeServiceTest {
 
     @Before
     public void before(){
-        gradeDto = new GradeDto();
+        gradeDto = new GradeDto(GRADE_ID,STUDENT_ID,SUBJECT_ID,GRADE);
         grade = new Grade();
         saveGradeDto = new SaveGradeDto();
         gradeRepository = mock(GradeRepository.class);
@@ -68,6 +71,7 @@ public class GradeServiceTest {
     public void canSaveGrade() {
         when(saveGradeConverter.map(saveGradeDto,Grade.class)).thenReturn(grade);
         when(gradeRepository.save(grade)).thenReturn(grade);
+        when(gradeConverter.map(grade,GradeDto.class)).thenReturn(gradeDto);
         var savedGradeDto = gradeService.save(saveGradeDto);
         assertEquals(gradeDto,savedGradeDto);
     }
