@@ -32,7 +32,7 @@ class CustomUserServiceTest extends Specification {
         then:
         userFromService.username == user.username
         userFromService.password == user.password
-        userFromService.authorities.collect {it.getAuthority()} == [user.authority]
+        userFromService.authorities.collect {it.authority} == [user.authority]
         userFromService.accountNonExpired
         userFromService.accountNonLocked
         userFromService.credentialsNonExpired
