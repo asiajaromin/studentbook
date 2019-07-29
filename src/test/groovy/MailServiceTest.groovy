@@ -7,7 +7,6 @@ import spock.lang.Specification
 
 class MailServiceTest extends Specification {
 
-//    there is some problem with final fields: https://github.com/spockframework/spock/issues/963
     def FIRST_NAME = "Henryk"
     def LAST_NAME = "Nowak"
     def EMAIL_ADDRESS = "henryk.nowak@mail.pl"
