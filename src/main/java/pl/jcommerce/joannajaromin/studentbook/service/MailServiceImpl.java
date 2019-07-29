@@ -45,7 +45,7 @@ public class MailServiceImpl implements MailService {
         messageHelper.setSubject("Wystawiono nową ocenę z przedmiotu: " + subjectName);
         messageHelper.setTo(student.getEmail());
         Context context = createContext(gradeInt,subjectName,student);
-        String htmlContent = this.htmlTemplateEngine.process("html/email-template.html",context);
+        String htmlContent = this.htmlTemplateEngine.process("email-template",context);
         messageHelper.setText(htmlContent,true);
         return mimeMessage;
     }
