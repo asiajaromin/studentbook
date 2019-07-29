@@ -50,7 +50,7 @@ public class GradeServiceImpl implements GradeService{
 
     @Override
     @Transactional
-    public GradeDto save(SaveGradeDto saveGradeDto) {
+    public GradeDto save(SaveGradeDto saveGradeDto) throws MailException {
         var grade = saveConverter.map(saveGradeDto,Grade.class);
         var saved = gradeRepository.save(grade);
         GradeDto gradeDto = converter.map(saved, GradeDto.class);
@@ -60,12 +60,7 @@ public class GradeServiceImpl implements GradeService{
         String subjectName = subject.getName();
         Student student = studentRepository.myFindById(studentId);
         int gradeInt = gradeDto.getGrade();
-        try {
-            mailService.sendEmailToStudent(gradeInt,subjectName,student);
-        }
-        catch (MailException mailException){
-            throw mailException;
-        }
+        mailService.sendEmailToStudent(gradeInt,subjectName,student);
         return gradeDto;
     }
 
