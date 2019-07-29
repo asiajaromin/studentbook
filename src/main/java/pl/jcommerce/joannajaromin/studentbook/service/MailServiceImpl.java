@@ -35,7 +35,6 @@ public class MailServiceImpl implements MailService {
         String subjectName = subject.getName();
         Student student = studentRepository.myFindById(studentId);
         int gradeInt = gradeDto.getGrade();
-//        SimpleMailMessage email = prepareEmail(gradeInt, subjectName, student);
         MimeMessage email = prepareMessage(gradeInt, subjectName, student);
         javaMailSender.send(email);
     }
@@ -60,31 +59,4 @@ public class MailServiceImpl implements MailService {
         return context;
     }
 
-
-//    private SimpleMailMessage prepareEmail(int grade, String subjectName, Student student) {
-//        SimpleMailMessage email = new SimpleMailMessage();
-//        email.setTo(student.getEmail());
-//        email.setSubject("Wystawiono nową ocenę z przedmiotu: " + subjectName);
-//        String emailText = prepareEmailText(grade, subjectName, student);
-//        email.setText(emailText);
-//        return email;
-//    }
-//
-//    private String prepareEmailText(int grade, String subjectName, Student student) {
-//        return new StringBuilder()
-//                    .append("Witaj ")
-//                    .append(student.getFirstName())
-//                    .append(" ")
-//                    .append(student.getLastName())
-//                    .append(System.lineSeparator())
-//                    .append(System.lineSeparator())
-//                    .append("Otrzymałeś ocenę!")
-//                    .append(System.lineSeparator())
-//                    .append("Nazwa przedmiotu: ")
-//                    .append(subjectName)
-//                    .append(System.lineSeparator())
-//                    .append("Ocena: ")
-//                    .append(grade)
-//                    .toString();
-//    }
 }
