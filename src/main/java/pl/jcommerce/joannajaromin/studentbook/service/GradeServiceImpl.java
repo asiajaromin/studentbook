@@ -12,6 +12,7 @@ import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.exception.GradeNotFoundException;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
 
+import javax.mail.MessagingException;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +45,7 @@ public class GradeServiceImpl implements GradeService{
 
     @Override
     @Transactional
-    public GradeDto save(SaveGradeDto saveGradeDto) throws MailException {
+    public GradeDto save(SaveGradeDto saveGradeDto) throws MailException, MessagingException {
         var grade = saveConverter.map(saveGradeDto,Grade.class);
         var saved = gradeRepository.save(grade);
         GradeDto gradeDto = converter.map(saved, GradeDto.class);

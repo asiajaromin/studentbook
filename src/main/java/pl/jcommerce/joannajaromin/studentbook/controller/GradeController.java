@@ -14,6 +14,7 @@ import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class GradeController {
 
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @PostMapping("/grades")
-    public GradeDto saveGrade(@Valid @RequestBody SaveGradeDto grade){
+    public GradeDto saveGrade(@Valid @RequestBody SaveGradeDto grade) throws MessagingException {
         return gradeService.save(grade);
     }
 

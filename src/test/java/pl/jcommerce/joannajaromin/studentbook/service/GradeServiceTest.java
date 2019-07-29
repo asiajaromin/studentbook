@@ -11,6 +11,7 @@ import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
 import pl.jcommerce.joannajaromin.studentbook.repository.StudentRepository;
 import pl.jcommerce.joannajaromin.studentbook.repository.SubjectRepository;
 
+import javax.mail.MessagingException;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -68,7 +69,7 @@ public class GradeServiceTest {
     }
 
     @Test
-    public void canSaveGrade() {
+    public void canSaveGrade() throws MessagingException {
         when(saveGradeConverter.map(saveGradeDto,Grade.class)).thenReturn(grade);
         when(gradeRepository.save(grade)).thenReturn(grade);
         when(gradeConverter.map(grade,GradeDto.class)).thenReturn(gradeDto);

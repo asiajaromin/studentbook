@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">Otrzymałeś nową ocenę!</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<h4 th:text="${'Witaj '+ firstName + ' ' + lastName + ' !'}"></h4>
+<h4 th:text="${'Wystawiono nową ocenę z przedmiotu: '+ subject}"></h4>
+<h4 class="h4 mb-4" th:text="${'Otrzymana ocena to: '+ grade}"></h4>
+<h1 class="h2 mb-4" th:if="${grade==1}">:((</h1>
+<h1 class="h2 mb-4" th:if="${grade==2}">:(</h1>
+<h1 class="h2 mb-4" th:if="${grade==3}">:|</h1>
+<h1 class="h2 mb-4" th:if="${grade==4}">:)</h1>
+<h1 class="h2 mb-4" th:if="${grade==5}">:))</h1>
+<h1 class="h2 mb-4" th:if="${grade==6}">:D</h1>
+</body>
+</html>
