@@ -21,7 +21,7 @@ public class MailServiceImpl implements MailService {
     private final SubjectRepository subjectRepository;
 
     @Override
-    @Async("asyncExecutor")
+    @Async
     public void sendEmailToStudent(GradeDto gradeDto) throws MailException {
         int subjectId = gradeDto.getSubjectId();
         int studentId = gradeDto.getStudentId();
