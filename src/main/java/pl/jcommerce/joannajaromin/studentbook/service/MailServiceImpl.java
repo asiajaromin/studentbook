@@ -4,18 +4,32 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Student;
+import pl.jcommerce.joannajaromin.studentbook.entity.Subject;
+import pl.jcommerce.joannajaromin.studentbook.repository.StudentRepository;
+import pl.jcommerce.joannajaromin.studentbook.repository.SubjectRepository;
 
 @Service
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
 
     private final JavaMailSender javaMailSender;
+    private final StudentRepository studentRepository;
+    private final SubjectRepository subjectRepository;
 
     @Override
-    public void sendEmailToStudent(int grade, String subjectName, Student student) throws MailException {
-        SimpleMailMessage email = prepareEmail(grade, subjectName, student);
+    @Async("asyncExecutor")
+    public void sendEmailToStudent(GradeDto gradeDto) throws MailException {
+        int subjectId = gradeDto.getSubjectId();
+        int studentId = gradeDto.getStudentId();
+        Subject subject = subjectRepository.myFindById(subjectId);
+        String subjectName = subject.getName();
+        Student student = studentRepository.myFindById(studentId);
+        int gradeInt = gradeDto.getGrade();
+        SimpleMailMessage email = prepareEmail(gradeInt, subjectName, student);
         javaMailSender.send(email);
     }
 

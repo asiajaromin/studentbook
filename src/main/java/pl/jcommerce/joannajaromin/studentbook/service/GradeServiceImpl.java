@@ -9,12 +9,8 @@ import pl.jcommerce.joannajaromin.studentbook.dto.OrikaGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
-import pl.jcommerce.joannajaromin.studentbook.entity.Student;
-import pl.jcommerce.joannajaromin.studentbook.entity.Subject;
 import pl.jcommerce.joannajaromin.studentbook.exception.GradeNotFoundException;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
-import pl.jcommerce.joannajaromin.studentbook.repository.StudentRepository;
-import pl.jcommerce.joannajaromin.studentbook.repository.SubjectRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +23,6 @@ public class GradeServiceImpl implements GradeService{
     private final OrikaGradeConverter converter;
     private final OrikaSaveGradeConverter saveConverter;
     private final MailService mailService;
-    private final StudentRepository studentRepository;
-    private final SubjectRepository subjectRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -54,13 +48,7 @@ public class GradeServiceImpl implements GradeService{
         var grade = saveConverter.map(saveGradeDto,Grade.class);
         var saved = gradeRepository.save(grade);
         GradeDto gradeDto = converter.map(saved, GradeDto.class);
-        int subjectId = gradeDto.getSubjectId();
-        int studentId = gradeDto.getStudentId();
-        Subject subject = subjectRepository.myFindById(subjectId);
-        String subjectName = subject.getName();
-        Student student = studentRepository.myFindById(studentId);
-        int gradeInt = gradeDto.getGrade();
-        mailService.sendEmailToStudent(gradeInt,subjectName,student);
+        mailService.sendEmailToStudent(gradeDto);
         return gradeDto;
     }
 

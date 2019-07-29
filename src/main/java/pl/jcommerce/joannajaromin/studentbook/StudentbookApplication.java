@@ -16,7 +16,7 @@ public class StudentbookApplication {
         SpringApplication.run(StudentbookApplication.class, args);
     }
 
-    @Bean(name = "asyncExector")
+    @Bean(name = "asyncExecutor")
     public Executor asyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);

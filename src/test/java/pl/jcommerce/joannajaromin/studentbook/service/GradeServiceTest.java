@@ -46,7 +46,7 @@ public class GradeServiceTest {
         mailService = mock(MailService.class);
         gradeConverter = mock(OrikaGradeConverter.class);
         saveGradeConverter = mock(OrikaSaveGradeConverter.class);
-        gradeService = new GradeServiceImpl(gradeRepository,gradeConverter,saveGradeConverter,mailService,studentRepository,subjectRepository);
+        gradeService = new GradeServiceImpl(gradeRepository,gradeConverter,saveGradeConverter,mailService);
         when(gradeConverter.map(grade,GradeDto.class)).thenReturn(gradeDto);
     }
 
