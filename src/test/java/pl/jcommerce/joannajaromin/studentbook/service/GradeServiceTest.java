@@ -62,7 +62,7 @@ public class GradeServiceTest {
 
     @Test
     public void canGetSingleGrade(){
-        when(gradeRepository.findById(GRADE_ID)).thenReturn(grade);
+        when(gradeRepository.myFindById(GRADE_ID)).thenReturn(grade);
         var obtainedDto = gradeService.findById(GRADE_ID);
         assertEquals(gradeDto,obtainedDto);
     }
@@ -72,7 +72,7 @@ public class GradeServiceTest {
         when(saveGradeConverter.map(saveGradeDto,Grade.class)).thenReturn(grade);
         when(gradeRepository.save(grade)).thenReturn(grade);
         when(gradeConverter.map(grade,GradeDto.class)).thenReturn(gradeDto);
-        var savedGradeDto = gradeService.save(saveGradeDto);
+        GradeDto savedGradeDto = gradeService.save(saveGradeDto);
         assertEquals(gradeDto,savedGradeDto);
     }
 

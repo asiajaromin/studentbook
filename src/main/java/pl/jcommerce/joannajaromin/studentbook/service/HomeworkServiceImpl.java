@@ -46,7 +46,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     @Transactional(readOnly = true)
     public HomeworkDtoWithoutFile findById(int homeworkId) {
-        var homework = homeworkRepository.findById(homeworkId);
+        var homework = homeworkRepository.myFindById(homeworkId);
         return Optional.ofNullable(homework)
                 .map(homework1->withoutFileConverter.map(homework1,HomeworkDtoWithoutFile.class))
                 .orElseThrow(()-> new HomeworkNotFoundException("Brak zadania o id = " + homeworkId));
@@ -64,7 +64,7 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     @Transactional(readOnly = true)
     public HomeworkDto findByIdWithFileContent(int homeworkId) {
-        var homework = homeworkRepository.findById(homeworkId);
+        var homework = homeworkRepository.myFindById(homeworkId);
         return Optional.ofNullable(homework)
                 .map(homework1 -> homeworkConverter.map(homework1, HomeworkDto.class))
                 .orElseThrow(() -> new HomeworkNotFoundException("Brak zadania o id = " + homeworkId));

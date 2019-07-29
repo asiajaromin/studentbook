@@ -87,7 +87,7 @@ public class HomeworkServiceTest {
 
     @Test
     public void canGetSingleHomeworkInfo() {
-        when(homeworkRepository.findById(HOMEWORK_ID1)).thenReturn(homework);
+        when(homeworkRepository.myFindById(HOMEWORK_ID1)).thenReturn(homework);
         when(homeworkWithoutFileConverter.map(homework,HomeworkDtoWithoutFile.class)).thenReturn(homeworkDtoInfo);
         var foundHomeworkDtoWithoutFile = homeworkService.findById(HOMEWORK_ID1);
         assertEquals(homeworkDtoInfo,foundHomeworkDtoWithoutFile);
@@ -111,7 +111,7 @@ public class HomeworkServiceTest {
 
     @Test
     public void canGetHomeworkWithFileContent() {
-        when(homeworkRepository.findById(HOMEWORK_ID1)).thenReturn(homework);
+        when(homeworkRepository.myFindById(HOMEWORK_ID1)).thenReturn(homework);
         when(homeworkConverter.map(homework,HomeworkDto.class)).thenReturn(homeworkDto);
         HomeworkDto foundHomeworkDto = homeworkService.findByIdWithFileContent(HOMEWORK_ID1);
         assertEquals(homeworkDto,foundHomeworkDto);
