@@ -1,6 +1,5 @@
 package pl.jcommerce.joannajaromin.studentbook.service;
 
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,23 +53,18 @@ public class GradeServiceImpl implements GradeService {
     @Transactional
     public GradeDto save(SaveGradeDto saveGradeDto) {
         var grade = saveConverter.map(saveGradeDto, Grade.class);
-            var saved = gradeRepository.save(grade);
-            GradeDto gradeDto = converter.map(saved, GradeDto.class);
+        Grade saved;
+        saved = gradeRepository.save(grade);
+        GradeDto gradeDto = converter.map(saved, GradeDto.class);
+        if (saved != null) {
             int gradeInt = gradeDto.getGrade();
-        try {
-            String subjectName = Optional.ofNullable(subjectRepository.findByIdCustom(gradeDto.getSubjectId()))
-                    .map(subject -> subject.getName())
-                    .orElseThrow(() -> new NotFoundException("Nie znaleziono przedmiotu o id: " + gradeDto.getSubjectId()));
-            Student student = Optional.ofNullable(studentRepository.findByIdCustom(gradeDto.getStudentId()))
-                    .orElseThrow(() -> new NotFoundException("Nie znaleziono ucznia o id: " + gradeDto.getSubjectId()));
+            String subjectName = subjectRepository.findByIdCustom(gradeDto.getSubjectId()).getName();
+            Student student = studentRepository.findByIdCustom(gradeDto.getStudentId());
             EmailData emailData = new EmailData(subjectName, gradeInt, student);
             mailService.sendEmailToStudentAboutNewGrade(emailData);
-            return gradeDto;
-        } catch (NotFoundException e) {
-            log.error(e.getMessage());
-        }
-        return gradeDto;
     }
+        return gradeDto;
+}
 
     @Override
     @Transactional
