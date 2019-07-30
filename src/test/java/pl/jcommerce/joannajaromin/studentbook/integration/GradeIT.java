@@ -33,6 +33,8 @@ public class GradeIT {
     private final int NON_EXISTENT_GRADE_ID = 21535;
     private final String INCORRECT_GRADE_ID = "62shd";
     private final int STUDENT_ID = 1;
+    private final int NONEXISTENT_SUBJECT_ID = 345;
+    private final int NONEXISTENT_STUDENT_ID = 5236;
     private final int SUBJECT_ID = 1;
     private final int GRADE = 5;
     private final int INCORRECT_GRADE = 7;
@@ -42,6 +44,8 @@ public class GradeIT {
     private final String TEACHER_PASSWORD = "nauczyciel321";
     private final String STUDENT_USERNAME = "jasio";
     private final String STUDENT_PASSWORD = "jasio123";
+    private static final String INCORRECT_INPUT_MESSAGE = "Wprowadzone informacje niezgodne z aktualnym stanem bazy danych.";
+    private static final String INCORRECT_GRADE_MESSAGE = "Ocena powinna być liczbą całkowitą od 1 do 6.";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -61,7 +65,7 @@ public class GradeIT {
     }
 
     @Test
-    public void studentCannotPostGrade() throws JSONException {
+    public void studentCannotPostGrade() {
         var saveGradeDto = new SaveGradeDto(STUDENT_ID, SUBJECT_ID, GRADE);
         var postEntity = new HttpEntity(saveGradeDto);
         var status = restTemplate
@@ -125,6 +129,29 @@ public class GradeIT {
                 .withBasicAuth("nauczyciel", "nauczyciel321")
                 .exchange(("/grades"), HttpMethod.POST, entity, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertTrue(responseEntity.getBody().contains(INCORRECT_GRADE_MESSAGE));
+    }
+
+    @Test
+    public void cannotSaveGradeForNonexistentSubject() {
+        var saveGradeDto = new SaveGradeDto(STUDENT_ID, NONEXISTENT_SUBJECT_ID, GRADE);
+        HttpEntity<SaveGradeDto> entity = new HttpEntity(saveGradeDto);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("nauczyciel", "nauczyciel321")
+                .exchange(("/grades"), HttpMethod.POST, entity, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(INCORRECT_INPUT_MESSAGE,responseEntity.getBody());
+    }
+
+    @Test
+    public void cannotSaveGradeForNonexistentStudent() {
+        var saveGradeDto = new SaveGradeDto(NONEXISTENT_STUDENT_ID, SUBJECT_ID, GRADE);
+        HttpEntity<SaveGradeDto> entity = new HttpEntity(saveGradeDto);
+        ResponseEntity<String> responseEntity = restTemplate
+                .withBasicAuth("nauczyciel", "nauczyciel321")
+                .exchange(("/grades"), HttpMethod.POST, entity, String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(INCORRECT_INPUT_MESSAGE,responseEntity.getBody());
     }
 
     @Test
