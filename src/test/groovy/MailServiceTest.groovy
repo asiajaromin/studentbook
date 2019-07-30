@@ -49,7 +49,7 @@ class MailServiceTest extends Specification {
         given:
 
         when:
-        mailService.sendEmailToStudent(GRADE,SUBJECT_NAME,student)
+        mailService.sendEmailToStudentAboutNewGrade(GRADE,SUBJECT_NAME,student)
 
         then:
         1 * mailSender.send(_)
@@ -63,7 +63,7 @@ class MailServiceTest extends Specification {
         emailMessage.setText(EXPECTED_EMAIL_TEXT)
 
         when:
-        mailService.sendEmailToStudent(GRADE,SUBJECT_NAME,student)
+        mailService.sendEmailToStudentAboutNewGrade(GRADE,SUBJECT_NAME,student)
 
         then:
         1 * mailSender.send(emailMessage)

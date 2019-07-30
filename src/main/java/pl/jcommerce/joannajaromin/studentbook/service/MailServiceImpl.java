@@ -1,61 +1,50 @@
 package pl.jcommerce.joannajaromin.studentbook.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.MailException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
-import pl.jcommerce.joannajaromin.studentbook.entity.Student;
-import pl.jcommerce.joannajaromin.studentbook.entity.Subject;
-import pl.jcommerce.joannajaromin.studentbook.repository.StudentRepository;
-import pl.jcommerce.joannajaromin.studentbook.repository.SubjectRepository;
+import pl.jcommerce.joannajaromin.studentbook.dto.EmailData;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
 
     private final JavaMailSender javaMailSender;
-    private final StudentRepository studentRepository;
-    private final SubjectRepository subjectRepository;
     private final TemplateEngine htmlTemplateEngine;
 
     @Override
     @Async
-    public void sendEmailToStudent(GradeDto gradeDto) throws MailException, MessagingException {
-        int subjectId = gradeDto.getSubjectId();
-        int studentId = gradeDto.getStudentId();
-        Subject subject = subjectRepository.myFindById(subjectId);
-        String subjectName = subject.getName();
-        Student student = studentRepository.myFindById(studentId);
-        int gradeInt = gradeDto.getGrade();
-        MimeMessage email = prepareMessage(gradeInt, subjectName, student);
-        javaMailSender.send(email);
+    public void sendEmailToStudentAboutNewGrade(EmailData emailData) {
+        try {
+            MimeMessage email = prepareMessage(emailData);
+            javaMailSender.send(email);
+        } catch (MessagingException e) {
+            log.error(e.getMessage());
+        }
     }
 
-    private MimeMessage prepareMessage(int gradeInt, String subjectName, Student student) throws MessagingException {
+    private MimeMessage prepareMessage(EmailData emailData) throws MessagingException {
         MimeMessage mimeMessage = this.javaMailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, "UTF-8");
-        messageHelper.setSubject("Wystawiono nową ocenę z przedmiotu: " + subjectName);
-        messageHelper.setTo(student.getEmail());
-        Context context = createContext(gradeInt,subjectName,student);
+        messageHelper.setSubject("Wystawiono nową ocenę z przedmiotu: " + emailData.getSubjectName());
+        messageHelper.setTo(emailData.getStudentEmail());
+        Context context = createContext(emailData);
         String htmlContent = this.htmlTemplateEngine.process("email-template",context);
         messageHelper.setText(htmlContent,true);
         return mimeMessage;
     }
 
-    private Context createContext(int gradeInt, String subjectName, Student student) {
+    private Context createContext(EmailData emailData) {
         Context context = new Context();
-        context.setVariable("firstName",student.getFirstName());
-        context.setVariable("lastName", student.getLastName());
-        context.setVariable("subject", subjectName);
-        context.setVariable("grade", gradeInt);
+        context.setVariable("emailData",emailData);;
         return context;
     }
 

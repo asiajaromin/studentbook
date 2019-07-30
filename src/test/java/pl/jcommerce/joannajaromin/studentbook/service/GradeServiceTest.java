@@ -47,7 +47,7 @@ public class GradeServiceTest {
         mailService = mock(MailService.class);
         gradeConverter = mock(OrikaGradeConverter.class);
         saveGradeConverter = mock(OrikaSaveGradeConverter.class);
-        gradeService = new GradeServiceImpl(gradeRepository,gradeConverter,saveGradeConverter,mailService);
+        gradeService = new GradeServiceImpl(gradeRepository,gradeConverter,saveGradeConverter,mailService,subjectRepository,studentRepository);
         when(gradeConverter.map(grade,GradeDto.class)).thenReturn(gradeDto);
     }
 
@@ -63,7 +63,7 @@ public class GradeServiceTest {
 
     @Test
     public void canGetSingleGrade(){
-        when(gradeRepository.myFindById(GRADE_ID)).thenReturn(grade);
+        when(gradeRepository.findByIdCustom(GRADE_ID)).thenReturn(grade);
         var obtainedDto = gradeService.findById(GRADE_ID);
         assertEquals(gradeDto,obtainedDto);
     }
