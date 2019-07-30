@@ -1,9 +1,11 @@
 package pl.jcommerce.joannajaromin.studentbook.dto;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import pl.jcommerce.joannajaromin.studentbook.entity.Student;
 
 @Getter
+@EqualsAndHashCode
 public class EmailData {
 
     private String subjectName;
