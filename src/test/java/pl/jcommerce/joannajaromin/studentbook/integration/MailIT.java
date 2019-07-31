@@ -4,11 +4,16 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.flywaydb.test.annotation.FlywayTest;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.SyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -17,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 
 import javax.mail.internet.MimeMessage;
+import java.util.concurrent.ExecutorService;
 
 import static org.junit.Assert.assertEquals;
 
@@ -40,9 +46,25 @@ public class MailIT {
     private static final String HOST = "pop.gmail.com";
     private static final String STUDENT_EMAIL = "kowalski.jasio.nowy@gmail.com";
     private static final String STUDENT_PASSWORD = "jasio123";
+    private ExecutorService executorService;
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Before
+    public void before(){
+
+    }
+
+    @TestConfiguration
+    static class ContextConfiguration {
+
+        @Bean
+        public TaskExecutor taskExecutor() {
+            return new SyncTaskExecutor();
+        }
+    }
+
 
     @Test
     public void emailIsSentAfterPostGrade() {

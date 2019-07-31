@@ -1,8 +1,8 @@
 package pl.jcommerce.joannajaromin.studentbook.service;
 
-import pl.jcommerce.joannajaromin.studentbook.dto.EmailData;
+import pl.jcommerce.joannajaromin.studentbook.dto.EmailDto;
 
 public interface MailService {
 
-    void sendEmailToStudentAboutNewGrade(EmailData emailData);
+    void sendEmail(EmailDto emailDto);
 }

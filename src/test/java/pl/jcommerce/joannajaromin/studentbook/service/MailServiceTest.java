@@ -71,7 +71,6 @@ public class MailServiceTest {
 //        problem in the following line. Null pointer exception
 //        http://unittesting1.blogspot.com/2016/04/mockito-mocking-templateengine-throws.html
         when(htmlTemplateEngine.process("email-template",context)).thenReturn(" ");
-        mailService.sendEmailToStudentAboutNewGrade(emailData);
         verify(mailSender).send(mimeMessage);
     }
 

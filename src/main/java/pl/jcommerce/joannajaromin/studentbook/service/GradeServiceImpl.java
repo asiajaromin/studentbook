@@ -4,17 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.jcommerce.joannajaromin.studentbook.dto.EmailData;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.OrikaSaveGradeConverter;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
-import pl.jcommerce.joannajaromin.studentbook.entity.Student;
 import pl.jcommerce.joannajaromin.studentbook.exception.GradeNotFoundException;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
-import pl.jcommerce.joannajaromin.studentbook.repository.StudentRepository;
-import pl.jcommerce.joannajaromin.studentbook.repository.SubjectRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,9 +23,10 @@ public class GradeServiceImpl implements GradeService {
     private final GradeRepository gradeRepository;
     private final OrikaGradeConverter converter;
     private final OrikaSaveGradeConverter saveConverter;
-    private final MailService mailService;
-    private final SubjectRepository subjectRepository;
-    private final StudentRepository studentRepository;
+    private final GradeNotificationService gradeNotificationService;
+    //private final MailService mailService;
+    //private final SubjectRepository subjectRepository;
+    //private final StudentRepository studentRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -51,19 +48,12 @@ public class GradeServiceImpl implements GradeService {
 
     @Override
     @Transactional
-    public GradeDto save(SaveGradeDto saveGradeDto) {
-        var grade = saveConverter.map(saveGradeDto, Grade.class);
-        Grade saved;
-        saved = gradeRepository.save(grade);
-        GradeDto gradeDto = converter.map(saved, GradeDto.class);
-        if (saved != null) {
-            int gradeInt = gradeDto.getGrade();
-            String subjectName = subjectRepository.findByIdCustom(gradeDto.getSubjectId()).getName();
-            Student student = studentRepository.findByIdCustom(gradeDto.getStudentId());
-            EmailData emailData = new EmailData(subjectName, gradeInt, student);
-            mailService.sendEmailToStudentAboutNewGrade(emailData);
-    }
-        return gradeDto;
+    public GradeDto save(SaveGradeDto gradeToSaveDto) {
+        var gradeToSave = saveConverter.map(gradeToSaveDto, Grade.class);
+        var gradeSaved = gradeRepository.save(gradeToSave);
+        var gradeSavedDto = converter.map(gradeSaved, GradeDto.class);
+        gradeNotificationService.notifyAboutNewGrade(gradeSavedDto.getId());
+        return gradeSavedDto;
 }
 
     @Override
