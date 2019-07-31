@@ -6,6 +6,7 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
 import pl.jcommerce.joannajaromin.studentbook.repository.StudentRepository;
@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @AutoConfigureEmbeddedDatabase
 @FlywayTest
-@ActiveProfiles("email")
+//@ActiveProfiles("email")
 public class GradeNotificationServiceIT {
 
     public static final int GRADE_ID = 1;
@@ -70,6 +70,7 @@ public class GradeNotificationServiceIT {
 
     GradeNotificationService gradeNotificationService = new GradeNotificationServiceImpl(mailService, gradeRepo, studentRepo, subjectRepo);
 
+    @Ignore
     @Test
     public void canSendEmail(){
         gradeNotificationService.notifyAboutNewGrade(GRADE_ID);

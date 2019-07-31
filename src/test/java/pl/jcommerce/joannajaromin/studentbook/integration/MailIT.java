@@ -6,6 +6,7 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.flywaydb.test.annotation.FlywayTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 
@@ -31,7 +31,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @AutoConfigureEmbeddedDatabase
 @FlywayTest
-@ActiveProfiles("email")
+//@ActiveProfiles("email")
 public class MailIT {
 
     private static final int EXPECTED_MESSAGES_AMOUNT = 1;
@@ -74,6 +74,7 @@ public class MailIT {
         smtpServer.stop();
     }
 
+    @Ignore
     @Test
     public void emailIsSentAfterPostGrade() {
         var saveGradeDto = new SaveGradeDto(STUDENT_ID, SUBJECT_ID, GRADE);
