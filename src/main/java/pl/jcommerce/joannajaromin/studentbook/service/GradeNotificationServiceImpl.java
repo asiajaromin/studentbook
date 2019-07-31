@@ -9,8 +9,6 @@ import pl.jcommerce.joannajaromin.studentbook.dto.EmailDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.entity.Student;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
-import pl.jcommerce.joannajaromin.studentbook.repository.StudentRepository;
-import pl.jcommerce.joannajaromin.studentbook.repository.SubjectRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -21,19 +19,14 @@ public class GradeNotificationServiceImpl implements GradeNotificationService {
 
     private final MailService mailService;
     private final GradeRepository gradeRepository;
-    private final StudentRepository studentRepository;
-    private final SubjectRepository subjectRepository;
 
     @Override
     @Async
     public void notifyAboutNewGrade(int gradeId) {
-//        var grade = gradeRepository.findByIdCustom(gradeId);
-        Grade grade = gradeRepository.findByIdWithStudentAndSubject(gradeId);
-//        var subjectName = subjectRepository.findByIdCustom(grade.getSubject().getId()).getName();
+        Grade grade = gradeRepository.findByIdCustom(gradeId);
         var subjectName = grade.getSubject().getName();
         var gradeValue = grade.getGrade();
         var mailSubject = MAIL_SUBJECT_STRING + subjectName;
-//        var student = studentRepository.findByIdCustom(grade.getStudent().getId());
         var student = grade.getStudent();
         Context context = createContext(gradeValue, student, subjectName);
         var emailDto = new EmailDto(student.getEmail(),mailSubject,TEMPLATE_NAME,context);

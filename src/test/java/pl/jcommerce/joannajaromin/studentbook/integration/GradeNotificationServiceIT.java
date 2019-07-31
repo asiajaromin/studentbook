@@ -17,8 +17,6 @@ import org.springframework.core.task.SyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.jcommerce.joannajaromin.studentbook.repository.GradeRepository;
-import pl.jcommerce.joannajaromin.studentbook.repository.StudentRepository;
-import pl.jcommerce.joannajaromin.studentbook.repository.SubjectRepository;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeNotificationService;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeNotificationServiceImpl;
 import pl.jcommerce.joannajaromin.studentbook.service.MailService;
@@ -62,13 +60,7 @@ public class GradeNotificationServiceIT {
     @Autowired
     private GradeRepository gradeRepo;
 
-    @Autowired
-    private StudentRepository studentRepo;
-
-    @Autowired
-    private SubjectRepository subjectRepo;
-
-    GradeNotificationService gradeNotificationService = new GradeNotificationServiceImpl(mailService, gradeRepo, studentRepo, subjectRepo);
+    GradeNotificationService gradeNotificationService = new GradeNotificationServiceImpl(mailService, gradeRepo);
 
     @Ignore
     @Test

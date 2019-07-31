@@ -48,14 +48,12 @@ public class GradeNotificationServiceTest {
         gradeRepo = mock(GradeRepository.class);
         studentRepo = mock(StudentRepository.class);
         subjectRepo = mock(SubjectRepository.class);
-        gradeNotificationService = new GradeNotificationServiceImpl(mailService, gradeRepo, studentRepo, subjectRepo);
+        gradeNotificationService = new GradeNotificationServiceImpl(mailService, gradeRepo);
     }
 
     @Test
     public void canSendEmail(){
         when(gradeRepo.findByIdCustom(GRADE_ID)).thenReturn(grade);
-        when(subjectRepo.findByIdCustom(SUBJECT_ID)).thenReturn(subject);
-        when(studentRepo.findByIdCustom(STUDENT_ID)).thenReturn(student);
         gradeNotificationService.notifyAboutNewGrade(GRADE_ID);
         var argument = ArgumentCaptor.forClass(EmailDto.class);
         verify(mailService).sendEmail(argument.capture());
