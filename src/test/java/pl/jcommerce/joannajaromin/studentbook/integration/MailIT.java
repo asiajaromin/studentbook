@@ -1,9 +1,10 @@
 package pl.jcommerce.joannajaromin.studentbook.integration;
 
 import com.icegreen.greenmail.util.GreenMail;
-import com.icegreen.greenmail.util.ServerSetupTest;
+import com.icegreen.greenmail.util.ServerSetup;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.flywaydb.test.annotation.FlywayTest;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,11 +52,6 @@ public class MailIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Before
-    public void before(){
-
-    }
-
     @TestConfiguration
     static class ContextConfiguration {
 
@@ -65,21 +61,30 @@ public class MailIT {
         }
     }
 
+    private GreenMail smtpServer;
+
+    @Before
+    public void setUp() throws Exception {
+        smtpServer = new GreenMail(new ServerSetup(25, null, "smtp"));
+        smtpServer.start();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        smtpServer.stop();
+    }
 
     @Test
     public void emailIsSentAfterPostGrade() {
-        GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP_IMAP);
-        greenMail.start();
         var saveGradeDto = new SaveGradeDto(STUDENT_ID, SUBJECT_ID, GRADE);
         var postEntity = new HttpEntity(saveGradeDto);
         var response = restTemplate
                 .withBasicAuth(TEACHER_USERNAME, TEACHER_PASSWORD)
                 .exchange(("/grades"), HttpMethod.POST, postEntity, String.class);
         assertEquals(HttpStatus.OK,response.getStatusCode());
-        MimeMessage[] receivedMessages = greenMail.getReceivedMessagesForDomain(STUDENT_EMAIL);
+        MimeMessage[] receivedMessages = smtpServer.getReceivedMessages();
 //        MimeMessage mimeMessage = receivedMessages[0];
         assertEquals(EXPECTED_MESSAGES_AMOUNT,receivedMessages.length);
-        greenMail.stop();
     }
 
 }
