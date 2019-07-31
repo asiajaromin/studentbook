@@ -69,4 +69,11 @@ public class GradeServiceImpl implements GradeService {
     public void deleteById(int gradeId) {
         gradeRepository.deleteById(gradeId);
     }
+
+    @Override
+    @Transactional
+    public Grade findByIdWithStudentAndSubject(int i) {
+//        return gradeRepository.findByIdWithStudentAndSubject(i);
+        return gradeRepository.findByIdCustom(i);
+    }
 }
