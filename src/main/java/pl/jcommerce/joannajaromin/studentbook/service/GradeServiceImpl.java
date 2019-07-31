@@ -24,9 +24,6 @@ public class GradeServiceImpl implements GradeService {
     private final OrikaGradeConverter converter;
     private final OrikaSaveGradeConverter saveConverter;
     private final GradeNotificationService gradeNotificationService;
-    //private final MailService mailService;
-    //private final SubjectRepository subjectRepository;
-    //private final StudentRepository studentRepository;
 
     @Override
     @Transactional(readOnly = true)

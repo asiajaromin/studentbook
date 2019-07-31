@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-import pl.jcommerce.joannajaromin.studentbook.dto.EmailData;
 import pl.jcommerce.joannajaromin.studentbook.dto.EmailDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.entity.Student;
@@ -35,8 +34,9 @@ public class GradeNotificationServiceImpl implements GradeNotificationService {
 
     private Context createContext(int grade, Student student, String subjectName) {
         var context = new Context();
-        var emailData = new EmailData(subjectName,grade,student);
-        context.setVariable("emailData", emailData);
+        context.setVariable("studentName", student.getFirstName() + " " + student.getLastName());
+        context.setVariable("subjectName", subjectName);
+        context.setVariable("grade", grade);
         return context;
     }
 }
