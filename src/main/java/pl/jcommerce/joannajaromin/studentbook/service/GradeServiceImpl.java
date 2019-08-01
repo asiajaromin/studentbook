@@ -68,7 +68,6 @@ public class GradeServiceImpl implements GradeService {
     @Override
     @Transactional
     public Grade findByIdWithStudentAndSubject(int i) {
-//        return gradeRepository.findByIdWithStudentAndSubject(i);
         return gradeRepository.findByIdCustom(i);
     }
 }
