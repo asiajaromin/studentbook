@@ -27,7 +27,6 @@ public class GradeServiceTest {
     private Grade grade;
     private SaveGradeDto saveGradeDto;
     private GradeService gradeService;
-    private GradeNotificationService gradeNotificationService;
     private OrikaGradeConverter gradeConverter;
     private OrikaSaveGradeConverter saveGradeConverter;
 
@@ -39,8 +38,7 @@ public class GradeServiceTest {
         gradeRepository = mock(GradeRepository.class);
         gradeConverter = mock(OrikaGradeConverter.class);
         saveGradeConverter = mock(OrikaSaveGradeConverter.class);
-        gradeNotificationService = mock(GradeNotificationService.class);
-        gradeService = new GradeServiceImpl(gradeRepository,gradeConverter,saveGradeConverter,gradeNotificationService);
+        gradeService = new GradeServiceImpl(gradeRepository,gradeConverter,saveGradeConverter);
         when(gradeConverter.map(grade,GradeDto.class)).thenReturn(gradeDto);
     }
 
@@ -68,7 +66,6 @@ public class GradeServiceTest {
         when(gradeConverter.map(grade,GradeDto.class)).thenReturn(gradeDto);
         GradeDto savedGradeDto = gradeService.save(saveGradeDto);
         assertEquals(gradeDto,savedGradeDto);
-        verify(gradeNotificationService).notifyAboutNewGrade(GRADE_ID);
     }
 
     @Test

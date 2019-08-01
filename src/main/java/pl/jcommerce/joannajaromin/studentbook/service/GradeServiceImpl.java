@@ -23,7 +23,6 @@ public class GradeServiceImpl implements GradeService {
     private final GradeRepository gradeRepository;
     private final OrikaGradeConverter converter;
     private final OrikaSaveGradeConverter saveConverter;
-    private final GradeNotificationService gradeNotificationService;
 
     @Override
     @Transactional(readOnly = true)
@@ -49,7 +48,6 @@ public class GradeServiceImpl implements GradeService {
         var gradeToSave = saveConverter.map(gradeToSaveDto, Grade.class);
         var gradeSaved = gradeRepository.save(gradeToSave);
         var gradeSavedDto = converter.map(gradeSaved, GradeDto.class);
-        gradeNotificationService.notifyAboutNewGrade(gradeSavedDto.getId());
         return gradeSavedDto;
 }
 

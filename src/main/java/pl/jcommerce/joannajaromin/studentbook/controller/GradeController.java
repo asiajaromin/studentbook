@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
+import pl.jcommerce.joannajaromin.studentbook.service.GradeNotificationService;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ import java.util.List;
 public class GradeController {
 
     private final GradeService gradeService;
+    private final GradeNotificationService gradeNotificationService;
 
     @GetMapping("/grades")
     public List<GradeDto> findAll() {
@@ -38,7 +40,9 @@ public class GradeController {
     @PreAuthorize("hasRole('ROLE_TEACHER')")
     @PostMapping("/grades")
     public GradeDto saveGrade(@Valid @RequestBody SaveGradeDto grade) {
-        return gradeService.save(grade);
+        GradeDto gradeDto = gradeService.save(grade);
+        gradeNotificationService.notifyAboutNewGrade(gradeDto.getId());
+        return gradeDto;
     }
 
     @PreAuthorize("hasRole('ROLE_TEACHER')")
