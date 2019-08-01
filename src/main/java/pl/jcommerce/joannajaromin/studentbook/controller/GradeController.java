@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
-import pl.jcommerce.joannajaromin.studentbook.entity.Grade;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeNotificationService;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
 
@@ -55,13 +54,6 @@ public class GradeController {
     @DeleteMapping("/grades/{gradeId}")
     public void deleteGrade (@PathVariable int gradeId){
         gradeService.deleteById(gradeId);
-    }
-
-    @GetMapping("/grade69")
-    public Grade getGrade69 (){
-        int gradeId = 69;
-        var grade = gradeService.findByIdWithStudentAndSubject(gradeId);
-        return grade;
     }
 
 }
