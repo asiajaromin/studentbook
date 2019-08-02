@@ -14,6 +14,7 @@ import pl.jcommerce.joannajaromin.studentbook.dto.GradeDto;
 import pl.jcommerce.joannajaromin.studentbook.dto.SaveGradeDto;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeNotificationService;
 import pl.jcommerce.joannajaromin.studentbook.service.GradeService;
+import pl.jcommerce.joannajaromin.studentbook.service.KafkaSender;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -25,6 +26,7 @@ public class GradeController {
 
     private final GradeService gradeService;
     private final GradeNotificationService gradeNotificationService;
+    private final KafkaSender kafkaSender;
 
     @GetMapping("/grades")
     public List<GradeDto> findAll() {
@@ -40,7 +42,8 @@ public class GradeController {
     @PostMapping("/grades")
     public GradeDto saveGrade(@Valid @RequestBody SaveGradeDto grade) {
         GradeDto gradeDto = gradeService.save(grade);
-        gradeNotificationService.notifyAboutNewGrade(gradeDto.getId());
+//        gradeNotificationService.notifyAboutNewGrade(gradeDto.getId());
+        kafkaSender.send(gradeDto.getId());
         return gradeDto;
     }
 
