@@ -24,8 +24,6 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @AutoConfigureEmbeddedDatabase
 @FlywayTest
-//@TestPropertySource(properties = "spring.mail.password=")
-//@ActiveProfiles("email")
 public class MailIT {
 
     private static final int EXPECTED_MESSAGES_AMOUNT = 1;
