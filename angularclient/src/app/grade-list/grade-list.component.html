@@ -7,14 +7,16 @@
         <th scope="col">Uczeń</th>
         <th scope="col">Przedmiot</th>
         <th scope="col">Ocena</th>
+        <th scope="col">Opcje</th>
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let grade of grades">
+      <tr *ngFor="let grade of grades | async">
         <td>{{ grade.id }}</td>
         <td>{{ grade.studentId }}</td>
         <td>{{ grade.subjectId }}</td>
         <td>{{ grade.grade }}</td>
+        <td><button (click)="deleteGrade(grade.id)" class="btn, btn-danger">Usuń</button> </td>
       </tr>
       </tbody>
     </table>

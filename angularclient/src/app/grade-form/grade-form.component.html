@@ -1,24 +1,25 @@
+<h3>Dodaj ocenę</h3>
 <div class="card my-5">
   <div class="card-body">
     <form (ngSubmit)="onSubmit()" #gradeForm="ngForm">
       <div class="form-group">
         <label for="studentId">Id ucznia</label>
         <input type="number" [(ngModel)]="grade.studentId"
-               class="form-control" id="studentId" name="Uczeń" placeholder="Wprowadź id ucznia"
+               class="form-control" id="studentId" name="Uczeń"
                required #name="ngModel">
       </div>
       <div [hidden]="!name.pristine" class="alert alert-danger">Id ucznia jest wymagane</div>
       <div class="form-group">
         <label for="subjectId">Id przedmiotu</label>
         <input type="number" [(ngModel)]="grade.subjectId"
-               class="form-control" id="subjectId" name="Przedmiot" placeholder="Wprowadź id przedmiotu"
+               class="form-control" id="subjectId" name="Przedmiot"
                required #name="ngModel">
       </div>
       <div [hidden]="!name.pristine" class="alert alert-danger">Id przedmiotu jest wymagane</div>
       <div class="form-group">
         <label for="grade">Ocena</label>
         <input type="number" [(ngModel)]="grade.grade"
-               class="form-control" id="grade" name="Ocena" placeholder="Wprowadź ocenę"
+               class="form-control" id="grade" name="Ocena"
                required #name="ngModel">
       </div>
       <div [hidden]="!name.pristine" class="alert alert-danger">Ocena jest wymagana</div>

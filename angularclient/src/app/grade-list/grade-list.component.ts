@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Grade } from '../model/grade';
 import { GradeService } from '../service/grade.service';
+import {Observable} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-grade-list',
@@ -9,14 +11,26 @@ import { GradeService } from '../service/grade.service';
 })
 export class GradeListComponent implements OnInit {
 
-  grades: Grade[];
+  grades: Observable<Grade[]>;
 
-  constructor(private gradeService: GradeService) { }
+  constructor(private gradeService: GradeService, private router:Router) { }
 
   ngOnInit() {
-    this.gradeService.findAll().subscribe(data=>{
-    this.grades =data;
-    });
+    this.reloadData();
+  }
+
+  reloadData() {
+this.grades= this.gradeService.findAll();
+  }
+
+  deleteGrade(id: number){
+this.gradeService.deletegrade(id)
+  .subscribe(
+    data => {
+      console.log(data);
+      this.reloadData();
+    },
+    error => console.log(error));
   }
 
 }

@@ -3,32 +3,29 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Grade } from '../model/grade';
 import { Observable } from 'rxjs';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class GradeService {
 
-  private gradesUrl: string;
-
   constructor(private http: HttpClient) {
-    this.gradesUrl = 'http://localhost:8500/users';
   }
 
-  public findById(id: number):Observable<Object>{
-    return this.http.get(`${this.gradesUrl}/${id}`)
+  public findById(id: number){
+    return this.http.get(`/server/grades/${id}`)
   }
 
-  public findAll(): Observable<Grade[]> {
-    return this.http.get<Grade[]>(this.gradesUrl);
+  public findAll() {
+    return this.http.get('/server/grades');
   }
 
   public save(grade: Grade) {
-    return this.http.post<Grade>(this.gradesUrl, grade);
+    return this.http.post<Grade>('/server/grades', grade);
   }
 
-  public update(id: number, value: any) {
-    return this.http.put(`${this.gradesUrl}/${id}`, value);
+  public updategrade(id: number, value: any) {
+    return this.http.put(`/server/grades/${id}`, value);
   }
 
-  public delete(id: number):Observable<any>{
-    return this.http.delete(`${this.gradesUrl}/${id}`,{ responseType: 'text' })
+  public deletegrade(id: number){
+    return this.http.delete(`/server/grades/${id}`,{ responseType: 'text' })
   }
 }
